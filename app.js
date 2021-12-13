@@ -38,7 +38,6 @@ app.use(
 );
 
 app.use("/webhook", bodyParser.raw({ type: "application/json" }));
-
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
