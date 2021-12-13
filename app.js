@@ -6,8 +6,6 @@ const session = require("express-session");
 var MemoryStore = require("memorystore")(session);
 const UserService = require("./src/user");
 const Stripe = require("./src/connect/stripe");
-const setCurrentUser = require("./src/middleware/setCurrentUser");
-const hasPlan = require("./src/middleware/hasPlan");
 const jwt = require("./src/_helpers/jwt");
 var cors = require("cors");
 
