@@ -44,35 +44,6 @@ app.use("/webhook", bodyParser.raw({ type: "application/json" }));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.use(express.static("public"));
-app.engine("html", require("ejs").renderFile);
-
-app.get("/none", [setCurrentUser, hasPlan("none")], async function (req, res, next) {
-  res.status(200).render("none.ejs");
-});
-
-app.get("/basic", [setCurrentUser, hasPlan("basic")], async function (req, res, next) {
-  res.status(200).render("basic.ejs");
-});
-
-app.get("/pro", [setCurrentUser, hasPlan("pro")], async function (req, res, next) {
-  res.status(200).render("pro.ejs");
-});
-
-app.get("/", function (req, res) {
-  res.render("login.ejs");
-});
-
-app.get("/account", async function (req, res) {
-  let { email } = req.session;
-  let customer = await UserService.getUserByEmail(email);
-  if (!customer) {
-    res.redirect("/");
-  } else {
-    res.render("account.ejs", { customer });
-  }
-});
-
 app.get("/users", async function (req, res) {
   try {
     const users = await UserService.getAll();
