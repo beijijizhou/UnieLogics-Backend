@@ -29,7 +29,7 @@ const createCheckoutSession = async (customerID, price) => {
 const createBillingSession = async (customer) => {
   const session = await Stripe.billingPortal.sessions.create({
     customer,
-    return_url: "http://localhost:3000/profile",
+    return_url: "https://amzleratorweb.herokuapp.com/profile",
   });
   return session;
 };
