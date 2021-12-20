@@ -3,11 +3,17 @@ require("./src/connect/mongodb");
 const bodyParser = require("body-parser");
 const express = require("express");
 const session = require("express-session");
-var MemoryStore = require("memorystore")(session);
+const MemoryStore = require("memorystore")(session);
 const UserService = require("./src/user");
 const Stripe = require("./src/connect/stripe");
 const jwt = require("./src/_helpers/jwt");
-var cors = require("cors");
+const cors = require("cors");
+const bcrypt = require("bcryptjs");
+
+const api_key = "32a53840ad89a54b21422b2fd796d675-1831c31e-88e62f63";
+const domain = "sandbox9a659f4e61be40bdac2300b571bd8102.mailgun.org";
+const from_who = "amzlerator@gmail.com";
+const mailgun = require("mailgun-js")({ apiKey: api_key, domain: domain });
 
 const productToPriceMap = {
   basic: process.env.PRODUCT_BASIC,
@@ -47,6 +53,69 @@ app.get("/users", async function (req, res) {
     res.status(200).json(users);
   } catch (e) {
     res.status(500).json({ status: "error", e });
+  }
+});
+
+app.get("/forgotPassword", async function (req, res) {
+  const { email } = req.query;
+
+  try {
+    let customer = await UserService.getUserByEmail(email);
+
+    if (!customer) {
+      return res.status(400).send({
+        status: "error",
+        error: {
+          message: "User does not exist",
+        },
+      });
+    }
+
+    const randomPassword = Math.random().toString(36).substring(7);
+    customer.hash = bcrypt.hashSync(randomPassword, 10);
+    await customer.save();
+
+    console.log(email + "wants to reset his password!");
+
+    const mailBody = {
+      from: `Amzlerator <${from_who}>`,
+      to: email,
+      subject: "Reset your password",
+      text: "Reset your password",
+      html: `<div>
+        <h2>Reset your password.</h2>
+          <p>We're sorry you have forgotten your password.  Please follow the instructions below to reset your password.
+        </p>
+        <p>
+          Log in <a href="https://amzleratorweb.herokuapp.com/login" style="text-decoration:underline;color:red;">here</a> using your username and the temporary password <span style="color:red;"><b>${randomPassword}</b></span>
+        </p>
+        <p>
+          Once logged in, please go to your profile settings and change the temporary password to a permanent one.
+        </p>
+        <p>If you have any question about your account, please email us at <a style="text-decoration: underline;" href="mailto:${from_who}?Subject=Reset%20password%20issue">${from_who}</a></p><br />
+        <p>Thank you again. Happy sourcing!<br /><br />
+      </div>`,
+    };
+
+    mailgun.messages().send(mailBody, (sendError, body) => {
+      if (sendError) {
+        console.log(sendError);
+        return;
+      }
+      console.log(body);
+    });
+    return res.status(200).json({
+      status: "success",
+      message: "Successfully reset your password. Please check your email for your temporary password.",
+    });
+  } catch (e) {
+    console.log(e);
+    return res.status(400).send({
+      status: "error",
+      error: {
+        message: e.raw.message,
+      },
+    });
   }
 });
 

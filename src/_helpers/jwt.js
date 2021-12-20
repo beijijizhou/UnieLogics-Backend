@@ -10,6 +10,7 @@ function jwt() {
       // public routes that don't require authentication
       "/authenticate",
       "/register",
+      "/forgotPassword",
     ],
   });
 }
