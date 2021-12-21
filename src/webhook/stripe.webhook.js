@@ -1,5 +1,5 @@
 const Stripe = require("../connect/stripe");
-const UserService = require("../user");
+const UserService = require("../users");
 
 const stripeWebhook = async (req, res) => {
   let event;

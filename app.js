@@ -3,11 +3,11 @@ require("./src/connect/mongodb");
 
 const bodyParser = require("body-parser");
 const express = require("express");
-const UserService = require("./src/user");
+const UserService = require("./src/users");
 const jwt = require("./src/_helpers/jwt");
 const cors = require("cors");
 
-const usersRouter = require("./src/user/user.routes");
+const usersRouter = require("./src/users/users.routes");
 const stripeWebhook = require("./src/webhook/stripe.webhook.routes");
 
 const app = express();

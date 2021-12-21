@@ -2,7 +2,7 @@ const bcrypt = require("bcryptjs");
 const mailgun = require("mailgun-js")({ apiKey: process.env.MAILGUN_API_KEY, domain: process.env.MAILGUN_DOMAIN });
 const Stripe = require("../connect/stripe");
 
-const UserService = require("../user");
+const UserService = require("../users");
 
 const productToPriceMap = {
   basic: process.env.PRODUCT_BASIC,
