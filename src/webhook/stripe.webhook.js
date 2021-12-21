@@ -13,7 +13,10 @@ const stripeWebhook = async (req, res) => {
 
   const data = event.data.object;
 
+  console.log("#######-WEBHOOK HERE START-#######");
   console.log(event.type, data);
+  console.log("#######-WEBHOOK HERE END-#######");
+
   switch (event.type) {
     case "customer.created":
       console.log(JSON.stringify(data));
