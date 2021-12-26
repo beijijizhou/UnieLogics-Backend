@@ -22,7 +22,7 @@ const getAllUsers = async (req, res) => {
 
 const forgotPassword = async (req, res) => {
   const { email } = req.query;
-  const from_who = "amzlerator@gmail.com";
+  const from_who = "asinmice@gmail.com";
 
   try {
     let customer = await UserService.getUserByEmail(email);
