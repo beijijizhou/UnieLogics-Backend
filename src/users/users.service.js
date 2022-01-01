@@ -37,8 +37,18 @@ const getUserByBillingID = (User) => async (billingID) => {
   return await User.findOne({ billingID });
 };
 
-const updateProfile = (User) => async (email, update) => {
-  return await User.findOneAndUpdate({ email }, update);
+const updateProfile = (User) => async (email, update, password) => {
+  let updateObj;
+
+  if (password) {
+    updateObj = {
+      ...update,
+      hash: bcrypt.hashSync(password, 10),
+    };
+  } else {
+    updateObj = update;
+  }
+  return await User.findOneAndUpdate({ email }, updateObj);
 };
 
 const authenticate = (User) => async (email, password) => {

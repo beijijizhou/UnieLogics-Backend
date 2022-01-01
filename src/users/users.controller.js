@@ -3,6 +3,7 @@ const mailgun = require("mailgun-js")({ apiKey: process.env.MAILGUN_API_KEY, dom
 const Stripe = require("../connect/stripe");
 
 const UserService = require("../users");
+const from_who = "donotreply@asinmice.com";
 
 const productToPriceMap = {
   basic: process.env.PRODUCT_BASIC,
@@ -22,7 +23,6 @@ const getAllUsers = async (req, res) => {
 
 const forgotPassword = async (req, res) => {
   const { email } = req.query;
-  const from_who = "asinmice@gmail.com";
 
   try {
     let customer = await UserService.getUserByEmail(email);
@@ -40,10 +40,10 @@ const forgotPassword = async (req, res) => {
     customer.hash = bcrypt.hashSync(randomPassword, 10);
     await customer.save();
 
-    console.log(email + "wants to reset his password!");
+    console.log(email + " - wants to reset his password!");
 
     const mailBody = {
-      from: `Amzlerator <${from_who}>`,
+      from: `AsinMice <${from_who}>`,
       to: email,
       subject: "Reset your password",
       text: "Reset your password",
@@ -52,7 +52,7 @@ const forgotPassword = async (req, res) => {
           <p>We're sorry you have forgotten your password.  Please follow the instructions below to reset your password.
         </p>
         <p>
-          Log in <a href="https://amzleratorweb.herokuapp.com/login" style="text-decoration:underline;color:red;">here</a> using your username and the temporary password <span style="color:red;"><b>${randomPassword}</b></span>
+          Log in <a href="https://www.asinmice.com/login" style="text-decoration:underline;color:red;">here</a> using your username and the temporary password <span style="color:red;"><b>${randomPassword}</b></span>
         </p>
         <p>
           Once logged in, please go to your profile settings and change the temporary password to a permanent one.
@@ -301,12 +301,12 @@ const checkout = async (req, res) => {
 };
 
 const profileUpdate = async (req, res) => {
-  const { firstName, lastName, email } = req.body;
+  const { firstName, lastName, email, password } = req.body;
 
-  if (!firstName || !lastName || !email) {
+  if (!firstName && !lastName && !email && !password) {
     return res.status(403).send({
       status: "error",
-      message: "FirstName, LastName, Email are mandatory!",
+      message: "At least one of the next fields: FirstName, LastName, Email, Password are mandatory!",
     });
   }
 
@@ -317,7 +317,7 @@ const profileUpdate = async (req, res) => {
       lastName,
     };
 
-    await UserService.updateProfile(email, update);
+    await UserService.updateProfile(email, update, password);
 
     const editedUser = await UserService.getUserByEmail(email);
     return res.status(200).json({
