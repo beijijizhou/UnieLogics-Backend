@@ -301,7 +301,7 @@ const checkout = async (req, res) => {
 };
 
 const profileUpdate = async (req, res) => {
-  const { firstName, lastName, email, password } = req.body;
+  const { firstName, lastName, email, password, notifications } = req.body;
 
   if (!firstName && !lastName && !email && !password) {
     return res.status(403).send({
@@ -315,6 +315,7 @@ const profileUpdate = async (req, res) => {
     const update = {
       firstName,
       lastName,
+      notifications,
     };
 
     await UserService.updateProfile(email, update, password);
@@ -333,6 +334,7 @@ const profileUpdate = async (req, res) => {
         lastName: editedUser.lastName,
         email: editedUser.email,
         billingID: editedUser.billingID,
+        notifications: editedUser.notifications,
       },
       hasActiveSubscription: user.hasActiveSubscription,
     });
