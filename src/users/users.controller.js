@@ -215,6 +215,7 @@ const login = async (req, res) => {
     try {
       const user = await UserService.authenticate(email, password);
       customerInfo = await Stripe.getCustomerByID(customer.billingID);
+
       const existingSubscription = await Stripe.getSubsription(customerInfo.id);
       let hasActiveSubscription = false;
       let hasTrial = false;
@@ -246,7 +247,7 @@ const login = async (req, res) => {
 
       user
         ? res.status(200).json({ ...user, hasActiveSubscription, hasTrial })
-        : res.status(401).json({ status: "error", message: "Email or password is incorrect" });
+        : res.status(403).json({ status: "error", message: "Email or password is incorrect" });
     } catch (e) {
       console.log(e);
       res.status(500).json({ status: "error", message: JSON.stringify(e) });
