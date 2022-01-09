@@ -166,14 +166,13 @@ const register = async (req, res) => {
   let customerInfo = {};
 
   if (!email || !username || !password) {
-    res
+    return res
       .status(400)
       .json({ status: "error", message: "Email, Username and Password are mandatory! One of them is missing!" });
-    return;
   }
 
   if (customer) {
-    res.status(409).json({
+    return res.status(409).json({
       status: "error",
       message: "A user is already registered with this email address!",
     });
@@ -336,6 +335,7 @@ const profileUpdate = async (req, res) => {
         email: editedUser.email,
         billingID: editedUser.billingID,
         notifications: editedUser.notifications,
+        salesPerMonthCheck: editedUser.salesPerMonthCheck,
       },
       hasActiveSubscription: user.hasActiveSubscription,
     });
@@ -411,8 +411,21 @@ const profile = async (req, res) => {
 
     return res.status(200).json({
       status: "successs",
-      user,
-      hasActiveSubscription,
+      user: {
+        plan: user.plan,
+        hasTrial: user.hasTrial,
+        endDate: user.endDate,
+        role: user.role,
+        hasActiveSubscription: user.hasActiveSubscription,
+        _id: user._id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        billingID: user.billingID,
+        notifications: user.notifications,
+        salesPerMonthCheck: user.salesPerMonthCheck,
+      },
+      hasActiveSubscription: user.hasActiveSubscription,
     });
   } catch (e) {
     console.log(e);
@@ -445,6 +458,23 @@ const billing = async (req, res) => {
   }
 };
 
+const getSalesPerMonth = async (req, res) => {
+  const { email } = req.query;
+
+  try {
+    const user = await UserService.getUserByEmail(email);
+    console.log(user);
+  } catch (e) {
+    console.log(e);
+    return res.status(403).send({
+      status: "error",
+      error: {
+        message: "User not found!",
+      },
+    });
+  }
+};
+
 module.exports = {
   getAllUsers,
   forgotPassword,
@@ -455,4 +485,5 @@ module.exports = {
   profileUpdate,
   profile,
   billing,
+  getSalesPerMonth,
 };
