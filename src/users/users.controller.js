@@ -215,7 +215,7 @@ const login = async (req, res) => {
     try {
       const user = await UserService.authenticate(email, password);
       customerInfo = await Stripe.getCustomerByID(customer.billingID);
-
+      console.log(customer);
       const existingSubscription = await Stripe.getSubsription(customerInfo.id);
       let hasActiveSubscription = false;
       let hasTrial = false;
@@ -245,15 +245,17 @@ const login = async (req, res) => {
 
       console.log(`The existing ID for ${email} is ${JSON.stringify(customerInfo)}`);
 
-      return user
-        ? res.status(200).json({ ...user, hasActiveSubscription, hasTrial })
+      user
+        ? res
+            .status(200)
+            .json({ ...user, hasActiveSubscription, hasTrial, salesPerMonthCheck: customer.salesPerMonthCheck })
         : res.status(403).json({ status: "error", message: "Email or password is incorrect" });
     } catch (e) {
       console.log(e);
-      return res.status(500).json({ status: "error", message: JSON.stringify(e) });
+      res.status(500).json({ status: "error", message: JSON.stringify(e) });
     }
   } else {
-    return res.status(403).json({ status: "error", message: "This username does not exist! Please register first!" });
+    res.status(403).json({ status: "error", message: "This username does not exist! Please register first!" });
   }
 };
 
