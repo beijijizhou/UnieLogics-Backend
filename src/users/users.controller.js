@@ -465,14 +465,21 @@ const getSalesPerMonth = async (req, res) => {
 
   try {
     const user = await UserService.getUserByEmail(email);
-    console.log('Sales per month interogated by ', email);
+    console.log("Sales per month interogated by ", email);
 
     if (user) {
-      console.log('Current available sales per month are: ', user.salesPerMonthCheck);
+      console.log("Current available sales per month are: ", user.salesPerMonthCheck);
       return res.status(200).send({
         status: "success",
-        salesPerMonthCheck: user.salesPerMonthCheck
-      })
+        salesPerMonthCheck: user.salesPerMonthCheck,
+      });
+    } else {
+      return res.status(403).send({
+        status: "error",
+        error: {
+          message: "No such user or email not sent correctly!",
+        },
+      });
     }
   } catch (e) {
     console.log(e);
@@ -482,6 +489,48 @@ const getSalesPerMonth = async (req, res) => {
         message: "User not found!",
       },
     });
+  }
+};
+
+const updateSalesPerMonth = async (req, res) => {
+  const { email, message } = req.body;
+  console.log(email);
+  console.log(message);
+  if (!email || !message) {
+    return res.status(400).send({
+      status: "error",
+      message: "Invalid request. Email or message not present",
+    });
+  } else if (message === "updateSalesPerMonth") {
+    try {
+      const user = await UserService.getUserByEmail(email);
+      const update = {
+        salesPerMonthCheck: user.salesPerMonthCheck - 1,
+      };
+
+      if (!user.salesPerMonthCheck || user.salesPerMonthCheck < 1) {
+        return res.status(400).json({
+          status: "error",
+          message: "You don't have any salesPerMonth checks Available",
+        });
+      }
+
+      const responseFromUpdate = await UserService.updateProfile(email, update);
+
+      return res.status(200).send({
+        status: "success",
+        salesPerMonthCheck: responseFromUpdate.salesPerMonthCheck - 1,
+      });
+    } catch (e) {
+      console.log(e);
+      return res.status(403).send({
+        status: "error",
+        error: {
+          message: "Update of sales per month encountered an error!",
+          errorGenerated: e,
+        },
+      });
+    }
   }
 };
 
@@ -496,4 +545,5 @@ module.exports = {
   profile,
   billing,
   getSalesPerMonth,
+  updateSalesPerMonth,
 };
