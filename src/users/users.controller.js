@@ -384,11 +384,13 @@ const profile = async (req, res) => {
       if (existingSubscription.data[0].plan.id === process.env.PRODUCT_BASIC) {
         console.log("You are talking about basic product");
         user.plan = "basic";
+        user.salesPerMonthCheck = 2500;
       }
 
       if (existingSubscription.data[0].plan.id === process.env.PRODUCT_PRO) {
         console.log("You are talking about pro product");
         user.plan = "pro";
+        user.salesPerMonthCheck = 5000;
       }
       if (existingSubscription.data[0].status === "trialing") {
         user.hasTrial = true;
