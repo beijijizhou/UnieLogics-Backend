@@ -148,6 +148,7 @@ const checkAuthentication = async (req, res) => {
     return res.status(200).json({
       status: "successs",
       hasActiveSubscription,
+      salesPerMonthCheck: user.salesPerMonthCheck,
     });
   } catch (e) {
     console.log(e);
