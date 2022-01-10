@@ -13,7 +13,7 @@ const userSchema = new Schema({
   role: { type: String, enum: ["user", "admin"], default: "user" },
   hasActiveSubscription: { type: Boolean, default: false },
   notifications: { type: Boolean, default: false },
-  salesPerMonthCheck: { type: Number, default: 0 },
+  salesPerMonthCheck: { type: String, default: "0" },
 });
 
 const userModel = mongoose.model("user", userSchema, "user");
