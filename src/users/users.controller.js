@@ -245,15 +245,15 @@ const login = async (req, res) => {
 
       console.log(`The existing ID for ${email} is ${JSON.stringify(customerInfo)}`);
 
-      user
+      return user
         ? res.status(200).json({ ...user, hasActiveSubscription, hasTrial })
         : res.status(403).json({ status: "error", message: "Email or password is incorrect" });
     } catch (e) {
       console.log(e);
-      res.status(500).json({ status: "error", message: JSON.stringify(e) });
+      return res.status(500).json({ status: "error", message: JSON.stringify(e) });
     }
   } else {
-    res.status(403).json({ status: "error", message: "This username does not exist! Please register first!" });
+    return res.status(403).json({ status: "error", message: "This username does not exist! Please register first!" });
   }
 };
 
