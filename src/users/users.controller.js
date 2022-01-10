@@ -406,6 +406,7 @@ const profile = async (req, res) => {
         user.hasTrial = false;
         user.endDate = null;
       }
+      await UserService.updateProfile(email, user);
     } else {
       user.hasActiveSubscription = false;
       user.plan = "none";
