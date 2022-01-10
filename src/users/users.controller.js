@@ -465,7 +465,15 @@ const getSalesPerMonth = async (req, res) => {
 
   try {
     const user = await UserService.getUserByEmail(email);
-    console.log(user);
+    console.log('Sales per month interogated by ', email);
+
+    if (user) {
+      console.log('Current available sales per month are: ', user.salesPerMonthCheck);
+      return res.status(200).send({
+        status: "success",
+        salesPerMonthCheck: user.salesPerMonthCheck
+      })
+    }
   } catch (e) {
     console.log(e);
     return res.status(403).send({
