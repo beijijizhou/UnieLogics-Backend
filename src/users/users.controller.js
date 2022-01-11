@@ -542,8 +542,9 @@ const getSalesPerMonth = async (req, res) => {
 
 const updateSalesPerMonth = async (req, res) => {
   const { email, message } = req.body;
-  console.log(email);
-  console.log(message);
+  console.log("Email for which you want to update sales per month is: ", email);
+  console.log("Message to update is: ", message);
+
   if (!email || !message) {
     return res.status(400).send({
       status: "error",
