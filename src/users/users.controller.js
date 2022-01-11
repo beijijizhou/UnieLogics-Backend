@@ -67,7 +67,7 @@ const forgotPassword = async (req, res) => {
                             <td style="height:40px;">&nbsp;</td>
                           </tr>
                           <tr>
-                            <td><img src="https://www.asinmice.com/public/logo.svg" alt="asinmice-logo" style="width:120px;margin-bottom:15px;"/></td>
+                            <td><img src="https://www.asinmice.com/public/images/logo.png" alt="Logo" title="Logo" style="display:block;margin:0 auto;margin-bottom:15px;" width="120"/></td>
                           </tr>
                           <tr>
                             <td style="padding:0 35px;">
