@@ -3,7 +3,6 @@ require("./src/connect/mongodb");
 
 const bodyParser = require("body-parser");
 const express = require("express");
-const UserService = require("./src/users");
 const jwt = require("./src/_helpers/jwt");
 const cors = require("cors");
 
