@@ -7,8 +7,8 @@ const emailTemplates = require("../_helpers/emailTemplates");
 const from_who = "donotreply@asinmice.com";
 
 const productToPriceMap = {
-  basic: process.env.PRODUCT_BASIC,
-  pro: process.env.PRODUCT_PRO,
+  plan17: process.env.PLAN_17,
+  plan163: process.env.PLAN_163,
 };
 
 const getAllUsers = async (req, res) => {
@@ -100,14 +100,14 @@ const checkAuthentication = async (req, res) => {
         }
       });
 
-      if (existingSubscription.data[0].plan.id === process.env.PRODUCT_BASIC) {
-        console.log("You are talking about basic product");
-        user.plan = "basic";
+      if (existingSubscription.data[0].plan.id === process.env.PLAN_17) {
+        console.log("You are talking about plan17 product");
+        user.plan = "plan17";
       }
 
-      if (existingSubscription.data[0].plan.id === process.env.PRODUCT_PRO) {
-        console.log("You are talking about pro product");
-        user.plan = "pro";
+      if (existingSubscription.data[0].plan.id === process.env.PLAN_163) {
+        console.log("You are talking about plan163 product");
+        user.plan = "plan163";
       }
       if (existingSubscription.data[0].status === "trialing") {
         user.hasTrial = true;
@@ -377,15 +377,15 @@ const profile = async (req, res) => {
         }
       });
 
-      if (existingSubscription.data[0].plan.id === process.env.PRODUCT_BASIC) {
-        console.log("You are talking about basic product");
-        user.plan = "basic";
+      if (existingSubscription.data[0].plan.id === process.env.PLAN_17) {
+        console.log("You are talking about plan17 product");
+        user.plan = "plan17";
         user.salesPerMonthCheck = 2500;
       }
 
-      if (existingSubscription.data[0].plan.id === process.env.PRODUCT_PRO) {
-        console.log("You are talking about pro product");
-        user.plan = "pro";
+      if (existingSubscription.data[0].plan.id === process.env.PLAN_163) {
+        console.log("You are talking about plan163 product");
+        user.plan = "plan163";
         user.salesPerMonthCheck = 5000;
       }
       if (existingSubscription.data[0].status === "trialing") {

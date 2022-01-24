@@ -1,6 +1,6 @@
 $(document).ready(function () {
   const publishableKey =
-    "pk_live_51JzWNFCyns2nFpoZbrJhdK2AF3cLWlRhwUJOAZCWOV40dhszbDXTNIor27mgulcdDlXaNT5fltGSovq2qJCL583V00gWpnnXwR";
+    "pk_test_51JzWNFCyns2nFpoZJ0pXCYaW99vwaqGBLXLjtHUAuIgRtz8vyB3cBtIj1ds9sqd0yU0kIzh1T1IDuV6CRgJgXKaO00qfuNM9Mg";
 
   const stripe = Stripe(publishableKey);
   const checkoutButton = $("#checkout-button");

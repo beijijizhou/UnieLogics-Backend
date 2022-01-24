@@ -14,8 +14,8 @@ Rename the .env.example to .env. We will replace the variables in the file one-b
 
 ```bash
 STRIPE_SECRET_KEY=sk_test_51H8rImAkSQQctVkLmiefLPUxZhQdclj8BqTZuvHelgyQWum4COBNcIYP8viiH5dFBrEhM69Yt7Tc0hj8o26k9Pbs00tIYJkZvS
-PRODUCT_BASIC=price_1HcIFWAkSQQctVkLizPQ2Oum
-PRODUCT_PRO=price_1HdI8dAkSQQctVkLD9IeOYjS
+PLAN_17=price_1HcIFWAkSQQctVkLizPQ2Oum
+PLAN_163=price_1HdI8dAkSQQctVkLD9IeOYjS
 MONGODB=mongodb://localhost:27017/users
 STRIPE_WEBHOOK_SECRET=whsec_rYanPBSdQSswHjizrBz2pHAo6iYa2Ows
 TRIAL_DAYS=14
@@ -36,11 +36,11 @@ update domaine to redirect user after payment and update https://dashboard.strip
 
 [Image]
 
-2. Copy the Price API ID and assign it to PRODUCT_BASIC in the .env file.
+2. Copy the Price API ID and assign it to PLAN_17 in the .env file.
 
 3. Repeat the process above for Product – Pro at $12.00 CAD, `Recurring`, and `Monthly`.
 
-4. Copy the Price API ID and assign it to PRODUCT_PRO in the .env file.
+4. Copy the Price API ID and assign it to PLAN_163 in the .env file.
 
 5. Set a Trial Period with the TRIAL_DAYS in the .env file.
 

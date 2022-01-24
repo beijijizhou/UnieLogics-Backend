@@ -26,14 +26,14 @@ const stripeWebhook = async (req, res) => {
     case "customer.subscription.created": {
       const user = await UserService.getUserByBillingID(data.customer);
 
-      if (data.plan.id === process.env.PRODUCT_BASIC) {
-        console.log("You are talking about basic product");
-        user.plan = "basic";
+      if (data.plan.id === process.env.PLAN_17) {
+        console.log("You are talking about plan17 product");
+        user.plan = "plan17";
       }
 
-      if (data.plan.id === process.env.PRODUCT_PRO) {
-        console.log("You are talking about pro product");
-        user.plan = "pro";
+      if (data.plan.id === process.env.PLAN_163) {
+        console.log("You are talking about plan163 product");
+        user.plan = "plan163";
       }
 
       user.hasTrial = true;
@@ -47,14 +47,14 @@ const stripeWebhook = async (req, res) => {
       // started trial
       const user = await UserService.getUserByBillingID(data.customer);
 
-      if (data.plan.id == process.env.PRODUCT_BASIC) {
-        console.log("You are talking about basic product");
-        user.plan = "basic";
+      if (data.plan.id == process.env.PLAN_17) {
+        console.log("You are talking about plan17 product");
+        user.plan = "plan17";
       }
 
-      if (data.plan.id === process.env.PRODUCT_PRO) {
-        console.log("You are talking about pro product");
-        user.plan = "pro";
+      if (data.plan.id === process.env.PLAN_163) {
+        console.log("You are talking about plan163 product");
+        user.plan = "plan163";
       }
 
       const isOnTrial = data.status === "trialing";
