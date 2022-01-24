@@ -84,6 +84,24 @@ const checkAuthentication = async (req, res) => {
     let user = await UserService.getUserByEmail(email);
     let hasActiveSubscription = false;
 
+    if (user.role === "admin") {
+      hasActiveSubscription = true;
+
+      user.hasActiveSubscription = true;
+      user.plan = "plan163";
+      user.hasTrial = false;
+      user.endDate = null;
+      user.salesPerMonthCheck = "9999";
+
+      await user.save();
+
+      return res.status(200).json({
+        status: "successs",
+        hasActiveSubscription,
+        salesPerMonthCheck: user.salesPerMonthCheck,
+      });
+    }
+
     if (!user) {
       return res.status(400).send({
         status: "error",
@@ -367,6 +385,37 @@ const profile = async (req, res) => {
         error: {
           message: "User does not exist",
         },
+      });
+    }
+
+    if (user.role === "admin") {
+      hasActiveSubscription = true;
+
+      user.hasActiveSubscription = true;
+      user.plan = "plan163";
+      user.hasTrial = false;
+      user.endDate = null;
+      user.salesPerMonthCheck = "9999";
+
+      await user.save();
+
+      return res.status(200).json({
+        status: "successs",
+        user: {
+          plan: user.plan,
+          hasTrial: user.hasTrial,
+          endDate: user.endDate,
+          role: user.role,
+          hasActiveSubscription,
+          _id: user._id,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          email: user.email,
+          billingID: user.billingID,
+          notifications: user.notifications,
+          salesPerMonthCheck: user.salesPerMonthCheck,
+        },
+        hasActiveSubscription,
       });
     }
 
