@@ -4,7 +4,13 @@ const Stripe = stripe(process.env.STRIPE_SECRET_KEY, {
   apiVersion: "2020-08-27",
 });
 
-const createCheckoutSession = async (customerID, price) => {
+const createCheckoutSession = async (customerID, price, clientReferenceId) => {
+  console.log(
+    clientReferenceId
+      ? `We have an affiliate link with client reference id ${clientReferenceId}`
+      : `No affiliate link was present when client subscribed with customer ID ${customerID}`
+  );
+
   const session = await Stripe.checkout.sessions.create({
     mode: "subscription",
     payment_method_types: ["card"],
@@ -21,6 +27,7 @@ const createCheckoutSession = async (customerID, price) => {
 
     success_url: `${process.env.DOMAIN}/profile?session_id={CHECKOUT_SESSION_ID}`,
     cancel_url: `${process.env.DOMAIN}/checkout-error`,
+    client_reference_id: clientReferenceId,
   });
 
   return session;

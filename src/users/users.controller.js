@@ -271,7 +271,7 @@ const login = async (req, res) => {
 };
 
 const checkout = async (req, res) => {
-  const { product, customerID } = req.body;
+  const { product, customerID, clientReferenceId } = req.body;
 
   try {
     const customerInfo = await Stripe.getCustomerByID(customerID);
@@ -289,7 +289,7 @@ const checkout = async (req, res) => {
         });
       }
     });
-    const session = await Stripe.createCheckoutSession(customerID, price);
+    const session = await Stripe.createCheckoutSession(customerID, price, clientReferenceId);
 
     const ms = new Date().getTime() + 1000 * 60 * 60 * 24 * process.env.TRIAL_DAYS;
     const n = new Date(ms);
