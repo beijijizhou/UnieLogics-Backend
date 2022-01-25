@@ -4,13 +4,7 @@ const Stripe = stripe(process.env.STRIPE_SECRET_KEY, {
   apiVersion: "2020-08-27",
 });
 
-const createCheckoutSession = async (customerID, price, clientReferenceId) => {
-  console.log(
-    clientReferenceId
-      ? `We have an affiliate link with client reference id ${clientReferenceId}`
-      : `No affiliate link was present when client subscribed with customer ID ${customerID}`
-  );
-
+const createCheckoutSession = async (customerID, price) => {
   const session = await Stripe.checkout.sessions.create({
     mode: "subscription",
     payment_method_types: ["card"],
@@ -27,7 +21,6 @@ const createCheckoutSession = async (customerID, price, clientReferenceId) => {
 
     success_url: `${process.env.DOMAIN}/profile?session_id={CHECKOUT_SESSION_ID}`,
     cancel_url: `${process.env.DOMAIN}/checkout-error`,
-    client_reference_id: clientReferenceId,
   });
 
   return session;
@@ -51,11 +44,23 @@ const getSubsription = async (id) => {
   return subscription;
 };
 
-const addNewCustomer = async (email) => {
-  const customer = await Stripe.customers.create({
+const addNewCustomer = async (email, referral) => {
+  const customerObject = {
     email,
     description: "New Customer",
-  });
+  };
+
+  console.log(
+    referral
+      ? `We have an affiliate link with client reference id ${referral}`
+      : `No affiliate link was present when client subscribed with email ${email}`
+  );
+
+  if (referral) {
+    customerObject["metadata"] = { referral };
+  }
+
+  const customer = await Stripe.customers.create(customerObject);
 
   return customer;
 };

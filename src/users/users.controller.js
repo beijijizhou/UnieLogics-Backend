@@ -163,7 +163,7 @@ const checkAuthentication = async (req, res) => {
 };
 
 const register = async (req, res) => {
-  const { firstName, lastName, email, username, password } = req.body;
+  const { firstName, lastName, email, username, password, referral } = req.body;
   let customer = await UserService.getUserByEmail(email);
   let customerInfo = {};
 
@@ -180,7 +180,7 @@ const register = async (req, res) => {
     });
   } else {
     try {
-      customerInfo = await Stripe.addNewCustomer(email);
+      customerInfo = await Stripe.addNewCustomer(email, referral);
 
       customer = await UserService.registerUser({
         firstName,
@@ -271,7 +271,7 @@ const login = async (req, res) => {
 };
 
 const checkout = async (req, res) => {
-  const { product, customerID, clientReferenceId } = req.body;
+  const { product, customerID } = req.body;
 
   try {
     const customerInfo = await Stripe.getCustomerByID(customerID);
@@ -289,7 +289,7 @@ const checkout = async (req, res) => {
         });
       }
     });
-    const session = await Stripe.createCheckoutSession(customerID, price, clientReferenceId);
+    const session = await Stripe.createCheckoutSession(customerID, price);
 
     const ms = new Date().getTime() + 1000 * 60 * 60 * 24 * process.env.TRIAL_DAYS;
     const n = new Date(ms);
