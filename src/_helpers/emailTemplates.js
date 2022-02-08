@@ -44,7 +44,7 @@ const welcomeMailBody = (from_who, email) => {
                               <br />
                               <p style="color:#455056; font-size:15px;line-height:24px; margin:0;">
                                   And one last thing…<br />
-                                  DR.Mice wants to welcome to formally welcome you to AsinMice. 
+                                  DR.Mice wants to formally welcome you to AsinMice. 
                                   Take 2 minutes to watch this welcome video and the potential behind our platform. 
                               </p><br />
                               <a href="https://www.youtube.com/watch?v=UA4giAM6deg" target="_blank" alt="welcome to AsinMice video">
