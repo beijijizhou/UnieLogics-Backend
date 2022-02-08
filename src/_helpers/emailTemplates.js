@@ -41,6 +41,15 @@ const welcomeMailBody = (from_who, email) => {
                               <br /><br />
                               <p style="color:#455056; font-size:15px;line-height:24px; margin:0;">Other than this, if you face any kind of issues, or you just want to leave us a feedback, don't hesitate to contact us!</p>
                               <p style="color:#455056; font-size:15px;line-height:24px; margin:0;">Enjoy your journey!</p>
+                              <br />
+                              <p style="color:#455056; font-size:15px;line-height:24px; margin:0;">
+                                  And one last thing…<br />
+                                  DR.Mice wants to welcome to formally welcome you to AsinMice. 
+                                  Take 2 minutes to watch this welcome video and the potential behind our platform. 
+                              </p><br />
+                              <iframe width="420" height="315"
+                                  src="https://www.youtube.com/embed/UA4giAM6deg">
+                              </iframe>
                               <a href="https://www.asinmice.com/login"
                                 style="background:#a78c36;text-decoration:none !important; font-weight:500; margin-top:35px; color:#fff;text-transform:uppercase; font-size:14px;padding:10px 24px;display:inline-block;border-radius:50px;">Go to Login</a>
                           </td>
@@ -107,15 +116,6 @@ const forgotPasswordMailBody = (from_who, email, randomPassword) => {
                                 We cannot simply send you your old password, but in order to help you out, a unique password has been generated for you.<br /> The new password is: <span style="color:red;"><b>${randomPassword}</b></span><br />
                                 To login, please click the below button and use the newly generated password.
                               </p>
-                              <br />
-                              <p style="color:#455056; font-size:15px;line-height:24px; margin:0;">
-                                  And one last thing…<br />
-                                  DR.Mice wants to welcome to formally welcome you to AsinMice. 
-                                  Take 2 minutes to watch this welcome video and the potential behind our platform. 
-                              </p><br />
-                              <iframe width="420" height="315"
-                                  src="https://www.youtube.com/embed/UA4giAM6deg">
-                              </iframe>
                               <a href="https://www.asinmice.com/login"
                                 style="background:#a78c36;text-decoration:none !important; font-weight:500; margin-top:35px; color:#fff;text-transform:uppercase; font-size:14px;padding:10px 24px;display:inline-block;border-radius:50px;">Go to Login</a>
                           </td>
