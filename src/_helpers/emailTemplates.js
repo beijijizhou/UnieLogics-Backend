@@ -47,9 +47,9 @@ const welcomeMailBody = (from_who, email) => {
                                   DR.Mice wants to welcome to formally welcome you to AsinMice. 
                                   Take 2 minutes to watch this welcome video and the potential behind our platform. 
                               </p><br />
-                              <iframe width="420" height="315"
-                                  src="https://www.youtube.com/embed/UA4giAM6deg">
-                              </iframe>
+                              <a href="https://www.youtube.com/watch?v=UA4giAM6deg" target="_blank" alt="welcome to AsinMice video">
+                                <img styl="margin: 0 auto;" src="https://www.asinmice.com/public/images/welcomeVideoThumbnail.png" alt="welcome to AsinMice image" />
+                              </a><br />
                               <a href="https://www.asinmice.com/login"
                                 style="background:#a78c36;text-decoration:none !important; font-weight:500; margin-top:35px; color:#fff;text-transform:uppercase; font-size:14px;padding:10px 24px;display:inline-block;border-radius:50px;">Go to Login</a>
                           </td>
