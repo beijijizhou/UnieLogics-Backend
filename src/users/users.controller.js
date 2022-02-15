@@ -176,13 +176,11 @@ const register = async (req, res) => {
   let customerInfo = {};
 
   if (!email || !username || !password) {
-    return res
-      .status(400)
-      .json({
-        status: "error",
-        message:
-          "Email, Username and Password are mandatory! One of them is missing!",
-      });
+    return res.status(400).json({
+      status: "error",
+      message:
+        "Email, Username and Password are mandatory! One of them is missing!",
+    });
   }
 
   if (customer) {
@@ -228,7 +226,7 @@ const register = async (req, res) => {
         status: "success",
         message: `Successfully created user: ${username}`,
         user: {
-          customerID: user.billingID,
+          customerID: customerInfo.id,
         },
       });
     } catch (e) {
@@ -281,31 +279,25 @@ const login = async (req, res) => {
       );
 
       user
-        ? res
-            .status(200)
-            .json({
-              ...user,
-              hasActiveSubscription,
-              hasTrial,
-              salesPerMonthCheck: customer.salesPerMonthCheck,
-            })
-        : res
-            .status(403)
-            .json({
-              status: "error",
-              message: "Email or password is incorrect",
-            });
+        ? res.status(200).json({
+            ...user,
+            hasActiveSubscription,
+            hasTrial,
+            salesPerMonthCheck: customer.salesPerMonthCheck,
+          })
+        : res.status(403).json({
+            status: "error",
+            message: "Email or password is incorrect",
+          });
     } catch (e) {
       console.log(e);
       res.status(500).json({ status: "error", message: JSON.stringify(e) });
     }
   } else {
-    res
-      .status(403)
-      .json({
-        status: "error",
-        message: "This username does not exist! Please register first!",
-      });
+    res.status(403).json({
+      status: "error",
+      message: "This username does not exist! Please register first!",
+    });
   }
 };
 
