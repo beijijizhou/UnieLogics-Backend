@@ -1,5 +1,8 @@
 const bcrypt = require("bcryptjs");
-const mailgun = require("mailgun-js")({ apiKey: process.env.MAILGUN_API_KEY, domain: process.env.MAILGUN_DOMAIN });
+const mailgun = require("mailgun-js")({
+  apiKey: process.env.MAILGUN_API_KEY,
+  domain: process.env.MAILGUN_DOMAIN,
+});
 const Stripe = require("../connect/stripe");
 
 const UserService = require("../users");
@@ -43,7 +46,11 @@ const forgotPassword = async (req, res) => {
 
     console.log(email + " - wants to reset his password!");
 
-    const mailBody = emailTemplates.forgotPasswordMailBody(from_who, email, randomPassword);
+    const mailBody = emailTemplates.forgotPasswordMailBody(
+      from_who,
+      email,
+      randomPassword
+    );
 
     mailgun.messages().send(mailBody, (sendError, body) => {
       if (sendError) {
@@ -54,7 +61,8 @@ const forgotPassword = async (req, res) => {
     });
     return res.status(200).json({
       status: "success",
-      message: "Successfully reset your password. Please check your email for your temporary password.",
+      message:
+        "Successfully reset your password. Please check your email for your temporary password.",
     });
   } catch (e) {
     console.log(e);
@@ -170,7 +178,11 @@ const register = async (req, res) => {
   if (!email || !username || !password) {
     return res
       .status(400)
-      .json({ status: "error", message: "Email, Username and Password are mandatory! One of them is missing!" });
+      .json({
+        status: "error",
+        message:
+          "Email, Username and Password are mandatory! One of them is missing!",
+      });
   }
 
   if (customer) {
@@ -194,7 +206,11 @@ const register = async (req, res) => {
         role: "user",
       });
 
-      console.log(`A new user signed up and addded to DB. The ID for ${email} is ${JSON.stringify(customerInfo)}`);
+      console.log(
+        `A new user signed up and addded to DB. The ID for ${email} is ${JSON.stringify(
+          customerInfo
+        )}`
+      );
 
       console.log(`User also added to DB. Information from DB: ${customer}`);
 
@@ -208,7 +224,13 @@ const register = async (req, res) => {
         console.log(body);
       });
 
-      res.status(200).json({ status: "success", message: `Successfully created user: ${username}` });
+      res.status(200).json({
+        status: "success",
+        message: `Successfully created user: ${username}`,
+        user: {
+          customerID: user.billingID,
+        },
+      });
     } catch (e) {
       console.log(e);
       res.status(500).json({ status: "error", e });
@@ -254,19 +276,36 @@ const login = async (req, res) => {
         );
       }
 
-      console.log(`The existing ID for ${email} is ${JSON.stringify(customerInfo)}`);
+      console.log(
+        `The existing ID for ${email} is ${JSON.stringify(customerInfo)}`
+      );
 
       user
         ? res
             .status(200)
-            .json({ ...user, hasActiveSubscription, hasTrial, salesPerMonthCheck: customer.salesPerMonthCheck })
-        : res.status(403).json({ status: "error", message: "Email or password is incorrect" });
+            .json({
+              ...user,
+              hasActiveSubscription,
+              hasTrial,
+              salesPerMonthCheck: customer.salesPerMonthCheck,
+            })
+        : res
+            .status(403)
+            .json({
+              status: "error",
+              message: "Email or password is incorrect",
+            });
     } catch (e) {
       console.log(e);
       res.status(500).json({ status: "error", message: JSON.stringify(e) });
     }
   } else {
-    res.status(403).json({ status: "error", message: "This username does not exist! Please register first!" });
+    res
+      .status(403)
+      .json({
+        status: "error",
+        message: "This username does not exist! Please register first!",
+      });
   }
 };
 
@@ -291,7 +330,8 @@ const checkout = async (req, res) => {
     });
     const session = await Stripe.createCheckoutSession(customerID, price);
 
-    const ms = new Date().getTime() + 1000 * 60 * 60 * 24 * process.env.TRIAL_DAYS;
+    const ms =
+      new Date().getTime() + 1000 * 60 * 60 * 24 * process.env.TRIAL_DAYS;
     const n = new Date(ms);
 
     customer.plan = product;
@@ -320,7 +360,8 @@ const profileUpdate = async (req, res) => {
   if (!firstName && !lastName && !email && !password) {
     return res.status(403).send({
       status: "error",
-      message: "At least one of the next fields: FirstName, LastName, Email, Password are mandatory!",
+      message:
+        "At least one of the next fields: FirstName, LastName, Email, Password are mandatory!",
     });
   }
 
@@ -514,7 +555,10 @@ const getSalesPerMonth = async (req, res) => {
     console.log("Sales per month interogated by ", email);
 
     if (user) {
-      console.log("Current available sales per month are: ", user.salesPerMonthCheck);
+      console.log(
+        "Current available sales per month are: ",
+        user.salesPerMonthCheck
+      );
       return res.status(200).send({
         status: "success",
         salesPerMonthCheck: user.salesPerMonthCheck,
