@@ -11,6 +11,7 @@ function jwt() {
       "/users/login",
       "/users/register",
       "/users/forgotPassword",
+      "/users/checkout",
     ],
   });
 }
