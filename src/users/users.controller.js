@@ -195,7 +195,7 @@ const register = async (req, res) => {
       customer = await UserService.registerUser({
         firstName,
         lastName,
-        email,
+        email: email.toLowerCase(),
         username,
         password,
         billingID: customerInfo.id,
@@ -238,13 +238,16 @@ const register = async (req, res) => {
 
 const login = async (req, res) => {
   const { email, password } = req.body;
-  let customer = await UserService.getUserByEmail(email);
+  let customer = await UserService.getUserByEmail(email.toLowerCase());
   let customerInfo = {};
   console.log(customer);
 
   if (customer) {
     try {
-      const user = await UserService.authenticate(email, password);
+      const user = await UserService.authenticate(
+        email.toLowerCase(),
+        password
+      );
       customerInfo = await Stripe.getCustomerByID(customer.billingID);
       console.log(customer);
       const existingSubscription = await Stripe.getSubsription(customerInfo.id);
@@ -275,7 +278,9 @@ const login = async (req, res) => {
       }
 
       console.log(
-        `The existing ID for ${email} is ${JSON.stringify(customerInfo)}`
+        `The existing ID for ${email.toLowerCase()} is ${JSON.stringify(
+          customerInfo
+        )}`
       );
 
       user
@@ -349,7 +354,7 @@ const checkout = async (req, res) => {
 const profileUpdate = async (req, res) => {
   const { firstName, lastName, email, password, notifications } = req.body;
 
-  if (!firstName && !lastName && !email && !password) {
+  if (!firstName && !lastName && !email.toLowerCase() && !password) {
     return res.status(403).send({
       status: "error",
       message:
@@ -358,16 +363,16 @@ const profileUpdate = async (req, res) => {
   }
 
   try {
-    const user = await UserService.getUserByEmail(email);
+    const user = await UserService.getUserByEmail(email.toLowerCase());
     const update = {
       firstName,
       lastName,
       notifications,
     };
 
-    await UserService.updateProfile(email, update, password);
+    await UserService.updateProfile(email.toLowerCase(), update, password);
 
-    const editedUser = await UserService.getUserByEmail(email);
+    const editedUser = await UserService.getUserByEmail(email.toLowerCase());
     return res.status(200).json({
       status: "successs",
       user: {
@@ -379,7 +384,7 @@ const profileUpdate = async (req, res) => {
         _id: editedUser._id,
         firstName: editedUser.firstName,
         lastName: editedUser.lastName,
-        email: editedUser.email,
+        email: editedUser.email.toLowerCase(),
         billingID: editedUser.billingID,
         notifications: editedUser.notifications,
         salesPerMonthCheck: editedUser.salesPerMonthCheck,
@@ -409,7 +414,7 @@ const profile = async (req, res) => {
 
   try {
     const existingSubscription = await Stripe.getSubsription(customerID);
-    let user = await UserService.getUserByEmail(email);
+    let user = await UserService.getUserByEmail(email.toLowerCase());
     let hasActiveSubscription = false;
 
     if (!user) {
@@ -443,7 +448,7 @@ const profile = async (req, res) => {
           _id: user._id,
           firstName: user.firstName,
           lastName: user.lastName,
-          email: user.email,
+          email: user.email.toLowerCase(),
           billingID: user.billingID,
           notifications: user.notifications,
           salesPerMonthCheck: user.salesPerMonthCheck,
@@ -501,7 +506,7 @@ const profile = async (req, res) => {
         _id: user._id,
         firstName: user.firstName,
         lastName: user.lastName,
-        email: user.email,
+        email: user.email.toLowerCase(),
         billingID: user.billingID,
         notifications: user.notifications,
         salesPerMonthCheck: user.salesPerMonthCheck,
@@ -543,8 +548,8 @@ const getSalesPerMonth = async (req, res) => {
   const { email } = req.query;
 
   try {
-    const user = await UserService.getUserByEmail(email);
-    console.log("Sales per month interogated by ", email);
+    const user = await UserService.getUserByEmail(email.toLowerCase());
+    console.log("Sales per month interogated by ", email.toLowerCase());
 
     if (user) {
       console.log(
@@ -576,7 +581,10 @@ const getSalesPerMonth = async (req, res) => {
 
 const updateSalesPerMonth = async (req, res) => {
   const { email, message } = req.body;
-  console.log("Email for which you want to update sales per month is: ", email);
+  console.log(
+    "Email for which you want to update sales per month is: ",
+    email.toLowerCase()
+  );
   console.log("Message to update is: ", message);
 
   if (!email || !message) {
@@ -586,7 +594,7 @@ const updateSalesPerMonth = async (req, res) => {
     });
   } else if (message === "updateSalesPerMonth") {
     try {
-      const user = await UserService.getUserByEmail(email);
+      const user = await UserService.getUserByEmail(email.toLowerCase());
       const update = {
         salesPerMonthCheck: user.salesPerMonthCheck - 1,
       };
@@ -598,7 +606,10 @@ const updateSalesPerMonth = async (req, res) => {
         });
       }
 
-      const responseFromUpdate = await UserService.updateProfile(email, update);
+      const responseFromUpdate = await UserService.updateProfile(
+        email.toLowerCase(),
+        update
+      );
 
       return res.status(200).send({
         status: "success",
