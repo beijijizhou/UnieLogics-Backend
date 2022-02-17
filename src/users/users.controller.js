@@ -331,6 +331,7 @@ const checkout = async (req, res) => {
       new Date().getTime() + 1000 * 60 * 60 * 24 * process.env.TRIAL_DAYS;
     const n = new Date(ms);
 
+    console.log("Product selected by client is:" + product);
     customer.plan = product;
     customer.hasTrial = true;
     customer.hasActiveSubscription = true;
