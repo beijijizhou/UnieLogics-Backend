@@ -523,6 +523,7 @@ const profile = async (req, res) => {
         billingID: user.billingID,
         notifications: user.notifications,
         salesPerMonthCheck: user.salesPerMonthCheck,
+        phoneNumber: user.phoneNumber,
       },
       hasActiveSubscription: user.hasActiveSubscription,
     });
