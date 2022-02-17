@@ -5,7 +5,9 @@ const addUser =
   (User) =>
   ({ email, billingID, plan, endDate }) => {
     if (!email || !billingID || !plan) {
-      throw new Error("Missing Data. Please provide values for email, billingID, plan");
+      throw new Error(
+        "Missing Data. Please provide values for email, billingID, plan"
+      );
     }
 
     const user = new User({ email, billingID, plan, endDate });
@@ -14,8 +16,28 @@ const addUser =
 
 const registerUser =
   (User) =>
-  ({ firstName, lastName, email, username, password, billingID, plan, endDate }) => {
-    const user = new User({ firstName, lastName, email, username, password, billingID, plan, endDate });
+  ({
+    firstName,
+    lastName,
+    email,
+    username,
+    password,
+    billingID,
+    plan,
+    endDate,
+    phoneNumber,
+  }) => {
+    const user = new User({
+      firstName,
+      lastName,
+      email,
+      username,
+      password,
+      billingID,
+      plan,
+      endDate,
+      phoneNumber,
+    });
     user.hash = bcrypt.hashSync(password, 10);
 
     return user.save();
@@ -54,7 +76,9 @@ const updateProfile = (User) => async (email, update, password) => {
 const authenticate = (User) => async (email, password) => {
   const user = await User.findOne({ email });
   if (user && bcrypt.compareSync(password, user.hash)) {
-    const token = jwt.sign({ sub: user.id }, process.env.JWT_SECRET, { expiresIn: "7d" });
+    const token = jwt.sign({ sub: user.id }, process.env.JWT_SECRET, {
+      expiresIn: "7d",
+    });
 
     return {
       firstName: user.firstName,
