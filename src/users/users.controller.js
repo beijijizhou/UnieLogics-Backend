@@ -311,7 +311,9 @@ const checkout = async (req, res) => {
 
   try {
     const customerInfo = await Stripe.getCustomerByID(customerID);
-    let customer = await UserService.getUserByEmail(customerInfo.email);
+    let customer = await UserService.getUserByEmail(
+      customerInfo.email.toLowerCase()
+    );
     const price = productToPriceMap[product];
     const existingSubscription = await Stripe.getSubsription(customerInfo.id);
 
