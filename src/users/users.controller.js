@@ -171,7 +171,15 @@ const checkAuthentication = async (req, res) => {
 };
 
 const register = async (req, res) => {
-  const { firstName, lastName, email, username, password, referral } = req.body;
+  const {
+    firstName,
+    lastName,
+    email,
+    username,
+    password,
+    referral,
+    phoneNumber,
+  } = req.body;
   let customer = await UserService.getUserByEmail(email);
   let customerInfo = {};
 
@@ -202,6 +210,7 @@ const register = async (req, res) => {
         plan: "none",
         endDate: null,
         role: "user",
+        phoneNumber,
       });
 
       console.log(
@@ -357,7 +366,7 @@ const checkout = async (req, res) => {
 const profileUpdate = async (req, res) => {
   const { firstName, lastName, email, password, notifications } = req.body;
 
-  if (!firstName && !lastName && !email.toLowerCase() && !password) {
+  if (!firstName && !lastName && !email && !password) {
     return res.status(403).send({
       status: "error",
       message:
@@ -455,6 +464,7 @@ const profile = async (req, res) => {
           billingID: user.billingID,
           notifications: user.notifications,
           salesPerMonthCheck: user.salesPerMonthCheck,
+          phoneNumber: user.phoneNumber,
         },
         hasActiveSubscription,
       });

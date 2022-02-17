@@ -9,6 +9,7 @@ const userSchema = new Schema({
   billingID: String,
   plan: { type: String, enum: ["none", "plan17", "plan163"], default: "none" },
   hasTrial: { type: Boolean, default: false },
+  phoneNumber: { type: String, default: null },
   endDate: { type: Date, default: null },
   role: { type: String, enum: ["user", "admin"], default: "user" },
   hasActiveSubscription: { type: Boolean, default: false },
