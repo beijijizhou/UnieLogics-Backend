@@ -180,7 +180,7 @@ const register = async (req, res) => {
     referral,
     phoneNumber,
   } = req.body;
-  let customer = await UserService.getUserByEmail(email);
+  let customer = await UserService.getUserByEmail(email.toLowerCase());
   let customerInfo = {};
 
   if (!email || !username || !password) {
@@ -198,7 +198,7 @@ const register = async (req, res) => {
     });
   } else {
     try {
-      customerInfo = await Stripe.addNewCustomer(email, referral);
+      customerInfo = await Stripe.addNewCustomer(email.toLowerCase(), referral);
 
       customer = await UserService.registerUser({
         firstName,
