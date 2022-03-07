@@ -7,6 +7,7 @@ const jwt = require("./src/_helpers/jwt");
 const cors = require("cors");
 
 const usersRouter = require("./src/users/users.routes");
+const productsRouter = require("./src/products/products.routes");
 const stripeWebhook = require("./src/webhook/stripe.webhook.routes");
 
 const app = express();
@@ -16,7 +17,9 @@ app
   .use(jwt())
   .use(function (err, req, res, next) {
     if (err.name === "UnauthorizedError") {
-      res.status(err.status).json({ status: "Unauthorized", message: err.message });
+      res
+        .status(err.status)
+        .json({ status: "Unauthorized", message: err.message });
       return;
     }
     next();
@@ -27,6 +30,7 @@ app
 
 //routes
 app.use("/users", usersRouter);
+app.use("/products", productsRouter);
 app.use("/webhook", stripeWebhook);
 
 const port = process.env.PORT || 4242;
