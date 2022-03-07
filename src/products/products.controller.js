@@ -11,12 +11,38 @@ const getAllProducts = async (req, res) => {
   }
 };
 
+const getProductsBasedOnEmail = async (req, res) => {
+  const { email } = req.body;
+
+  console.log(email);
+
+  if (!email) {
+    console.log("No email has been provided!");
+
+    return res.status(400).json({
+      status: "errror",
+      message: "Email address must be provided to return a set of products",
+    });
+  }
+
+  try {
+    const userWithProducts = await ProductService.getUserByEmail(
+      email.toLowerCase()
+    );
+    console.log(userWithProducts);
+    return res.status(200).json({
+      status: "success",
+      message: `Successfully retrieved products for the user ${email}`,
+      products: userWithProducts || [],
+    });
+  } catch (e) {
+    console.log(e);
+    res.status(500).json({ status: "error", message: JSON.stringify(e) });
+  }
+};
+
 const addProduct = async (req, res) => {
   const { email, productsDetails } = req.body;
-  let userWithProducts = await ProductService.findUserWithProducts(email);
-
-  console.log(userWithProducts);
-  console.log(productsDetails);
 
   if (!email || !productsDetails || !productsDetails.asin) {
     return res.status(400).json({
@@ -80,4 +106,5 @@ const addProduct = async (req, res) => {
 module.exports = {
   getAllProducts,
   addProduct,
+  getProductsBasedOnEmail,
 };

@@ -14,6 +14,8 @@ const addUserWithProductIfNoUser =
           imageUrl: productsDetails.imageUrl,
           price: productsDetails.price,
           offersCount: productsDetails.offersCount,
+          salesRank: productsDetails.salesRank,
+          title: productsDetails.title,
         },
       ],
     });
@@ -49,6 +51,8 @@ const updateProductsForSpecificUser =
           imageUrl: productsDetails.imageUrl,
           price: productsDetails.price,
           offersCount: productsDetails.offersCount,
+          salesRank: productsDetails.salesRank,
+          title: productsDetails.title,
         },
       ],
     };
