@@ -214,7 +214,7 @@ const register = async (req, res) => {
       });
 
       console.log(
-        `A new user signed up and addded to DB. The ID for ${email} is ${JSON.stringify(
+        `A new user signed up and addded to DB. The ID for ${email.toLowerCase()} is ${JSON.stringify(
           customerInfo
         )}`
       );
