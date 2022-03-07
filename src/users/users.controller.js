@@ -642,8 +642,6 @@ const updateSalesPerMonth = async (req, res) => {
   }
 };
 
-const addItemToPlatform = async (req, res) => {};
-
 module.exports = {
   getAllUsers,
   forgotPassword,
@@ -656,5 +654,4 @@ module.exports = {
   billing,
   getSalesPerMonth,
   updateSalesPerMonth,
-  addItemToPlatform,
 };
