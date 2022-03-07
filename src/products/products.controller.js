@@ -29,16 +29,13 @@ const addProduct = async (req, res) => {
   try {
     const user = await ProductService.getUserByEmail(email.toLowerCase());
     console.log(
-      `We searched for existing user with products with email ${email} and the user is ${user}`
+      `We searched for existing user with products with email ${email} and the full details for user are ${user}`
     );
     if (!user) {
       const newUserWithProductsCreated =
         await ProductService.addUserWithProductIfNoUser({
           email,
-          asin: productsDetails.asin,
-          url: productsDetails.url || "",
-          image: productsDetails.image || "",
-          price: productsDetails.price || "",
+          productsDetails,
         });
 
       if (newUserWithProductsCreated) {
@@ -58,11 +55,22 @@ const addProduct = async (req, res) => {
           message: `Something went wrong with creation of a new pair of user + product and the newUserWithProductsCreated value is ${newUserWithProductsCreated}`,
         });
       }
+    } else {
+      const updatedUserWithProducts =
+        await ProductService.updateProductsForSpecificUser({
+          email,
+          productsDetails,
+        });
+
+      console.log(
+        `Response from inserting a product to an existing user is ${updatedUserWithProducts}`
+      );
+
+      return res.status(200).json({
+        status: "success",
+        message: updatedUserWithProducts.message,
+      });
     }
-    return res.status(200).json({
-      status: "success",
-      message: "Success message",
-    });
   } catch (e) {
     console.log(e);
     res.status(500).json({ status: "error", message: JSON.stringify(e) });
