@@ -70,7 +70,7 @@ const addProduct = async (req, res) => {
         );
         return res.status(200).json({
           status: "success",
-          message: `Successfully added product ${newUserWithProductsCreated.productsDetails.asin}`,
+          message: `Successfully added product ${newUserWithProductsCreated.productsDetails[0].asin}`,
         });
       } else {
         console.log(
