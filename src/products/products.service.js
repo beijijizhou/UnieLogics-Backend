@@ -68,13 +68,13 @@ const updateProductsForSpecificUser =
         updateObj
       );
       return {
-        message: `Your new ASIN has been successfully added. Newly created ASIN is ${productsDetails.asin}`,
+        message: `Successfully added product ${productsDetails.asin}`,
         newlyAddedProducts,
       };
     } else {
       return {
         message:
-          "The current ASIN has already been inserted, so we did not add it twice.",
+          "The current ASIN/ISBN has already been inserted, so we did not add it twice.",
         currentUserWithProducts,
       };
     }

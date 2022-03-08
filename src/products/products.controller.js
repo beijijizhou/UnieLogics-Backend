@@ -70,7 +70,7 @@ const addProduct = async (req, res) => {
         );
         return res.status(200).json({
           status: "success",
-          message: `Successfully saved a new pair of user +  product and the value is ${newUserWithProductsCreated}`,
+          message: `Successfully added product ${newUserWithProductsCreated.productsDetails.asin}`,
         });
       } else {
         console.log(
