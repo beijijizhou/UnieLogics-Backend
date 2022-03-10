@@ -71,11 +71,13 @@ const updateProductsForSpecificUser =
         updateObj
       );
       return {
+        status: "success",
         message: `Successfully added product ${productsDetails.asin}`,
         newlyAddedProducts,
       };
     } else {
       return {
+        status: "conflict",
         message:
           "The current ASIN/ISBN has already been inserted, so we did not add it twice.",
         currentUserWithProducts,
