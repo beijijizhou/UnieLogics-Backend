@@ -95,6 +95,7 @@ const addProduct = async (req, res) => {
       return res.status(200).json({
         status: updatedUserWithProducts.status,
         message: updatedUserWithProducts.message,
+        productsLeft: updatedUserWithProducts.productsLeft,
       });
     }
   } catch (e) {
