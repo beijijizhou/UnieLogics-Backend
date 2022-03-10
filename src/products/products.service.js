@@ -74,6 +74,7 @@ const updateProductsForSpecificUser =
         status: "success",
         message: `Successfully added product ${productsDetails.asin}`,
         newlyAddedProducts,
+        productsLeft: currentUserWithProducts.productsLeft - 1,
       };
     } else {
       return {
@@ -81,6 +82,7 @@ const updateProductsForSpecificUser =
         message:
           "The current ASIN/ISBN has already been inserted, so we did not add it twice.",
         currentUserWithProducts,
+        productsLeft: currentUserWithProducts.productsLeft,
       };
     }
   };
