@@ -42,6 +42,15 @@ const updateProductsForSpecificUser =
     const currentUserWithProducts = await Product.findOne({ email });
     const currentProductsDetails = currentUserWithProducts.productsDetails;
 
+    if (currentUserWithProducts.productsLeft <= 0) {
+      return {
+        status: "conflict",
+        message:
+          "We are sorry but you reached the limit of adding products. Please go to our platform => login => delete some products to be able to add more.",
+        productsLeft: currentUserWithProducts.productsLeft,
+      };
+    }
+
     updateObj = {
       email: email,
       productsDetails: [
