@@ -18,6 +18,7 @@ const addUserWithProductIfNoUser =
           title: productsDetails.title,
         },
       ],
+      productsLeft: 49,
     });
 
     return product.save();
@@ -55,7 +56,9 @@ const updateProductsForSpecificUser =
           title: productsDetails.title,
         },
       ],
+      productsLeft: currentUserWithProducts.productsLeft - 1,
     };
+
     currentProductsDetails.map((currentProduct) => {
       if (currentProduct.asin === productsDetails.asin) {
         asinAlreadyExists = true;
