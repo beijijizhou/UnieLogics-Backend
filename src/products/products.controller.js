@@ -12,7 +12,7 @@ const getAllProducts = async (req, res) => {
 };
 
 const getProductsBasedOnEmail = async (req, res) => {
-  const { email } = req.body;
+  const { email } = req.query;
 
   console.log(email);
 
