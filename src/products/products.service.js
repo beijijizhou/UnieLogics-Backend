@@ -96,6 +96,30 @@ const updateProductsForSpecificUser =
     }
   };
 
+const deleteProductsFromSpecificUser =
+  (Product) =>
+  async ({ email, asin }) => {
+    let updateObj = {};
+    const currentUserWithProducts = await Product.findOne({ email });
+    console.log(currentUserWithProducts);
+
+    if (!currentUserWithProducts) {
+      return;
+    }
+    const currentProductsDetails =
+      currentUserWithProducts.productsDetails.filter(function (el) {
+        return el.asin != asin;
+      });
+
+    updateObj = {
+      email: email,
+      productsDetails: currentProductsDetails,
+      productsLeft: currentUserWithProducts.productsLeft,
+    };
+
+    return await Product.findOneAndUpdate({ email }, updateObj);
+  };
+
 module.exports = (Product) => {
   return {
     getAll: getAll(Product),
@@ -103,5 +127,6 @@ module.exports = (Product) => {
     findUserWithProducts: findUserWithProducts(Product),
     getUserByEmail: getUserByEmail(Product),
     updateProductsForSpecificUser: updateProductsForSpecificUser(Product),
+    deleteProductsFromSpecificUser: deleteProductsFromSpecificUser(Product),
   };
 };

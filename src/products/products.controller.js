@@ -60,7 +60,7 @@ const addProduct = async (req, res) => {
     if (!user) {
       const newUserWithProductsCreated =
         await ProductService.addUserWithProductIfNoUser({
-          email,
+          email: email.toLowerCase(),
           productsDetails,
         });
 
@@ -104,8 +104,49 @@ const addProduct = async (req, res) => {
   }
 };
 
+const deleteProduct = async (req, res) => {
+  const { asin, email } = req.body;
+
+  if (!asin) {
+    console.log("No asin has been provided, so we don't know what to delete!");
+
+    return res.status(400).json({
+      status: "errror",
+      message: "There was no ASIN present in the request body.",
+    });
+  }
+
+  try {
+    const deleteProductResponse =
+      await ProductService.deleteProductsFromSpecificUser({
+        email: email.toLowerCase(),
+        asin,
+      });
+    console.log(deleteProductResponse);
+    if (!deleteProductResponse) {
+      console.log(
+        "There might be an error while processing your request. Maybe there are no products for this user."
+      );
+      return res.status(400).json({
+        status: "unknown",
+        message:
+          "There might be an error while processing your request. Maybe there are no products for this user.",
+      });
+    }
+    return res.status(200).json({
+      status: "success",
+      message: `Successfully deleted product with id ${asin}`,
+      products: deleteProductResponse,
+    });
+  } catch (e) {
+    console.log(e);
+    res.status(500).json({ status: "error", message: JSON.stringify(e) });
+  }
+};
+
 module.exports = {
   getAllProducts,
   addProduct,
   getProductsBasedOnEmail,
+  deleteProduct,
 };
