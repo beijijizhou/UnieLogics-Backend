@@ -125,7 +125,9 @@ const deleteProduct = async (req, res) => {
         email: email.toLowerCase(),
         asin,
       });
+
     console.log(deleteProductResponse);
+
     if (!deleteProductResponse) {
       console.log(
         "There might be an error while processing your request. Maybe there are no products for this user."
