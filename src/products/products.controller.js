@@ -107,12 +107,15 @@ const addProduct = async (req, res) => {
 const deleteProduct = async (req, res) => {
   const { asin, email } = req.body;
 
-  if (!asin) {
-    console.log("No asin has been provided, so we don't know what to delete!");
+  if (!asin || !email) {
+    console.log(
+      "No ASIN or EMAIL has been provided, so we don't know what to delete!"
+    );
 
     return res.status(400).json({
       status: "errror",
-      message: "There was no ASIN present in the request body.",
+      message:
+        "No ASIN or EMAIL has been provided, so we don't know what to delete!",
     });
   }
 
