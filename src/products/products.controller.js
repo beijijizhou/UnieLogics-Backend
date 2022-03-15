@@ -137,12 +137,16 @@ const deleteProduct = async (req, res) => {
         message:
           "There might be an error while processing your request. Maybe there are no products for this user.",
       });
+    } else {
+      console.log("DELETE PRODUCT RESPONSE IS");
+      console.log(deleteProductResponse);
+
+      return res.status(200).json({
+        status: "success",
+        message: `Successfully deleted product with id ${asin}`,
+        products: deleteProductResponse,
+      });
     }
-    return res.status(200).json({
-      status: "success",
-      message: `Successfully deleted product with id ${asin}`,
-      products: deleteProductResponse,
-    });
   } catch (e) {
     console.log(e);
     res.status(500).json({ status: "error", message: JSON.stringify(e) });

@@ -117,7 +117,9 @@ const deleteProductsFromSpecificUser =
       productsLeft: currentUserWithProducts.productsLeft,
     };
 
-    return await Product.findOneAndUpdate({ email }, updateObj);
+    await Product.findOneAndUpdate({ email }, updateObj);
+
+    return await Product.findOne({ email });
   };
 
 module.exports = (Product) => {
