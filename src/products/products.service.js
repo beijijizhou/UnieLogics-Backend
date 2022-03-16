@@ -102,19 +102,23 @@ const deleteProductsFromSpecificUser =
     let updateObj = {};
     const currentUserWithProducts = await Product.findOne({ email });
     console.log(currentUserWithProducts);
+    let currentProductsLeft = currentUserWithProducts.productsLeft;
 
     if (!currentUserWithProducts) {
       return;
     }
     const currentProductsDetails =
       currentUserWithProducts.productsDetails.filter(function (el) {
+        if (el.asin === asin) {
+          currentProductsLeft = currentProductsLeft - 1;
+        }
         return el.asin != asin;
       });
 
     updateObj = {
       email: email,
       productsDetails: currentProductsDetails,
-      productsLeft: currentUserWithProducts.productsLeft,
+      productsLeft: currentProductsLeft,
     };
 
     await Product.findOneAndUpdate({ email }, updateObj);
