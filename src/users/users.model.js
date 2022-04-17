@@ -7,7 +7,11 @@ const userSchema = new Schema({
   lastName: { type: String, required: true },
   hash: { type: String, required: true },
   billingID: String,
-  plan: { type: String, enum: ["none", "plan17", "plan163"], default: "none" },
+  plan: {
+    type: String,
+    enum: ["free", "none", "plan17", "plan163"],
+    default: "none",
+  },
   hasTrial: { type: Boolean, default: false },
   phoneNumber: { type: String, default: null },
   endDate: { type: Date, default: null },

@@ -179,6 +179,7 @@ const register = async (req, res) => {
     password,
     referral,
     phoneNumber,
+    plan,
   } = req.body;
   let customer = await UserService.getUserByEmail(email.toLowerCase());
   let customerInfo = {};
@@ -207,7 +208,7 @@ const register = async (req, res) => {
         username,
         password,
         billingID: customerInfo.id,
-        plan: "none",
+        plan: plan === "free" ? plan : "none",
         endDate: null,
         role: "user",
         phoneNumber,
