@@ -344,7 +344,7 @@ const checkout = async (req, res) => {
     const n = new Date(ms);
 
     console.log("Product selected by client is:" + product);
-    customer.plan = product;
+    // customer.plan = product;
     customer.hasTrial = true;
     customer.hasActiveSubscription = true;
     customer.endDate = n;
