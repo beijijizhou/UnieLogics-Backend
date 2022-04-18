@@ -142,13 +142,13 @@ const checkAuthentication = async (req, res) => {
         user.hasTrial = false;
       } else {
         user.hasActiveSubscription = false;
-        user.plan = "none";
+        user.plan = user.plan === "free" ? user.plan : "none";
         user.hasTrial = false;
         user.endDate = null;
       }
     } else {
       user.hasActiveSubscription = false;
-      user.plan = "none";
+      user.plan = user.plan === "free" ? user.plan : "none";
       user.hasTrial = false;
       user.endDate = null;
       await user.save();
@@ -496,7 +496,7 @@ const profile = async (req, res) => {
         user.hasTrial = false;
       } else {
         user.hasActiveSubscription = false;
-        user.plan = "none";
+        user.plan = user.plan === "free" ? user.plan : "none";
         user.hasTrial = false;
         user.endDate = null;
       }
