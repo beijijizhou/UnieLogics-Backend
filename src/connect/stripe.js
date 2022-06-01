@@ -18,7 +18,7 @@ const createCheckoutSession = async (customerID, price) => {
     subscription_data: {
       trial_period_days: process.env.TRIAL_DAYS,
     },
-
+    allow_promotion_codes: true,
     success_url: `${process.env.DOMAIN}/thank-you-page?session_id={CHECKOUT_SESSION_ID}`,
     cancel_url: `${process.env.DOMAIN}/checkout-error`,
   });
@@ -66,7 +66,11 @@ const addNewCustomer = async (email, referral) => {
 };
 
 const createWebhook = (rawBody, sig) => {
-  const event = Stripe.webhooks.constructEvent(rawBody, sig, process.env.STRIPE_WEBHOOK_SECRET);
+  const event = Stripe.webhooks.constructEvent(
+    rawBody,
+    sig,
+    process.env.STRIPE_WEBHOOK_SECRET
+  );
   return event;
 };
 
