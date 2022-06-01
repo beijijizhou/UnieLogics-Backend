@@ -9,7 +9,7 @@ const userSchema = new Schema({
   billingID: String,
   plan: {
     type: String,
-    enum: ["free", "none", "plan17", "plan163"],
+    enum: ["free", "none", "plan17", "plan163", "plan37", "plan287"],
     default: "none",
   },
   hasTrial: { type: Boolean, default: false },

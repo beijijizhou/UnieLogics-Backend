@@ -12,6 +12,8 @@ const from_who = "donotreply@asinmice.com";
 const productToPriceMap = {
   plan17: process.env.PLAN_17,
   plan163: process.env.PLAN_163,
+  plan37: process.env.PLAN_37,
+  plan287: process.env.PLAN_287,
 };
 
 const getAllUsers = async (req, res) => {
@@ -131,10 +133,21 @@ const checkAuthentication = async (req, res) => {
         user.plan = "plan17";
       }
 
+      if (existingSubscription.data[0].plan.id === process.env.PLAN_37) {
+        console.log("You are talking about plan37 product");
+        user.plan = "plan37";
+      }
+
       if (existingSubscription.data[0].plan.id === process.env.PLAN_163) {
         console.log("You are talking about plan163 product");
         user.plan = "plan163";
       }
+
+      if (existingSubscription.data[0].plan.id === process.env.PLAN_287) {
+        console.log("You are talking about plan287 product");
+        user.plan = "plan287";
+      }
+
       if (existingSubscription.data[0].status === "trialing") {
         user.hasTrial = true;
         user.endDate = new Date(existingSubscription.data.trial_end * 1000);
@@ -484,11 +497,24 @@ const profile = async (req, res) => {
         user.salesPerMonthCheck = 2500;
       }
 
+      if (existingSubscription.data[0].plan.id === process.env.PLAN_37) {
+        console.log("You are talking about plan37 product");
+        user.plan = "plan37";
+        user.salesPerMonthCheck = 2500;
+      }
+
       if (existingSubscription.data[0].plan.id === process.env.PLAN_163) {
         console.log("You are talking about plan163 product");
         user.plan = "plan163";
         user.salesPerMonthCheck = 5000;
       }
+
+      if (existingSubscription.data[0].plan.id === process.env.PLAN_287) {
+        console.log("You are talking about plan287 product");
+        user.plan = "plan287";
+        user.salesPerMonthCheck = 5000;
+      }
+
       if (existingSubscription.data[0].status === "trialing") {
         user.hasTrial = true;
         user.endDate = new Date(existingSubscription.data.trial_end * 1000);
