@@ -18,7 +18,8 @@ const createCheckoutSession = async (customerID, price) => {
     subscription_data: {
       trial_period_days: process.env.TRIAL_DAYS,
     },
-    allow_promotion_codes: true,
+    //enable this when promo code seciton needs to be applied
+    // allow_promotion_codes: true,
     success_url: `${process.env.DOMAIN}/thank-you-page?session_id={CHECKOUT_SESSION_ID}`,
     cancel_url: `${process.env.DOMAIN}/checkout-error`,
   });
