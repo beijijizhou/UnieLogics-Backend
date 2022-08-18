@@ -118,7 +118,7 @@ const deleteProductsFromSpecificUser =
     updateObj = {
       email: email,
       productsDetails: currentProductsDetails,
-      productsLeft: currentUserWithProducts.productsDetails.length,
+      productsLeft: 50 - currentUserWithProducts.productsDetails.length,
     };
 
     await Product.findOneAndUpdate({ email }, updateObj);
