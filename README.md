@@ -16,9 +16,13 @@ Rename the .env.example to .env. We will replace the variables in the file one-b
 STRIPE_SECRET_KEY=sk_test_51H8rImAkSQQctVkLmiefLPUxZhQdclj8BqTZuvHelgyQWum4COBNcIYP8viiH5dFBrEhM69Yt7Tc0hj8o26k9Pbs00tIYJkZvS
 PLAN_17=price_1HcIFWAkSQQctVkLizPQ2Oum
 PLAN_163=price_1HdI8dAkSQQctVkLD9IeOYjS
-MONGODB=mongodb://localhost:27017/users
+PLAN_37=price_1L5atCCyns2nFpoZfVZdTvlx
+PLAN_287=price_1L5auQCyns2nFpoZ9az7MC6u
+MONGODB=mongodb://localhost:27017/asinmice
 STRIPE_WEBHOOK_SECRET=whsec_rYanPBSdQSswHjizrBz2pHAo6iYa2Ows
 TRIAL_DAYS=14
+DOMAIN=http://localhost:4242
+JWT_SECRET="THIS IS USED TO SIGN AND VERIFY JWT TOKENS, REPLACE IT WITH YOUR OWN SECRET, IT CAN BE ANY STRING"
 
 update domaine to redirect user after payment and update https://dashboard.stripe.com/test/settings/billing/portal in live mode
 ```

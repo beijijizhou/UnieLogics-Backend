@@ -19,6 +19,11 @@ const userSchema = new Schema({
   hasActiveSubscription: { type: Boolean, default: false },
   notifications: { type: Boolean, default: false },
   salesPerMonthCheck: { type: Number, default: null },
+  survey: {
+    step1: { type: Array, default: [] },
+    step2: { type: String, default: "" },
+    completed: { type: Boolean, default: false },
+  },
 });
 
 const userModel = mongoose.model("user", userSchema, "user");

@@ -13,5 +13,6 @@ router.get("/profile", userControllers.profile);
 router.post("/billing", userControllers.billing);
 router.get("/salesPerMonth", userControllers.getSalesPerMonth);
 router.post("/updateSalesPerMonth", userControllers.updateSalesPerMonth);
+router.post("/survey", userControllers.postSurvey);
 
 module.exports = router;

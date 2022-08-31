@@ -669,6 +669,57 @@ const updateSalesPerMonth = async (req, res) => {
   }
 };
 
+const postSurvey = async (req, res) => {
+  const { email, step1, step2 } = req.body;
+
+  if (!email) {
+    return res.status(400).send({
+      status: "error",
+      error: {
+        message:
+          "Please provide the email address for the user you want to update the survey for.",
+      },
+    });
+  }
+  if (!step1 || !step2) {
+    return res.status(400).send({
+      status: "error",
+      error: {
+        message:
+          "Step1 or Step2 are not fully completed or one of them is missing, please try again!",
+      },
+    });
+  } else {
+    const user = await UserService.getUserByEmail(email.toLowerCase());
+    if (!user) {
+      return res.status(404).send({
+        status: "error",
+        error: {
+          message: "We couldn't find a user with the provided email address!",
+        },
+      });
+    }
+    const updateObj = {
+      survey: {
+        step1,
+        step2,
+        completed: true,
+      },
+    };
+
+    const updateResponse = await UserService.updateProfile(
+      email.toLowerCase(),
+      updateObj
+    );
+    const updatedUser = await UserService.getUserByEmail(email.toLowerCase());
+
+    return res.status(200).send({
+      status: "success",
+      user: updatedUser,
+    });
+  }
+};
+
 module.exports = {
   getAllUsers,
   forgotPassword,
@@ -681,4 +732,5 @@ module.exports = {
   billing,
   getSalesPerMonth,
   updateSalesPerMonth,
+  postSurvey,
 };
