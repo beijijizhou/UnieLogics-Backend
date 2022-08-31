@@ -426,6 +426,41 @@ const profileUpdate = async (req, res) => {
   }
 };
 
+const simpleProfile = async (req, res) => {
+  const { email } = req.query;
+  console.log(email);
+  try {
+    const user = await UserService.getUserByEmail(email.toLowerCase());
+    if (user) {
+      return res.status(200).send({
+        status: "success",
+        user: {
+          customerID: user.billingID,
+          email: user.email,
+          firstName: user.firstName,
+          lastName: user.firstName,
+          email: user.email,
+          hasActiveSubscription: user.hasActiveSubscription,
+          plan: user.plan,
+          role: user.role,
+          token: user.token,
+          survey: user.survey,
+        },
+      });
+    } else {
+      return res.status(404).send({
+        status: "error",
+        message: `We were not able to find any user with email: ${email}`,
+      });
+    }
+  } catch (e) {
+    return res.status(200).send({
+      status: "success",
+      message: "Unknown error while trying to get profile based on your email",
+    });
+  }
+};
+
 const profile = async (req, res) => {
   const { email, customerID } = req.query;
 
@@ -694,33 +729,39 @@ const postSurvey = async (req, res) => {
       },
     });
   } else {
-    const user = await UserService.getUserByEmail(email.toLowerCase());
-    if (!user) {
-      return res.status(404).send({
+    try {
+      const user = await UserService.getUserByEmail(email.toLowerCase());
+      if (!user) {
+        return res.status(404).send({
+          status: "error",
+          error: {
+            message: "We couldn't find a user with the provided email address!",
+          },
+        });
+      }
+      const updateObj = {
+        survey: {
+          step1,
+          step2,
+          completed: true,
+        },
+      };
+
+      await UserService.updateProfile(email.toLowerCase(), updateObj);
+      const updatedUser = await UserService.getUserByEmail(email.toLowerCase());
+
+      return res.status(200).send({
+        status: "success",
+        user: updatedUser,
+      });
+    } catch (e) {
+      return res.status(500).send({
         status: "error",
         error: {
-          message: "We couldn't find a user with the provided email address!",
+          message: "Something went wrong while saving your survey",
         },
       });
     }
-    const updateObj = {
-      survey: {
-        step1,
-        step2,
-        completed: true,
-      },
-    };
-
-    const updateResponse = await UserService.updateProfile(
-      email.toLowerCase(),
-      updateObj
-    );
-    const updatedUser = await UserService.getUserByEmail(email.toLowerCase());
-
-    return res.status(200).send({
-      status: "success",
-      user: updatedUser,
-    });
   }
 };
 
@@ -737,4 +778,5 @@ module.exports = {
   getSalesPerMonth,
   updateSalesPerMonth,
   postSurvey,
+  simpleProfile,
 };
