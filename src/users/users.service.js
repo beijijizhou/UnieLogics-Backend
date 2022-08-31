@@ -89,6 +89,7 @@ const authenticate = (User) => async (email, password) => {
       customerID: user.billingID,
       token,
       role: user.role,
+      survey: user.survey,
     };
   }
 };
