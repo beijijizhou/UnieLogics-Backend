@@ -476,9 +476,11 @@ const profile = async (req, res) => {
           lastName: user.lastName,
           email: user.email.toLowerCase(),
           billingID: user.billingID,
+          customerID: user.billingID,
           notifications: user.notifications,
           salesPerMonthCheck: user.salesPerMonthCheck,
           phoneNumber: user.phoneNumber,
+          survey: user.survey,
         },
         hasActiveSubscription,
       });
@@ -548,9 +550,11 @@ const profile = async (req, res) => {
         lastName: user.lastName,
         email: user.email.toLowerCase(),
         billingID: user.billingID,
+        customerID: user.billingID,
         notifications: user.notifications,
         salesPerMonthCheck: user.salesPerMonthCheck,
         phoneNumber: user.phoneNumber,
+        survey: user.survey,
       },
       hasActiveSubscription: user.hasActiveSubscription,
     });
