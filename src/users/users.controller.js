@@ -106,7 +106,7 @@ const checkAuthentication = async (req, res) => {
       await user.save();
 
       return res.status(200).json({
-        status: "successs",
+        status: "success",
         hasActiveSubscription,
         salesPerMonthCheck: user.salesPerMonthCheck,
       });
@@ -168,7 +168,7 @@ const checkAuthentication = async (req, res) => {
     }
 
     return res.status(200).json({
-      status: "successs",
+      status: "success",
       hasActiveSubscription,
       salesPerMonthCheck: user.salesPerMonthCheck,
     });
@@ -402,7 +402,7 @@ const profileUpdate = async (req, res) => {
 
     const editedUser = await UserService.getUserByEmail(email.toLowerCase());
     return res.status(200).json({
-      status: "successs",
+      status: "success",
       user: {
         plan: editedUser.plan,
         hasTrial: editedUser.hasTrial,
@@ -502,7 +502,7 @@ const profile = async (req, res) => {
       await user.save();
 
       return res.status(200).json({
-        status: "successs",
+        status: "success",
         user: {
           plan: user.plan,
           hasTrial: user.hasTrial,
@@ -576,7 +576,7 @@ const profile = async (req, res) => {
     }
 
     return res.status(200).json({
-      status: "successs",
+      status: "success",
       user: {
         plan: user.plan,
         hasTrial: user.hasTrial,
