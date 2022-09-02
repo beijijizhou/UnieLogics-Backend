@@ -378,7 +378,8 @@ const checkout = async (req, res) => {
 };
 
 const profileUpdate = async (req, res) => {
-  const { firstName, lastName, email, password, notifications } = req.body;
+  const { firstName, lastName, email, password, notifications, phoneNumber } =
+    req.body;
 
   if (!firstName && !lastName && !email && !password) {
     return res.status(403).send({
@@ -394,6 +395,7 @@ const profileUpdate = async (req, res) => {
       firstName,
       lastName,
       notifications,
+      phoneNumber,
     };
 
     await UserService.updateProfile(email.toLowerCase(), update, password);
@@ -414,6 +416,7 @@ const profileUpdate = async (req, res) => {
         billingID: editedUser.billingID,
         notifications: editedUser.notifications,
         salesPerMonthCheck: editedUser.salesPerMonthCheck,
+        phoneNumber: editedUser.phoneNumber,
       },
       hasActiveSubscription: user.hasActiveSubscription,
     });
