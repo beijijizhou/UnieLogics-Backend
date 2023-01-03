@@ -12,18 +12,18 @@
   "license": "ISC",
   "dependencies": {
     "bcryptjs": "^2.4.3",
-    "body-parser": "^1.19.0",
+    "body-parser": "^1.20.1",
     "cookie-parser": "^1.4.5",
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
-    "ejs": "^3.1.5",
-    "express": "^4.17.1",
+    "ejs": "^3.1.8",
+    "express": "^4.18.2",
     "express-jwt": "^6.1.0",
     "jsonwebtoken": "^8.5.1",
     "mailgun-js": "^0.6.7",
     "mongoose": "^5.10.11",
     "nodemailer": "^6.7.2",
-    "nodemon": "^2.0.5",
+    "nodemon": "^2.0.20",
     "stripe": "^8.114.0"
   },
   "devDependencies": {

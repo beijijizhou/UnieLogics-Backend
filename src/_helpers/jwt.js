@@ -12,6 +12,7 @@ function jwt() {
       "/users/register",
       "/users/forgotPassword",
       "/users/checkout",
+      "/brands/getAllBlacklistBrands",
     ],
   });
 }

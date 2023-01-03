@@ -1,9 +1,10 @@
 const BrandsService = require("../brands");
 
 const getAllBlacklistBrands = async (req, res) => {
-  const products = await BrandsService.getAll();
-  if (products) {
-    res.status(200).json(products);
+  const brands = await BrandsService.getAllBlacklistBrands();
+  console.log(brands);
+  if (brands) {
+    res.status(200).json(brands);
   } else {
     res.status(400).json({
       message: "Bad request",
