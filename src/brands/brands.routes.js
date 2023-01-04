@@ -3,6 +3,10 @@ const brandsControllers = require("./brands.controller");
 const router = express.Router();
 
 router.get("/getAllBlacklistBrands", brandsControllers.getAllBlacklistBrands);
-router.post("/addToBlacklist", brandsControllers.getBlacklistBrandByName);
+router.get(
+  "/getBlacklistBrandsByName",
+  brandsControllers.getBlacklistBrandByName
+);
+router.post("/addBrand", brandsControllers.addBrand);
 
 module.exports = router;

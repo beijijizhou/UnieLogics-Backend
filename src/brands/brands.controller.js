@@ -15,8 +15,6 @@ const getAllBlacklistBrands = async (req, res) => {
 const getBlacklistBrandByName = async (req, res) => {
   const { name } = req.query;
 
-  console.log(name);
-
   if (!name) {
     console.log("No name has been provided! Please provide a brand name!");
 
@@ -28,14 +26,41 @@ const getBlacklistBrandByName = async (req, res) => {
   }
 
   try {
-    const userWithProducts = await BrandsService.getUserByEmail(
-      email.toLowerCase()
+    const brand = await BrandsService.getBlacklistBrandByName(
+      name.toLowerCase()
     );
-    console.log(userWithProducts);
+    console.log(brand);
     return res.status(200).json({
       status: "success",
-      message: `Successfully retrieved products for the user ${email}`,
-      products: userWithProducts || [],
+      message: `Successfully retrieved brand with name: ${name}`,
+      products: brand,
+    });
+  } catch (e) {
+    console.log(e);
+    res.status(500).json({ status: "error", message: JSON.stringify(e) });
+  }
+};
+
+const addBrand = async (req, res) => {
+  const { brands } = req.body;
+
+  if (!brands) {
+    return res.status(400).json({
+      status: "error",
+      message:
+        "Please provide the brands in array format to add them to the database",
+    });
+  }
+
+  try {
+    const addedBrands = await BrandsService.addBrandToDatabase({
+      brands,
+    });
+
+    return res.status(200).json({
+      status: "success",
+      message: `Successfully added brands to the database!`,
+      addedBrands,
     });
   } catch (e) {
     console.log(e);
@@ -46,4 +71,5 @@ const getBlacklistBrandByName = async (req, res) => {
 module.exports = {
   getAllBlacklistBrands,
   getBlacklistBrandByName,
+  addBrand,
 };
