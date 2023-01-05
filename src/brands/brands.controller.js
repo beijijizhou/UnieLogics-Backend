@@ -31,7 +31,9 @@ const getBlacklistBrandByName = async (req, res) => {
   const { name } = req.query;
 
   if (!name) {
-    console.log("No name has been provided! Please provide a brand name!");
+    console.log(
+      "No name has been provided when doing getBlacklistBrandByName!"
+    );
 
     return res.status(400).json({
       status: "error",
