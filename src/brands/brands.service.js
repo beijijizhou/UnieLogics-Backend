@@ -5,8 +5,17 @@ const getBlacklistBrandByName = (Brands) => async (name) => {
   return await Brands.findOne({ name });
 };
 
-const getAllBlacklistBrands = (Brands) => async () => {
-  return await Brands.find();
+const getMaxItems = (Brands) => async () => {
+  const allItems = await Brands.find();
+
+  return allItems.length;
+};
+
+const getAllBlacklistBrands = (Brands) => async (page, itemsPerPage) => {
+  return await Brands.find()
+    .sort("name")
+    .skip((parseInt(page) - 1) * parseInt(itemsPerPage))
+    .limit(parseInt(itemsPerPage));
 };
 
 const addBrandToDatabase =
@@ -28,10 +37,11 @@ const addBrandToDatabase =
     });
   };
 
-module.exports = (Product) => {
+module.exports = (Brands) => {
   return {
-    getBlacklistBrandByName: getBlacklistBrandByName(Product),
-    getAllBlacklistBrands: getAllBlacklistBrands(Product),
-    addBrandToDatabase: addBrandToDatabase(Product),
+    getBlacklistBrandByName: getBlacklistBrandByName(Brands),
+    getAllBlacklistBrands: getAllBlacklistBrands(Brands),
+    addBrandToDatabase: addBrandToDatabase(Brands),
+    getMaxItems: getMaxItems(Brands),
   };
 };

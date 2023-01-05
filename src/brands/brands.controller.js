@@ -1,10 +1,21 @@
 const BrandsService = require("../brands");
 
 const getAllBlacklistBrands = async (req, res) => {
-  const brands = await BrandsService.getAllBlacklistBrands();
-  console.log(brands);
+  const { page, itemsPerPage } = req.query;
+  const allBrands = await BrandsService.getMaxItems();
+  const maxPages =
+    allBrands % itemsPerPage > 0
+      ? parseInt(allBrands / itemsPerPage + 1)
+      : allBrands / itemsPerPage;
+  const brands = await BrandsService.getAllBlacklistBrands(page, itemsPerPage);
+
   if (brands) {
-    res.status(200).json(brands);
+    res.status(200).json({
+      items: brands,
+      maxPages,
+      page,
+      itemsPerPage,
+    });
   } else {
     res.status(400).json({
       message: "Bad request",
