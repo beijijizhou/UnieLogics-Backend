@@ -7,7 +7,11 @@ const getAllBlacklistBrands = async (req, res) => {
     allBrands % itemsPerPage > 0
       ? parseInt(allBrands / itemsPerPage + 1)
       : allBrands / itemsPerPage;
-  const brands = await BrandsService.getAllBlacklistBrands(page, itemsPerPage);
+
+  const brands = await BrandsService.getAllBlacklistBrands(
+    page < 1 ? 1 : page,
+    itemsPerPage
+  );
 
   if (brands) {
     res.status(200).json({
