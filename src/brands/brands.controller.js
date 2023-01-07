@@ -85,8 +85,43 @@ const addBrand = async (req, res) => {
   }
 };
 
+const deleteBrand = async (req, res) => {
+  const { brand } = req.body;
+
+  if (!brand) {
+    return res.status(400).json({
+      status: "error",
+      message: "Please provide the brand name that you want to delete",
+    });
+  }
+
+  const brandFromDB = await BrandsService.getBlacklistBrandByName(
+    brand.toLowerCase()
+  );
+
+  if (brandFromDB) {
+    try {
+      await BrandsService.deleteOneBrand({ brand: brand.toLowerCase() });
+
+      return res.status(200).json({
+        status: "success",
+        message: `Successfully deleted brand ${brand}`,
+      });
+    } catch (e) {
+      console.log(e);
+      res.status(500).json({ status: "error", message: JSON.stringify(e) });
+    }
+  } else {
+    res.status(404).json({
+      status: "error",
+      message: `Sorry, we couldn't find brand with name: ${brand}`,
+    });
+  }
+};
+
 module.exports = {
   getAllBlacklistBrands,
   getBlacklistBrandByName,
   addBrand,
+  deleteBrand,
 };

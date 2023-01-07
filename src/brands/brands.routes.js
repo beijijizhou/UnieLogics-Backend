@@ -8,5 +8,6 @@ router.get(
   brandsControllers.getBlacklistBrandByName
 );
 router.post("/addBrand", brandsControllers.addBrand);
+router.delete("/deleteBrand", brandsControllers.deleteBrand);
 
 module.exports = router;

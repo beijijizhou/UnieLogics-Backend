@@ -37,11 +37,18 @@ const addBrandToDatabase =
     });
   };
 
+const deleteOneBrand =
+  (Brands) =>
+  async ({ brand }) => {
+    return await Brands.deleteOne({ name: brand });
+  };
+
 module.exports = (Brands) => {
   return {
     getBlacklistBrandByName: getBlacklistBrandByName(Brands),
     getAllBlacklistBrands: getAllBlacklistBrands(Brands),
     addBrandToDatabase: addBrandToDatabase(Brands),
     getMaxItems: getMaxItems(Brands),
+    deleteOneBrand: deleteOneBrand(Brands),
   };
 };
