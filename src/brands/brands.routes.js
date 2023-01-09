@@ -9,6 +9,6 @@ router.get(
 );
 router.post("/addBlacklistBrand", brandsControllers.addBlacklistBrand);
 router.delete("/deleteBlacklistBrand", brandsControllers.deleteBlacklistBrand);
-router.post("/editBlacklistBrand", brandsControllers.editBlacklistBrand);
+router.patch("/editBlacklistBrand", brandsControllers.editBlacklistBrand);
 
 module.exports = router;
