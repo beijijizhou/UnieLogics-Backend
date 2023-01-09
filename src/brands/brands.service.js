@@ -18,7 +18,7 @@ const getAllBlacklistBrands = (Brands) => async (page, itemsPerPage) => {
     .limit(parseInt(itemsPerPage));
 };
 
-const addBrandToDatabase =
+const addBlacklistBrandToDatabase =
   (Brands) =>
   async ({ brands }) => {
     const allBrandsFromDB = await Brands.find();
@@ -47,7 +47,7 @@ module.exports = (Brands) => {
   return {
     getBlacklistBrandByName: getBlacklistBrandByName(Brands),
     getAllBlacklistBrands: getAllBlacklistBrands(Brands),
-    addBrandToDatabase: addBrandToDatabase(Brands),
+    addBlacklistBrandToDatabase: addBlacklistBrandToDatabase(Brands),
     getMaxItems: getMaxItems(Brands),
     deleteOneBrand: deleteOneBrand(Brands),
   };

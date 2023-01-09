@@ -58,7 +58,7 @@ const getBlacklistBrandByName = async (req, res) => {
   }
 };
 
-const addBrand = async (req, res) => {
+const addBlacklistBrand = async (req, res) => {
   const { brands } = req.body;
 
   if (!brands) {
@@ -70,7 +70,7 @@ const addBrand = async (req, res) => {
   }
 
   try {
-    const addedBrands = await BrandsService.addBrandToDatabase({
+    const addedBrands = await BrandsService.addBlacklistBrandToDatabase({
       brands,
     });
 
@@ -85,7 +85,7 @@ const addBrand = async (req, res) => {
   }
 };
 
-const deleteBrand = async (req, res) => {
+const deleteBlacklistBrand = async (req, res) => {
   const { brand } = req.body;
 
   if (!brand) {
@@ -119,9 +119,11 @@ const deleteBrand = async (req, res) => {
   }
 };
 
+const editBrand = async (req, res) => {};
+
 module.exports = {
   getAllBlacklistBrands,
   getBlacklistBrandByName,
-  addBrand,
-  deleteBrand,
+  addBlacklistBrand,
+  deleteBlacklistBrand,
 };
