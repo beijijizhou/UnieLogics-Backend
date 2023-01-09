@@ -43,6 +43,15 @@ const deleteOneBrand =
     return await Brands.deleteOne({ name: brand });
   };
 
+const findAndEditBlacklistBrand =
+  (Brands) =>
+  async ({ _id, newValue }) => {
+    const filter = { _id };
+    const update = { name: newValue };
+    await Brands.findOneAndUpdate(filter, update);
+    return await Brands.findOne(filter);
+  };
+
 module.exports = (Brands) => {
   return {
     getBlacklistBrandByName: getBlacklistBrandByName(Brands),
@@ -50,5 +59,6 @@ module.exports = (Brands) => {
     addBlacklistBrandToDatabase: addBlacklistBrandToDatabase(Brands),
     getMaxItems: getMaxItems(Brands),
     deleteOneBrand: deleteOneBrand(Brands),
+    findAndEditBlacklistBrand: findAndEditBlacklistBrand(Brands),
   };
 };
