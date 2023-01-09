@@ -122,7 +122,7 @@ const deleteBlacklistBrand = async (req, res) => {
 const editBlacklistBrand = async (req, res) => {
   const { _id, newValue } = req.body;
   if (!_id && !newValue) {
-    return res.status(400).jdon({
+    return res.status(400).json({
       status: "error",
       message:
         "Please provide _id and value of that brand that you want to edit.",
@@ -144,10 +144,36 @@ const editBlacklistBrand = async (req, res) => {
   }
 };
 
+const searchBlacklistBrands = async (req, res) => {
+  const { searchTerm } = req.query;
+
+  if (!searchTerm) {
+    return res.status(400).json({
+      status: "error",
+      message: "Please provide a search term in order to search for brands.",
+    });
+  }
+  try {
+    const searchedBrands = await BrandsService.searchForBlacklistBrands(
+      searchTerm.trim()
+    );
+    return res.status(200).json({
+      status: "success",
+      message: "Successfully retrieved searched brands.",
+      items: searchedBrands,
+    });
+  } catch (e) {
+    return res
+      .status(500)
+      .json({ status: "error", message: JSON.stringify(e) });
+  }
+};
+
 module.exports = {
   getAllBlacklistBrands,
   getBlacklistBrandByName,
   addBlacklistBrand,
   deleteBlacklistBrand,
   editBlacklistBrand,
+  searchBlacklistBrands,
 };

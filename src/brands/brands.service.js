@@ -52,6 +52,11 @@ const findAndEditBlacklistBrand =
     return await Brands.findOne(filter);
   };
 
+const searchForBlacklistBrands = (Brands) => async (searchTerm) => {
+  const term = new RegExp(searchTerm, "i");
+  return await Brands.find({ name: { $regex: term } });
+};
+
 module.exports = (Brands) => {
   return {
     getBlacklistBrandByName: getBlacklistBrandByName(Brands),
@@ -60,5 +65,6 @@ module.exports = (Brands) => {
     getMaxItems: getMaxItems(Brands),
     deleteOneBrand: deleteOneBrand(Brands),
     findAndEditBlacklistBrand: findAndEditBlacklistBrand(Brands),
+    searchForBlacklistBrands: searchForBlacklistBrands(Brands),
   };
 };
