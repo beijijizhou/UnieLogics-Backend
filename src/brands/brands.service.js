@@ -25,11 +25,11 @@ const addBlacklistBrandToDatabase =
 
     brands.forEach((brand) => {
       const brandAlreadyExists = allBrandsFromDB.some(
-        (el) => el.name === brand.toLowerCase()
+        (el) => el.name === brand.toString().toLowerCase()
       );
       if (!brandAlreadyExists) {
         new Brands({
-          name: brand.toLowerCase(),
+          name: brand.toString().toLowerCase(),
           brandDateAdded: dayjs().format(),
           brandDateModified: dayjs().format(),
         }).save();
