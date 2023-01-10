@@ -46,7 +46,6 @@ const getBlacklistBrandByName = async (req, res) => {
     const brand = await BrandsService.getBlacklistBrandByName(
       name.toLowerCase()
     );
-    console.log(brand);
     return res.status(200).json({
       status: "success",
       message: `Successfully retrieved brand with name: ${name}`,

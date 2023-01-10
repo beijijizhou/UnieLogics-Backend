@@ -1,7 +1,6 @@
 const dayjs = require("dayjs");
 
 const getBlacklistBrandByName = (Brands) => async (name) => {
-  // console.log(Brands.findOne({ name }));
   return await Brands.findOne({ name });
 };
 
