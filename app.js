@@ -9,6 +9,7 @@ const cors = require("cors");
 const usersRouter = require("./src/users/users.routes");
 const productsRouter = require("./src/products/products.routes");
 const brandsRouter = require("./src/brands/brands.routes");
+const fLinksRouter = require("./src/fLinks/fLinks.routes");
 const stripeWebhook = require("./src/webhook/stripe.webhook.routes");
 
 const app = express();
@@ -33,6 +34,7 @@ app
 app.use("/users", usersRouter);
 app.use("/products", productsRouter);
 app.use("/brands", brandsRouter);
+app.use("/fLinks", fLinksRouter);
 app.use("/webhook", stripeWebhook);
 
 const port = process.env.PORT || 4242;
