@@ -1,3 +1,5 @@
+const dayjs = require("dayjs");
+
 const getAll = (Product) => async () => {
   return await Product.find();
 };
@@ -16,6 +18,7 @@ const addUserWithProductIfNoUser =
           offersCount: productsDetails.offersCount,
           salesRank: productsDetails.salesRank,
           title: productsDetails.title,
+          date: dayjs().format(),
         },
       ],
       productsLeft: 49,
@@ -63,6 +66,7 @@ const updateProductsForSpecificUser =
           offersCount: productsDetails.offersCount,
           salesRank: productsDetails.salesRank,
           title: productsDetails.title,
+          date: dayjs().format(),
         },
       ],
       productsLeft: currentUserWithProducts.productsLeft - 1,
