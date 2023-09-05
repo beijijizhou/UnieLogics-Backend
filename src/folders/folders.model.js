@@ -7,6 +7,8 @@ const foldersSchema = new Schema({
     {
       folderName: { type: String, required: true },
       folderItems: { type: Array, required: true, default: [] },
+      folderItemsCount: { type: Number, required: true, default: 0 },
+      folderColor: { type: String, required: true, default: "#fffffff" },
     },
   ],
 });

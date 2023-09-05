@@ -2,7 +2,8 @@ const express = require("express");
 const foldersControllers = require("./folders.controller");
 const router = express.Router();
 
-router.get("/getFolders", foldersControllers.getAllFoldersForSpecificUser);
-router.post("/addFolder", foldersControllers.addFolder);
+router.get("/get", foldersControllers.getAllFoldersForSpecificUser);
+router.post("/add", foldersControllers.addFolder);
+router.delete("/delete", foldersControllers.deleteFolder);
 
 module.exports = router;

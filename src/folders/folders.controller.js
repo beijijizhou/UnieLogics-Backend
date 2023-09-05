@@ -29,10 +29,10 @@ const getAllFoldersForSpecificUser = async (req, res) => {
 };
 
 const addFolder = async (req, res) => {
-  const { folderName, email } = req.body;
+  const { folderName, email, folderColor } = req.body;
   let folderNameAlreadyExists = false;
 
-  if (!folderName || !email) {
+  if (!folderName || !email || !folderColor) {
     return res.status(400).json({
       status: "error",
       message:
@@ -48,6 +48,7 @@ const addFolder = async (req, res) => {
         await FolderService.addUserWithFoldersIfNoUser({
           email: email.toLowerCase(),
           folderName,
+          folderColor,
         });
 
       if (newUserWithFoldersCreated) {
@@ -82,7 +83,7 @@ const addFolder = async (req, res) => {
         const updateObj = {
           folders: [
             ...userWithFolders.folders,
-            { folderName, folderItems: [] },
+            { folderName, folderItems: [], folderColor },
           ],
         };
 
@@ -103,7 +104,49 @@ const addFolder = async (req, res) => {
   }
 };
 
+const deleteFolder = async (req, res) => {
+  const { folderId, email } = req.body;
+  if (!email || !folderId) {
+    console.log(
+      "No  EMAIL or FOLDER ID has been provided, so we don't know what to delete!"
+    );
+    return res.status(400).json({
+      status: "error",
+      message: "Email and folderId must be provided to retrieve data.",
+    });
+  }
+  try {
+    const updatedFoldersForUserResponse =
+      await FolderService.deleteFoldersForExistingUser({
+        email: email.toLowerCase(),
+        folderId,
+      });
+
+    console.log("DELETE FOLDER RESPONSE, ", updatedFoldersForUserResponse);
+
+    if (!updatedFoldersForUserResponse) {
+      return res.status(403).json({
+        status: "error",
+        message: `There was an error processing the delete request`,
+      });
+    }
+    if (updatedFoldersForUserResponse.status === "error") {
+      return res.status(403).json({
+        ...updatedFoldersForUserResponse,
+      });
+    }
+    return res.status(200).json({
+      status: "success",
+      updatedFoldersForUserResponse,
+    });
+  } catch (e) {
+    console.log(e);
+    res.status(500).json({ status: "error", message: JSON.stringify(e) });
+  }
+};
+
 module.exports = {
   getAllFoldersForSpecificUser,
   addFolder,
+  deleteFolder,
 };
