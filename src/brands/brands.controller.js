@@ -130,10 +130,16 @@ const editBlacklistBrand = async (req, res) => {
 
 const searchBlacklistBrands = async (req, res) => {
   const { searchTerm } = req.query;
-  const noSearchTerm = "";
 
+  if (!searchTerm) {
+    return res.status(400).json({
+      status: "error",
+      message: "Please provide a search term in order to search for brands.",
+      items: [],
+    });
+  }
   try {
-    const searchedBrands = await BrandsService.searchForBlacklistBrands(searchTerm ? searchTerm : noSearchTerm);
+    const searchedBrands = await BrandsService.searchForBlacklistBrands(searchTerm);
     return res.status(200).json({
       status: "success",
       message: "Successfully retrieved searched brands.",
