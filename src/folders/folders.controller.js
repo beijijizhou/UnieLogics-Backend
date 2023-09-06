@@ -163,6 +163,7 @@ const editFolderName = async (req, res) => {
         folderId,
         folderName,
       });
+
     console.log("EDIT FOLDER NAME RESPONSE " + editFolderNameResponse);
 
     if (editFolderNameResponse.status === "error") {
