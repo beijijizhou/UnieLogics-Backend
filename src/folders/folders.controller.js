@@ -10,16 +10,19 @@ const getAllFoldersForSpecificUser = async (req, res) => {
   }
   try {
     const folders = await FolderService.findFoldersByEmail(email.toLowerCase());
-    console.log("folders =>>>>>>>" + folders);
+    console.log("FOLDERSSSSSSS " + folders);
     if (folders) {
       res.status(200).json({
         status: "success",
-        folders,
+        response: folders,
       });
     } else {
       res.status(200).json({
         status: "success",
-        folders: [],
+        response: {
+          email,
+          folders: [],
+        },
       });
     }
   } catch (e) {
@@ -137,7 +140,7 @@ const deleteFolder = async (req, res) => {
     }
     return res.status(200).json({
       status: "success",
-      updatedFoldersForUserResponse,
+      response: updatedFoldersForUserResponse,
     });
   } catch (e) {
     console.log(e);
