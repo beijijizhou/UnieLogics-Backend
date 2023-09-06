@@ -148,8 +148,40 @@ const deleteFolder = async (req, res) => {
   }
 };
 
+const editFolderName = async (req, res) => {
+  const { folderName, folderId, email } = req.body;
+  if (!folderName || !folderId || !email) {
+    return res.status(400).json({
+      status: "error",
+      message: "There was an error editing your folder.",
+    });
+  }
+  try {
+    const editFolderNameResponse =
+      await FolderService.editFolderNameForExistingUser({
+        email,
+        folderId,
+        folderName,
+      });
+    console.log("EDIT FOLDER NAME RESPONSE " + editFolderNameResponse);
+
+    if (editFolderNameResponse.status === "error") {
+      return res.status(403).json(editFolderNameResponse);
+    }
+
+    res.status(200).json({
+      status: "success",
+      response: editFolderNameResponse,
+    });
+  } catch (e) {
+    console.log(e);
+    res.status(500).json({ status: "error", message: JSON.stringify(e) });
+  }
+};
+
 module.exports = {
   getAllFoldersForSpecificUser,
   addFolder,
   deleteFolder,
+  editFolderName,
 };
