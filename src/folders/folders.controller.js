@@ -97,7 +97,7 @@ const addFolder = async (req, res) => {
         return res.status(200).json({
           status: "success",
           message: `Successfully added a new folder with name: ${folderName} to user ${email}`,
-          folders: newlyAddedFolderToList || [],
+          response: newlyAddedFolderToList || [],
         });
       }
     }
