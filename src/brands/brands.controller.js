@@ -3,15 +3,9 @@ const BrandsService = require("../brands");
 const getAllBlacklistBrands = async (req, res) => {
   const { page, itemsPerPage } = req.query;
   const allBrands = await BrandsService.getMaxItems();
-  const maxPages =
-    allBrands % itemsPerPage > 0
-      ? parseInt(allBrands / itemsPerPage + 1)
-      : allBrands / itemsPerPage;
+  const maxPages = allBrands % itemsPerPage > 0 ? parseInt(allBrands / itemsPerPage + 1) : allBrands / itemsPerPage;
 
-  const brands = await BrandsService.getAllBlacklistBrands(
-    page < 1 ? 1 : page,
-    itemsPerPage
-  );
+  const brands = await BrandsService.getAllBlacklistBrands(page < 1 ? 1 : page, itemsPerPage);
 
   if (brands) {
     res.status(200).json({
@@ -31,21 +25,16 @@ const getBlacklistBrandByName = async (req, res) => {
   const { name } = req.query;
 
   if (!name) {
-    console.log(
-      "No name has been provided when doing getBlacklistBrandByName!"
-    );
+    console.log("No name has been provided when doing getBlacklistBrandByName!");
 
     return res.status(400).json({
       status: "error",
-      message:
-        "Name must be provided to return a blacklist status for that brand name.",
+      message: "Name must be provided to return a blacklist status for that brand name.",
     });
   }
 
   try {
-    const brand = await BrandsService.getBlacklistBrandByName(
-      name.toLowerCase()
-    );
+    const brand = await BrandsService.getBlacklistBrandByName(name.toLowerCase());
     return res.status(200).json({
       status: "success",
       message: `Successfully retrieved brand with name: ${name}`,
@@ -63,8 +52,7 @@ const addBlacklistBrand = async (req, res) => {
   if (!brands) {
     return res.status(400).json({
       status: "error",
-      message:
-        "Please provide the brands in array format to add them to the database",
+      message: "Please provide the brands in array format to add them to the database",
     });
   }
 
@@ -94,9 +82,7 @@ const deleteBlacklistBrand = async (req, res) => {
     });
   }
 
-  const brandFromDB = await BrandsService.getBlacklistBrandByName(
-    brand.toLowerCase()
-  );
+  const brandFromDB = await BrandsService.getBlacklistBrandByName(brand.toLowerCase());
 
   if (brandFromDB) {
     try {
@@ -123,8 +109,7 @@ const editBlacklistBrand = async (req, res) => {
   if (!_id && !newValue) {
     return res.status(400).json({
       status: "error",
-      message:
-        "Please provide _id and value of that brand that you want to edit.",
+      message: "Please provide _id and value of that brand that you want to edit.",
     });
   }
 
@@ -145,27 +130,17 @@ const editBlacklistBrand = async (req, res) => {
 
 const searchBlacklistBrands = async (req, res) => {
   const { searchTerm } = req.query;
+  const noSearchTerm = "";
 
-  if (!searchTerm) {
-    return res.status(400).json({
-      status: "error",
-      message: "Please provide a search term in order to search for brands.",
-      items: [],
-    });
-  }
   try {
-    const searchedBrands = await BrandsService.searchForBlacklistBrands(
-      searchTerm
-    );
+    const searchedBrands = await BrandsService.searchForBlacklistBrands(searchTerm ? searchTerm : noSearchTerm);
     return res.status(200).json({
       status: "success",
       message: "Successfully retrieved searched brands.",
       items: searchedBrands,
     });
   } catch (e) {
-    return res
-      .status(500)
-      .json({ status: "error", message: JSON.stringify(e) });
+    return res.status(500).json({ status: "error", message: JSON.stringify(e) });
   }
 };
 
