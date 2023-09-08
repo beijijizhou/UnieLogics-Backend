@@ -102,7 +102,7 @@ const addProductToSpecificFolder =
     if (!userWithFolders) {
       return {
         status: "error",
-        message: "There is no user with this email!",
+        message: "The email provided doesn't match with the one with folders!",
       };
     }
 
