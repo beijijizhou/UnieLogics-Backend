@@ -228,10 +228,22 @@ const addProductToFolder = async (req, res) => {
   }
 };
 
+const deleteItemFromFolder = (req, res) => {
+  const { email, folderId, folderItemId } = req.body;
+
+  if (!email || !folderId || !folderItemId) {
+    return res.status(403).json({
+      status: "error",
+      message: "The email, folderId and folderItemId are mandatory",
+    });
+  }
+};
+
 module.exports = {
   getAllFoldersForSpecificUser,
   addFolder,
   deleteFolder,
   editFolderName,
   addProductToFolder,
+  deleteItemFromFolder,
 };
