@@ -92,6 +92,87 @@ const editFolderNameForExistingUser =
     return await Folder.findOne({ email });
   };
 
+const addProductToSpecificFolder =
+  (Folder) =>
+  async ({ email, date, title, asin, price, imageUrl, folderId }) => {
+    const userWithFolders = await Folder.findOne({ email });
+    let productAlreadyAdded = false;
+    let folderWithIdFound = false;
+
+    if (!userWithFolders) {
+      return {
+        status: "error",
+        message: "There is no user with this email!",
+      };
+    }
+
+    const updateSpecificFolderWithProduct = userWithFolders.folders.map(
+      (folder) => {
+        if (JSON.stringify(folder.id) === JSON.stringify(folderId)) {
+          folderWithIdFound = true;
+          if (folder.folderItems.length === 0) {
+            folder.folderItems.push({
+              date,
+              title,
+              asin,
+              price,
+              imageUrl,
+              folderId,
+            });
+
+            folder.folderItemsCount = folder.folderItems.length;
+          } else {
+            folder.folderItems.map((item) => {
+              if (item.asin === asin) {
+                productAlreadyAdded = true;
+              }
+            });
+            if (!productAlreadyAdded) {
+              folder.folderItems.push({
+                date,
+                title,
+                asin,
+                price,
+                imageUrl,
+                folderId,
+              });
+
+              folder.folderItemsCount = folder.folderItems.length;
+            }
+          }
+        }
+        return folder;
+      }
+    );
+
+    if (productAlreadyAdded) {
+      return {
+        status: "error",
+        message:
+          "This product already exists in this folder. You can only add it in a new folder. ",
+      };
+    }
+
+    if (!folderWithIdFound) {
+      return {
+        status: "error",
+        message:
+          "The specified folder doesn't exist or there is an error with it. Please default or choice a new one.",
+      };
+    }
+
+    const updateObj = {
+      ...userWithFolders,
+      folders: {
+        ...updateSpecificFolderWithProduct,
+      },
+    };
+
+    await Folder.findOneAndUpdate({ email }, updateObj);
+
+    return await Folder.findOne({ email });
+  };
+
 module.exports = (Folders) => {
   return {
     findFoldersByEmail: findFoldersByEmail(Folders),
@@ -99,5 +180,6 @@ module.exports = (Folders) => {
     addFoldersToExistingUser: addFoldersToExistingUser(Folders),
     deleteFoldersForExistingUser: deleteFoldersForExistingUser(Folders),
     editFolderNameForExistingUser: editFolderNameForExistingUser(Folders),
+    addProductToSpecificFolder: addProductToSpecificFolder(Folders),
   };
 };

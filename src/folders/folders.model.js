@@ -6,7 +6,16 @@ const foldersSchema = new Schema({
   folders: [
     {
       folderName: { type: String, required: true },
-      folderItems: { type: Array, required: true, default: [] },
+      folderItems: [
+        {
+          date: { type: Date, required: true, default: null },
+          title: { type: String, required: true, default: "" },
+          asin: { type: String, required: true, default: "" },
+          price: { type: String, required: false, default: "" },
+          imageUrl: { type: String, required: true, default: "New" },
+          folderId: { type: String, required: true },
+        },
+      ],
       folderItemsCount: { type: Number, required: true, default: 0 },
       folderColor: { type: String, required: true, default: "#fffffff" },
     },

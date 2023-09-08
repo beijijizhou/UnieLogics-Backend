@@ -6,5 +6,6 @@ router.get("/get", foldersControllers.getAllFoldersForSpecificUser);
 router.post("/add", foldersControllers.addFolder);
 router.delete("/delete", foldersControllers.deleteFolder);
 router.put("/update", foldersControllers.editFolderName);
+router.post("/addToFolder", foldersControllers.addProductToFolder);
 
 module.exports = router;

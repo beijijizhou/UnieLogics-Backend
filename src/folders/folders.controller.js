@@ -180,9 +180,58 @@ const editFolderName = async (req, res) => {
   }
 };
 
+const addProductToFolder = async (req, res) => {
+  const { title, asin, price, imageUrl, folderId, email } = req.body;
+
+  if (!folderId) {
+    return res.status(403).json({
+      status: "error",
+      message:
+        "There was an error adding product to folder. You need to specify a folder or set a default one from the platform!",
+    });
+  }
+
+  if (!title || !asin || !imageUrl || !email) {
+    return res.status(403).json({
+      status: "error",
+      message:
+        "There was an error adding product to folder. Title, asin, price, email and imageUrl are required!",
+    });
+  }
+
+  try {
+    const addProductToFolderResponse =
+      await FolderService.addProductToSpecificFolder({
+        email,
+        date: new Date(),
+        title,
+        asin,
+        price,
+        imageUrl,
+        folderId,
+      });
+
+    if (addProductToFolderResponse.status === "error") {
+      return res.status(400).json({
+        ...addProductToFolderResponse,
+      });
+    }
+
+    res.status(200).json({
+      status: "success",
+      response: addProductToFolderResponse,
+      message: "Successfully added product to folder!",
+    });
+  } catch (e) {
+    console.log(e);
+    res.status(500).json({ status: "error", message: JSON.stringify(e) });
+  }
+};
+
 module.exports = {
   getAllFoldersForSpecificUser,
   addFolder,
   deleteFolder,
   editFolderName,
+  addProductToFolder,
 };
