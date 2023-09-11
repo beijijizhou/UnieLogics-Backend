@@ -228,14 +228,44 @@ const addProductToFolder = async (req, res) => {
   }
 };
 
-const deleteItemFromFolder = (req, res) => {
+const deleteItemFromFolder = async (req, res) => {
   const { email, folderId, folderItemId } = req.body;
 
-  if (!email || !folderId || !folderItemId) {
+  if (!email || !folderId) {
     return res.status(403).json({
       status: "error",
       message: "The email, folderId and folderItemId are mandatory",
     });
+  }
+
+  if (!folderItemId) {
+    return res.status(403).json({
+      status: "error",
+      message: "Please select an item to be deleted.",
+    });
+  }
+
+  try {
+    const deleteItemFromFolderResponse =
+      await FolderService.deleteItemFromExistingFolder({
+        email,
+        folderId,
+        folderItemId,
+      });
+
+    if (deleteItemFromFolderResponse.status === "error") {
+      return res.status(400).json({
+        ...deleteItemFromFolderResponse,
+      });
+    }
+    res.status(200).json({
+      status: "success",
+      response: deleteItemFromFolderResponse,
+      message: "Successfully deleted item from folder!",
+    });
+  } catch (e) {
+    console.log(e);
+    res.status(500).json({ status: "error", message: JSON.stringify(e) });
   }
 };
 

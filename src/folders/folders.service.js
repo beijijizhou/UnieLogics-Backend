@@ -173,6 +173,57 @@ const addProductToSpecificFolder =
     return await Folder.findOne({ email });
   };
 
+const deleteItemFromExistingFolder =
+  (Folder) =>
+  async ({ email, folderId, folderItemId }) => {
+    const userWithFolders = await Folder.findOne({ email });
+    let folderItems = [];
+
+    if (!userWithFolders) {
+      return {
+        status: "error",
+        message: "The email provided doesn't match with the one with folders!",
+      };
+    }
+
+    const updateFoldersWithDeletedOne = userWithFolders.folders.map(
+      async (folder) => {
+        if (JSON.stringify(folder.id) === JSON.stringify(folderId)) {
+          if (folder.folderItems.length === 0) {
+            return {
+              status: "error",
+              message: "There are no items in this folder.",
+            };
+          } else {
+            folderItems = helpers.removeObjectWithId(
+              folder.folderItems,
+              folderItemId
+            );
+          }
+        }
+
+        return folder;
+      }
+    );
+
+    if (folderItems === "no_object_with_id" || folderItems.length === 0) {
+      return {
+        status: "error",
+        message: "There is no item with this id",
+      };
+    }
+    const updateObj = {
+      ...userWithFolders,
+      folders: {
+        ...updateFoldersWithDeletedOne,
+      },
+    };
+
+    await Folder.findOneAndUpdate({ email }, updateObj);
+
+    return await Folder.findOne({ email });
+  };
+
 module.exports = (Folders) => {
   return {
     findFoldersByEmail: findFoldersByEmail(Folders),
@@ -181,5 +232,6 @@ module.exports = (Folders) => {
     deleteFoldersForExistingUser: deleteFoldersForExistingUser(Folders),
     editFolderNameForExistingUser: editFolderNameForExistingUser(Folders),
     addProductToSpecificFolder: addProductToSpecificFolder(Folders),
+    deleteItemFromExistingFolder: deleteItemFromExistingFolder(Folders),
   };
 };
