@@ -16,6 +16,7 @@ const foldersSchema = new Schema({
           folderId: { type: String, required: true },
         },
       ],
+      folderSelected: { type: Boolean, required: false, default: false },
       folderItemsCount: { type: Number, required: true, default: 0 },
       folderColor: { type: String, required: true, default: "#fffffff" },
     },

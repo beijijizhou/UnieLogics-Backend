@@ -15,6 +15,7 @@ const addUserWithFoldersIfNoUser =
           folderItems: [],
           folderItemsCount: 0,
           folderColor,
+          folderSelected: folderName === "Default" ? true : false,
         },
       ],
     });
