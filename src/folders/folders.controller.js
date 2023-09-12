@@ -10,18 +10,26 @@ const getAllFoldersForSpecificUser = async (req, res) => {
   }
   try {
     const folders = await FolderService.findFoldersByEmail(email.toLowerCase());
-    console.log("FOLDERSSSSSSS " + folders);
     if (folders) {
       res.status(200).json({
         status: "success",
         response: folders,
       });
     } else {
+      // add default folder to users if there are no folders
+      await FolderService.addUserWithFoldersIfNoUser({
+        email: email.toLowerCase(),
+        folderName: "Default",
+        folderColor: "#d89c00",
+      });
+      const foldersAfterDefault = await FolderService.findFoldersByEmail(
+        email.toLowerCase()
+      );
       res.status(200).json({
         status: "success",
         response: {
           email,
-          folders: [],
+          folders: foldersAfterDefault,
         },
       });
     }
