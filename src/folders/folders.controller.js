@@ -29,7 +29,7 @@ const getAllFoldersForSpecificUser = async (req, res) => {
         status: "success",
         response: {
           email,
-          folders: foldersAfterDefault,
+          ...foldersAfterDefault,
         },
       });
     }
