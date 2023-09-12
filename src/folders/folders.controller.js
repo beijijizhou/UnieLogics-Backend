@@ -27,10 +27,7 @@ const getAllFoldersForSpecificUser = async (req, res) => {
       );
       res.status(200).json({
         status: "success",
-        response: {
-          email,
-          ...foldersAfterDefault,
-        },
+        response: foldersAfterDefault,
       });
     }
   } catch (e) {
