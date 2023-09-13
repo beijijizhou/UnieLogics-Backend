@@ -33,7 +33,25 @@ const deleteFoldersForExistingUser =
   async ({ email, folderId }) => {
     const userWithFolders = await Folder.findOne({ email });
     let folders = userWithFolders.folders;
+    let folderIsDefault = false;
 
+    userWithFolders.folders.map((folder) => {
+      if (JSON.stringify(folder.id) === JSON.stringify(folderId)) {
+        if (folder.folderSelected) {
+          folderIsDefault = true;
+        }
+      }
+
+      return folder;
+    });
+
+    if (folderIsDefault) {
+      return {
+        status: "error",
+        message:
+          "You cannot delete the default folder. Please set a new default folder and try again.",
+      };
+    }
     folders = helpers.removeObjectWithId(folders, folderId);
 
     if (folders === "no_object_with_id") {
@@ -188,7 +206,7 @@ const deleteItemFromExistingFolder =
     }
 
     const updateFoldersWithDeletedOne = userWithFolders.folders.map(
-      async (folder) => {
+      (folder) => {
         if (JSON.stringify(folder.id) === JSON.stringify(folderId)) {
           if (folder.folderItems.length === 0) {
             return {
@@ -225,6 +243,41 @@ const deleteItemFromExistingFolder =
     return await Folder.findOne({ email });
   };
 
+const editDefaultFolderForUser =
+  (Folder) =>
+  async ({ email, folderId, folderSelected }) => {
+    const userWithFolders = await Folder.findOne({ email });
+
+    if (!userWithFolders) {
+      return {
+        status: "error",
+        message: "The email provided doesn't match with the one with folders!",
+      };
+    }
+
+    const updatedFoldersAfterSettingDefaultFolder = userWithFolders.folders.map(
+      (folder) => {
+        if (JSON.stringify(folder.id) === JSON.stringify(folderId)) {
+          folder.folderSelected = folderSelected;
+        } else {
+          folder.folderSelected = false;
+        }
+
+        return folder;
+      }
+    );
+    const updateObj = {
+      ...userWithFolders,
+      folders: {
+        ...updatedFoldersAfterSettingDefaultFolder,
+      },
+    };
+
+    await Folder.findOneAndUpdate({ email }, updateObj);
+
+    return await Folder.findOne({ email });
+  };
+
 module.exports = (Folders) => {
   return {
     findFoldersByEmail: findFoldersByEmail(Folders),
@@ -234,5 +287,6 @@ module.exports = (Folders) => {
     editFolderNameForExistingUser: editFolderNameForExistingUser(Folders),
     addProductToSpecificFolder: addProductToSpecificFolder(Folders),
     deleteItemFromExistingFolder: deleteItemFromExistingFolder(Folders),
+    editDefaultFolderForUser: editDefaultFolderForUser(Folders),
   };
 };

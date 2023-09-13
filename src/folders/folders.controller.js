@@ -274,6 +274,35 @@ const deleteItemFromFolder = async (req, res) => {
   }
 };
 
+const editDefaultFolder = async (req, res) => {
+  const { email, folderId, folderSelected } = req.body;
+
+  if (!email || !folderId || !folderSelected) {
+    return res.status(403).json({
+      status: "error",
+      message: "There was an error changing the default folder.",
+    });
+  }
+
+  try {
+    const editDefaultFolderResponse =
+      await FolderService.editDefaultFolderForUser({
+        email,
+        folderId,
+        folderSelected,
+      });
+
+    res.status(200).json({
+      status: "success",
+      message: "Successfullt updated default folder.",
+      response: editDefaultFolderResponse,
+    });
+  } catch (e) {
+    console.log(e);
+    res.status(500).json({ status: "error", message: JSON.stringify(e) });
+  }
+};
+
 module.exports = {
   getAllFoldersForSpecificUser,
   addFolder,
@@ -281,4 +310,5 @@ module.exports = {
   editFolderName,
   addProductToFolder,
   deleteItemFromFolder,
+  editDefaultFolder,
 };

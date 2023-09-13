@@ -8,5 +8,6 @@ router.delete("/delete", foldersControllers.deleteFolder);
 router.put("/update", foldersControllers.editFolderName);
 router.post("/addToFolder", foldersControllers.addProductToFolder);
 router.delete("/itemFromFolder", foldersControllers.deleteItemFromFolder);
+router.put("/editDefault", foldersControllers.editDefaultFolder);
 
 module.exports = router;
