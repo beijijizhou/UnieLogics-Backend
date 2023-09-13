@@ -115,9 +115,8 @@ const addFolder = async (req, res) => {
 const deleteFolder = async (req, res) => {
   const { folderId, email } = req.body;
   if (!email || !folderId) {
-    console.log(
-      "No  EMAIL or FOLDER ID has been provided, so we don't know what to delete!"
-    );
+    console.log("Received on delete folder", { email, folderId });
+
     return res.status(400).json({
       status: "error",
       message: "Email and folderId must be provided to retrieve data.",
@@ -130,7 +129,7 @@ const deleteFolder = async (req, res) => {
         folderId,
       });
 
-    console.log("DELETE FOLDER RESPONSE, ", updatedFoldersForUserResponse);
+    console.log("Delete folder response is ", updatedFoldersForUserResponse);
 
     if (!updatedFoldersForUserResponse) {
       return res.status(403).json({
@@ -169,7 +168,7 @@ const editFolderName = async (req, res) => {
         folderName,
       });
 
-    console.log("EDIT FOLDER NAME RESPONSE " + editFolderNameResponse);
+    console.log("Edit folder response is " + editFolderNameResponse);
 
     if (editFolderNameResponse.status === "error") {
       return res.status(403).json(editFolderNameResponse);
@@ -215,6 +214,9 @@ const addProductToFolder = async (req, res) => {
         imageUrl,
         folderId,
       });
+    console.log(
+      "Add Product to folder response is " + addProductToFolderResponse
+    );
 
     if (addProductToFolderResponse.status === "error") {
       return res.status(400).json({
@@ -235,6 +237,11 @@ const addProductToFolder = async (req, res) => {
 
 const deleteItemFromFolder = async (req, res) => {
   const { email, folderId, folderItemId } = req.body;
+  console.log("Received on delete item from folder", {
+    email,
+    folderId,
+    folderItemId,
+  });
 
   if (!email || !folderId) {
     return res.status(403).json({
@@ -258,6 +265,11 @@ const deleteItemFromFolder = async (req, res) => {
         folderItemId,
       });
 
+    console.log(
+      "Delete item from folder response is ",
+      deleteItemFromFolderResponse
+    );
+
     if (deleteItemFromFolderResponse.status === "error") {
       return res.status(400).json({
         ...deleteItemFromFolderResponse,
@@ -276,7 +288,11 @@ const deleteItemFromFolder = async (req, res) => {
 
 const editDefaultFolder = async (req, res) => {
   const { email, folderId, folderSelected } = req.body;
-
+  console.log("Received from EDIT FOLDER DEFAUL ", {
+    email,
+    folderId,
+    folderSelected,
+  });
   if (!email || !folderId || !folderSelected) {
     return res.status(403).json({
       status: "error",
@@ -291,6 +307,8 @@ const editDefaultFolder = async (req, res) => {
         folderId,
         folderSelected,
       });
+
+    console.log("Edit Default folder response is", editDefaultFolderResponse);
 
     res.status(200).json({
       status: "success",
