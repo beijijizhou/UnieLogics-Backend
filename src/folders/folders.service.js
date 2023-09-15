@@ -143,8 +143,17 @@ const addProductToSpecificFolder =
           } else {
             folder.folderItems.map((item) => {
               if (item.asin === asin) {
-                productAlreadyAdded = true;
+                // Update the values of the item when product exists
+                item.date = date;
+                item.title = title;
+                item.asin = asin;
+                item.price = price;
+                item.imageUrl = imageUrl;
+                item.folderId = folderId;
+
+                productUpdated = true;
               }
+              return item;
             });
             if (!productAlreadyAdded) {
               folder.folderItems.push({
@@ -163,14 +172,6 @@ const addProductToSpecificFolder =
         return folder;
       }
     );
-
-    if (productAlreadyAdded) {
-      return {
-        status: "error",
-        message:
-          "This product already exists in this folder. You can only add it in a new folder. ",
-      };
-    }
 
     if (!folderWithIdFound) {
       return {
