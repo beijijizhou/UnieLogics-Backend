@@ -3,7 +3,6 @@ const ProfProductDetailsService = require(".");
 const addProfProductDetails = async (req, res) => {
   const {
     email,
-    date,
     asin,
     price,
     imageUrl,
@@ -43,7 +42,7 @@ const addProfProductDetails = async (req, res) => {
         {
           email,
           folderId,
-          date,
+          date: new Date(),
           asin,
           price,
           imageUrl,
