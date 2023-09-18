@@ -50,7 +50,6 @@ const profProductDeatailsSchema = new Schema({
     },
   ],
   note: { type: String, required: false, default: "" },
-  folder: { type: String, required: false, default: "" },
   supplierUrl: { type: String, required: false, default: "" },
 });
 

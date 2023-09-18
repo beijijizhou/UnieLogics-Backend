@@ -9,6 +9,7 @@ const cors = require("cors");
 const usersRouter = require("./src/users/users.routes");
 const productsRouter = require("./src/products/products.routes");
 const foldersRouter = require("./src/folders/folders.routes");
+const profProductsRouter = require("./src/profitableProductDetails/profProductDetails.routes");
 const brandsRouter = require("./src/brands/brands.routes");
 const fLinksRouter = require("./src/fLinks/fLinks.routes");
 const stripeWebhook = require("./src/webhook/stripe.webhook.routes");
@@ -35,6 +36,7 @@ app
 app.use("/users", usersRouter);
 app.use("/products", productsRouter);
 app.use("/folders", foldersRouter);
+app.use("/profProducts", profProductsRouter);
 app.use("/brands", brandsRouter);
 app.use("/fLinks", fLinksRouter);
 app.use("/webhook", stripeWebhook);
