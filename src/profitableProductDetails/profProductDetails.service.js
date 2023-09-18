@@ -1,0 +1,208 @@
+const addProductToSpecificFolderAndIfFlderNotExistCreateIt =
+  (ProfProductDetails) =>
+  async ({
+    email,
+    folderId,
+    date,
+    asin,
+    title,
+    price,
+    imageUrl,
+    amazonFees,
+    pickPack,
+    totalFees,
+    breakEven,
+    costPerItem,
+    miscExpenses,
+    totalCostPerSale,
+    netProfit,
+    units,
+    totalProfit,
+    netSalesMargin,
+    netROI,
+    buyboxIsFBA,
+    offerCountFBA,
+    offerCountFBM,
+    qtyPerSet,
+    productGroup,
+    brand,
+    ian,
+    lastPriceChange,
+    weight,
+    WxHxL,
+    chartsURL,
+    buyboxStatistics,
+    variations,
+    note,
+    supplierUrl,
+  }) => {
+    const userWithProfProductDetails = await ProfProductDetails.findOne({
+      email,
+    });
+    let profProductDetailsUpdated = false;
+
+    if (!userWithProfProductDetails) {
+      const shapeforUserWithProfProductDetails = new ProfProductDetails({
+        email,
+        folders: [
+          {
+            folderId,
+            folderItems: [
+              {
+                date,
+                asin,
+                title,
+                price,
+                imageUrl,
+                amazonFees,
+                pickPack,
+                totalFees,
+                breakEven,
+                costPerItem,
+                miscExpenses,
+                totalCostPerSale,
+                netProfit,
+                units,
+                totalProfit,
+                netSalesMargin,
+                netROI,
+                buyboxIsFBA,
+                offerCountFBA,
+                offerCountFBM,
+                qtyPerSet,
+                productGroup,
+                brand,
+                ian,
+                lastPriceChange,
+                weight,
+                WxHxL,
+                chartsURL,
+                buyboxStatistics,
+                variations,
+                note,
+                supplierUrl,
+              },
+            ],
+          },
+        ],
+      });
+      await shapeforUserWithProfProductDetails.save();
+
+      return {
+        status: "success",
+        message: "Successfully saved product details.",
+      };
+    }
+    const updateSpecificFolderWithProductDetails =
+      userWithProfProductDetails.folders.map((folder) => {
+        // we verify here the folder.folderId instead of folder.id because the id is added by mongo to be unique and
+        // we need the specific folder id where the product has been saved
+        if (JSON.stringify(folder.folderId) === JSON.stringify(folderId)) {
+          folderWithIdFound = true;
+          if (folder.folderItems.length === 0) {
+            folder.folderItems.push({
+              date,
+              asin,
+              title,
+              price,
+              imageUrl,
+              amazonFees,
+              pickPack,
+              totalFees,
+              breakEven,
+              costPerItem,
+              miscExpenses,
+              totalCostPerSale,
+              netProfit,
+              units,
+              totalProfit,
+              netSalesMargin,
+              netROI,
+              buyboxIsFBA,
+              offerCountFBA,
+              offerCountFBM,
+              qtyPerSet,
+              productGroup,
+              brand,
+              ian,
+              lastPriceChange,
+              weight,
+              WxHxL,
+              chartsURL,
+              buyboxStatistics,
+              variations,
+              note,
+              supplierUrl,
+            });
+
+            folder.folderItemsCount = folder.folderItems.length;
+          } else {
+            folder.folderItems.map((item) => {
+              if (item.asin === asin) {
+                // Update the values of the item when product exists
+
+                item.date = date;
+                item.asin = asin;
+                item.title = title;
+                item.price = price;
+                item.imageUrl = imageUrl;
+                item.amazonFees = amazonFees;
+                item.pickPack = pickPack;
+                item.totalFees = totalFees;
+                item.breakEven = breakEven;
+                item.costPerItem = costPerItem;
+                item.miscExpenses = miscExpenses;
+                item.totalCostPerSale = totalCostPerSale;
+                item.netProfit = netProfit;
+                item.units = units;
+                item.totalProfit = totalProfit;
+                item.netSalesMargin = netSalesMargin;
+                item.netROI = netROI;
+                item.buyboxIsFBA = buyboxIsFBA;
+                item.offerCountFBA = offerCountFBA;
+                item.offerCountFBM = offerCountFBM;
+                item.qtyPerSet = qtyPerSet;
+                item.productGroup = productGroup;
+                item.brand = brand;
+                item.ian = ian;
+                item.lastPriceChange = lastPriceChange;
+                item.weight = weight;
+                item.WxHxL = WxHxL;
+                item.chartsURL = chartsURL;
+                item.buyboxStatistics = buyboxStatistics;
+                item.variations = variations;
+                item.note = note;
+                item.supplierUrl = supplierUrl;
+
+                profProductDetailsUpdated = true;
+              }
+              return item;
+            });
+          }
+        }
+        return folder;
+      });
+
+    const updateObj = {
+      ...userWithProfProductDetails,
+      folders: {
+        ...updateSpecificFolderWithProductDetails,
+      },
+    };
+
+    await ProfProductDetails.findOneAndUpdate({ email }, updateObj);
+
+    return {
+      status: "success",
+      message: `Successfully ${
+        profProductDetailsUpdated ? "updated" : "saved"
+      } product details.`,
+    };
+  };
+
+module.exports = (ProfProductDetails) => {
+  return {
+    addProductToSpecificFolderAndIfFlderNotExistCreateIt:
+      addProductToSpecificFolderAndIfFlderNotExistCreateIt(ProfProductDetails),
+  };
+};

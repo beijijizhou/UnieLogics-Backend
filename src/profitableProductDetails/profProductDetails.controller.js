@@ -1,4 +1,6 @@
-const addProfProductDetails = (req, res) => {
+const ProfProductDetailsService = require(".");
+
+const addProfProductDetails = async (req, res) => {
   const {
     email,
     date,
@@ -35,45 +37,53 @@ const addProfProductDetails = (req, res) => {
     folderId,
   } = req.body;
 
-  return res.status(200).json({
-    status: "success",
-    message: "Successfully added profitable product details",
-    response: {
-      email: email,
-      date: date,
-      asin: asin,
-      price: price,
-      imageUrl: imageUrl,
-      amazonFees: amazonFees,
-      pickPack: pickPack,
-      totalFees: totalFees,
-      breakEven: breakEven,
-      costPerItem: costPerItem,
-      miscExpenses: miscExpenses,
-      totalCostPerSale: totalCostPerSale,
-      netProfit: netProfit,
-      units: units,
-      totalProfit: totalProfit,
-      netSalesMargin: netSalesMargin,
-      netROI: netROI,
-      buyboxIsFBA: buyboxIsFBA,
-      offerCountFBA: offerCountFBA,
-      offerCountFBM: offerCountFBM,
-      qtyPerSet: qtyPerSet,
-      productGroup: productGroup,
-      brand: brand,
-      ian: ian,
-      lastPriceChange: lastPriceChange,
-      weight: weight,
-      WxHxL: WxHxL,
-      chartsURL: chartsURL,
-      buyboxStatistics: buyboxStatistics,
-      variations: variations,
-      note: note,
-      supplierUrl: supplierUrl,
-      folderI: folderId,
-    },
-  });
+  try {
+    const addProductDetailsToSpecificFolderResponse =
+      await ProfProductDetailsService.addProductToSpecificFolderAndIfFlderNotExistCreateIt(
+        {
+          email,
+          folderId,
+          date,
+          asin,
+          price,
+          imageUrl,
+          amazonFees,
+          pickPack,
+          totalFees,
+          breakEven,
+          costPerItem,
+          miscExpenses,
+          totalCostPerSale,
+          netProfit,
+          units,
+          totalProfit,
+          netSalesMargin,
+          netROI,
+          buyboxIsFBA,
+          offerCountFBA,
+          offerCountFBM,
+          qtyPerSet,
+          productGroup,
+          brand,
+          ian,
+          lastPriceChange,
+          weight,
+          WxHxL,
+          chartsURL,
+          buyboxStatistics,
+          variations,
+          note,
+          supplierUrl,
+        }
+      );
+
+    return res.status(200).json({
+      ...addProductDetailsToSpecificFolderResponse,
+    });
+  } catch (e) {
+    console.log(e);
+    res.status(500).json({ status: "error", message: JSON.stringify(e) });
+  }
 };
 
 module.exports = {
