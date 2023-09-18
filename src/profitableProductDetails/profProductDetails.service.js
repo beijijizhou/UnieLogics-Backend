@@ -178,6 +178,44 @@ const addProductToSpecificFolderAndIfFlderNotExistCreateIt =
               }
               return item;
             });
+            if (!profProductDetailsUpdated) {
+              folder.folderItems.push({
+                date,
+                asin,
+                title,
+                price,
+                imageUrl,
+                amazonFees,
+                pickPack,
+                totalFees,
+                breakEven,
+                costPerItem,
+                miscExpenses,
+                totalCostPerSale,
+                netProfit,
+                units,
+                totalProfit,
+                netSalesMargin,
+                netROI,
+                buyboxIsFBA,
+                offerCountFBA,
+                offerCountFBM,
+                qtyPerSet,
+                productGroup,
+                brand,
+                ian,
+                lastPriceChange,
+                weight,
+                WxHxL,
+                chartsURL,
+                buyboxStatistics,
+                variations,
+                note,
+                supplierUrl,
+              });
+
+              folder.folderItemsCount = folder.folderItems.length;
+            }
           }
         }
         return folder;

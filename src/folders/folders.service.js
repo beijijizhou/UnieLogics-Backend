@@ -115,6 +115,7 @@ const addProductToSpecificFolder =
   (Folder) =>
   async ({ email, date, title, asin, price, imageUrl, folderId }) => {
     const userWithFolders = await Folder.findOne({ email });
+    let productAlreadyAdded = false;
     let folderWithIdFound = false;
 
     if (!userWithFolders) {
@@ -152,6 +153,18 @@ const addProductToSpecificFolder =
               }
               return item;
             });
+            if (!productAlreadyAdded) {
+              folder.folderItems.push({
+                date,
+                title,
+                asin,
+                price,
+                imageUrl,
+                folderId,
+              });
+
+              folder.folderItemsCount = folder.folderItems.length;
+            }
           }
         }
         return folder;
