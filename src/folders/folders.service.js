@@ -151,7 +151,7 @@ const addProductToSpecificFolder =
                 item.imageUrl = imageUrl;
                 item.folderId = folderId;
 
-                productUpdated = true;
+                productAlreadyAdded = true;
               }
               return item;
             });
