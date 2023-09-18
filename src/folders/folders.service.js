@@ -150,6 +150,8 @@ const addProductToSpecificFolder =
                 item.price = price;
                 item.imageUrl = imageUrl;
                 item.folderId = folderId;
+
+                productUpdated = true;
               }
               return item;
             });
