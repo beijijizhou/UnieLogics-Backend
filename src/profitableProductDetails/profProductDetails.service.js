@@ -40,6 +40,7 @@ const addProductToSpecificFolderAndIfFlderNotExistCreateIt =
       email,
     });
     let profProductDetailsUpdated = false;
+    let folderWithIdFound = false;
 
     if (!userWithProfProductDetails) {
       const shapeforUserWithProfProductDetails = new ProfProductDetails({
@@ -99,6 +100,7 @@ const addProductToSpecificFolderAndIfFlderNotExistCreateIt =
         // we need the specific folder id where the product has been saved
         if (JSON.stringify(folder.folderId) === JSON.stringify(folderId)) {
           folderWithIdFound = true;
+
           if (folder.folderItems.length === 0) {
             folder.folderItems.push({
               date,
@@ -220,6 +222,49 @@ const addProductToSpecificFolderAndIfFlderNotExistCreateIt =
         }
         return folder;
       });
+
+    if (!folderWithIdFound) {
+      userWithProfProductDetails.folders.push({
+        folderId,
+        folderItemsCount: 0,
+        folderItems: [
+          {
+            date,
+            asin,
+            title,
+            price,
+            imageUrl,
+            amazonFees,
+            pickPack,
+            totalFees,
+            breakEven,
+            costPerItem,
+            miscExpenses,
+            totalCostPerSale,
+            netProfit,
+            units,
+            totalProfit,
+            netSalesMargin,
+            netROI,
+            buyboxIsFBA,
+            offerCountFBA,
+            offerCountFBM,
+            qtyPerSet,
+            productGroup,
+            brand,
+            ian,
+            lastPriceChange,
+            weight,
+            WxHxL,
+            chartsURL,
+            buyboxStatistics,
+            variations,
+            note,
+            supplierUrl,
+          },
+        ],
+      });
+    }
 
     const updateObj = {
       ...userWithProfProductDetails,
