@@ -7,4 +7,9 @@ router.post(
   profProductsControllers.addProfProductDetails
 );
 
+router.get(
+  "/profProductDetails",
+  profProductsControllers.getProfitableProductDetails
+);
+
 module.exports = router;

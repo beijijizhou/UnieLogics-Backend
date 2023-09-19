@@ -87,6 +87,43 @@ const addProfProductDetails = async (req, res) => {
   }
 };
 
+const getProfitableProductDetails = async (req, res) => {
+  const { email, folderId, asin } = req.query;
+
+  if (!folderId || !asin) {
+    return res.status(403).json({
+      status: "error",
+      message:
+        "There was an error retrieving the product details. Email, Folder Id and Asin are mandatory to be provided.",
+    });
+  }
+
+  try {
+    const retrieveProfProductDetailsResponse =
+      await ProfProductDetailsService.getProfProductDetailsFromFolder({
+        email,
+        folderId,
+        asin,
+      });
+
+    if (retrieveProfProductDetailsResponse.status === "error") {
+      return res.status(400).json({
+        ...retrieveProfProductDetailsResponse,
+      });
+    }
+
+    return res.status(200).json({
+      status: "success",
+      response: { ...retrieveProfProductDetailsResponse },
+      message: `Succeffully retrieved details for asin: ${asin}`,
+    });
+  } catch (e) {
+    console.log(e);
+    res.status(500).json({ status: "error", message: JSON.stringify(e) });
+  }
+};
+
 module.exports = {
   addProfProductDetails,
+  getProfitableProductDetails,
 };

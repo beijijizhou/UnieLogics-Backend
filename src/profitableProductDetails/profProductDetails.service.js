@@ -238,9 +238,53 @@ const addProductToSpecificFolderAndIfFlderNotExistCreateIt =
     };
   };
 
+const getProfProductDetailsFromFolder =
+  (ProfProductDetails) =>
+  async ({ email, folderId, asin }) => {
+    const userWithProfProductDetails = await ProfProductDetails.findOne({
+      email,
+    });
+
+    if (!userWithProfProductDetails) {
+      return {
+        status: "error",
+        message: "There is nothing to be retrieved.",
+      };
+    }
+
+    const folderWithSpecificId = userWithProfProductDetails.folders.filter(
+      (folder) => folder.folderId === folderId
+    );
+
+    if (folderWithSpecificId.length === 0) {
+      return {
+        status: "error",
+        message: "There is no folder with this id.",
+      };
+    }
+    const productDetails = folderWithSpecificId[0].folderItems.filter(
+      (item) => item.asin === asin
+    );
+
+    if (productDetails.length === 0) {
+      return {
+        status: "error",
+        message: "There is no product with this ASIN.",
+      };
+    }
+
+    if (productDetails.length > 0) {
+      return {
+        productDetails,
+      };
+    }
+  };
+
 module.exports = (ProfProductDetails) => {
   return {
     addProductToSpecificFolderAndIfFlderNotExistCreateIt:
       addProductToSpecificFolderAndIfFlderNotExistCreateIt(ProfProductDetails),
+    getProfProductDetailsFromFolder:
+      getProfProductDetailsFromFolder(ProfProductDetails),
   };
 };
