@@ -16,10 +16,15 @@ const getChartsData = async (req, res) => {
         message: error,
       });
     }
+    console.log(
+      "Request Url is ",
+      `https://api.keepa.com/product?key=${keepaKey}&domain=${domain}&stats=${stats}&buybox=${buybox}&history=${history}&offers=${offers}&asin=${asin}`
+    );
+    console.log(JSON.parse(body));
     return res.status(200).json({
       status: "success",
       message: "Successfully retrieved keepa data",
-      response: JSON.parse(body),
+      ...JSON.parse(body),
     });
   });
 };
