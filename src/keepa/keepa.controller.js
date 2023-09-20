@@ -14,6 +14,7 @@ const getChartsData = async (req, res) => {
       rest.status(500).json({
         status: "error",
         message: error,
+        ...response,
       });
     }
     console.log(
