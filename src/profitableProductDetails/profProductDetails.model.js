@@ -51,7 +51,7 @@ const profProductDeatailsSchema = new Schema({
               img: { type: String, required: false, default: "" },
               asin: { type: String, required: false, default: "" },
               variation: { type: String, required: false, default: "" },
-              reqPackaging: { type: String, required: false, default: "" },
+              requestPackaging: { type: String, required: false, default: "" },
               reviews: { type: String, required: false, default: "" },
             },
           ],
