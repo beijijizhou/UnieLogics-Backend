@@ -1,4 +1,4 @@
-const Product = require("./products.model");
-const ProductService = require("./products.service");
+const Product = require("./bucketsProducts.model");
+const ProductService = require("./bucketsProducts.service");
 
 module.exports = ProductService(Product);
