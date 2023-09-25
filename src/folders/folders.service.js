@@ -226,7 +226,7 @@ const deleteItemFromExistingFolder =
       }
     );
 
-    if (folderItems === "no_object_with_id" || folderItems.length === 0) {
+    if (folderItems === "no_object_with_id") {
       return {
         status: "error",
         message: "There is no item with this id",
