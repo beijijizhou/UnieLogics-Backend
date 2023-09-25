@@ -29,7 +29,7 @@ const saveKeepaChartDataToDatabase =
         { asin: keepaProduct.products[0].asin },
         updateObj
       );
-      return await keepaProductToSave.findOne({
+      return await Keepa.findOne({
         asin: keepaProduct.products[0].asin,
       });
     }
