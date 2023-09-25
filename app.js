@@ -7,7 +7,7 @@ const jwt = require("./src/_helpers/jwt");
 const cors = require("cors");
 
 const usersRouter = require("./src/users/users.routes");
-const productsRouter = require("./src/products/products.routes");
+const bucketsProductsRouter = require("./src/bucketsProducts/products.routes");
 const foldersRouter = require("./src/folders/folders.routes");
 const profProductsRouter = require("./src/profitableProductDetails/profProductDetails.routes");
 const keepaRouter = require("./src/keepa/keepa.routes");
@@ -35,7 +35,7 @@ app
 
 //routes
 app.use("/users", usersRouter);
-app.use("/products", productsRouter);
+app.use("/buckets", bucketsProductsRouter);
 app.use("/folders", foldersRouter);
 app.use("/profProducts", profProductsRouter);
 app.use("/keepa", keepaRouter);
