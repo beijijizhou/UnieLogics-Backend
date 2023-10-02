@@ -20,11 +20,11 @@ const getChartsData = async (req, res) => {
       gzip: true,
     };
     request(options, async (error, response, body) => {
-      if (error) {
-        rest.status(500).json({
+      const keepaBody = JSON.parse(body);
+      if (error || keepaBody?.error?.type === "unauthorized") {
+        return res.status(500).json({
           status: "error",
-          message: error,
-          ...response,
+          message: error || keepaBody.error.message,
         });
       }
       console.log(
