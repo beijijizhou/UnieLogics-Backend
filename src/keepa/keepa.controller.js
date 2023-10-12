@@ -2,7 +2,7 @@ const KeepaService = require("../keepa");
 const request = require("request");
 const dayjs = require("dayjs");
 const keepaKey =
-  "doer4spts438qteukukrm0uc6rdg4l873hhj9veb1g4m2856160j8n3gs7edgm89";
+  "dnir47sceh6ba1gfou60h8dnjcfvhk7glfq902m5ue028k3f7bqleqeotu97kme6";
 
 const getChartsData = async (req, res) => {
   const { domain, stats, buybox, history, offers, asin } = req.query;
