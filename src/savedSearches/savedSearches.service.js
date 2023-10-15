@@ -1,3 +1,5 @@
+const { randomUUID } = require("crypto");
+
 const addSavedSearchToDatabase =
   (SavedSearches) =>
   async ({ email, savedSearchTerm, savedSearchUrl, tunnelVisionAvg }) => {
@@ -20,7 +22,7 @@ const addSavedSearchToDatabase =
         email,
         savedSearches: [
           {
-            _id: crypto.randomUUID(),
+            _id: randomUUID(),
             savedSearchTerm,
             savedSearchUrl,
             tunnelVisionAvg,
@@ -33,7 +35,7 @@ const addSavedSearchToDatabase =
         savedSearches: [
           ...currentUserWithSavedSearches.savedSearches,
           {
-            _id: crypto.randomUUID(),
+            _id: randomUUID(),
             savedSearchTerm,
             savedSearchUrl,
             tunnelVisionAvg,
