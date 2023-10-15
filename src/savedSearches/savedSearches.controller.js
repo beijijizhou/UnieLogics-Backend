@@ -36,7 +36,7 @@ const addSavedSearch = async (req, res) => {
 
     return res.status(200).json({
       status: "success",
-      message: `Successfully added Search your Saved Searches!`,
+      message: `Successfully saved this search to your Saved Searches!`,
       addSavedSearchResponse,
     });
   } catch (e) {
