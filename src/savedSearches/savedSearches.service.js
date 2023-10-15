@@ -33,13 +33,20 @@ const addSavedSearchToDatabase =
         ],
       };
 
-      const updateSavedSearchesForExistingUser =
-        await SavedSearches.findOneAndUpdate({ email }, updateObj);
+      await SavedSearches.findOneAndUpdate({ email }, updateObj);
     }
+  };
+
+const getAllSavedSearchesForEmailFromDB =
+  (SavedSearches) =>
+  async ({ email }) => {
+    return await SavedSearches.findOne({ email });
   };
 
 module.exports = (SavedSearches) => {
   return {
     addSavedSearchToDatabase: addSavedSearchToDatabase(SavedSearches),
+    getAllSavedSearchesForEmailFromDB:
+      getAllSavedSearchesForEmailFromDB(SavedSearches),
   };
 };

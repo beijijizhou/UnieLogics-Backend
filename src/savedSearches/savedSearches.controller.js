@@ -45,6 +45,43 @@ const addSavedSearch = async (req, res) => {
   }
 };
 
+const getAllSavedSearches = async (req, res) => {
+  const { email } = req.query;
+
+  if (!email) {
+    res.status(400).json({
+      status: "error",
+      message: "There was an error saving your search!",
+    });
+  }
+
+  try {
+    const getAllSavedSearchesForEmailFromDBResponse =
+      await SavedSearchesService.getAllSavedSearchesForEmailFromDB({ email });
+    if (getAllSavedSearchesForEmailFromDBResponse) {
+      return res.status(200).json({
+        status: "success",
+        message: "Successfully retreieved all your saved searches.",
+        response: getAllSavedSearchesForEmailFromDBResponse,
+      });
+    } else {
+      return res.status(200).json({
+        status: "success",
+        message: "Successfully retrieved all your saved searches.",
+        response: {
+          savedSearches: [],
+          email,
+        },
+      });
+    }
+    console.log(getAllSavedSearchesForEmailFromDBResponse);
+  } catch (e) {
+    console.log(e);
+    res.status(500).json({ status: "error", message: JSON.stringify(e) });
+  }
+};
+
 module.exports = {
   addSavedSearch,
+  getAllSavedSearches,
 };
