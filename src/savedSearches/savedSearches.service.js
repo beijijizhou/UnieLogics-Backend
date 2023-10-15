@@ -18,7 +18,14 @@ const addSavedSearchToDatabase =
     } else if (!currentUserWithSavedSearches) {
       new SavedSearches({
         email,
-        savedSearches: [{ savedSearchTerm, savedSearchUrl, tunnelVisionAvg }],
+        savedSearches: [
+          {
+            _id: crypto.randomUUID(),
+            savedSearchTerm,
+            savedSearchUrl,
+            tunnelVisionAvg,
+          },
+        ],
       }).save();
     } else {
       updateObj = {
@@ -26,6 +33,7 @@ const addSavedSearchToDatabase =
         savedSearches: [
           ...currentUserWithSavedSearches.savedSearches,
           {
+            _id: crypto.randomUUID(),
             savedSearchTerm,
             savedSearchUrl,
             tunnelVisionAvg,
