@@ -81,7 +81,55 @@ const getAllSavedSearches = async (req, res) => {
   }
 };
 
+const deleteSavedSearch = async (req, res) => {
+  const { _id, email } = req.body;
+  if (!email || !_id) {
+    console.log("One of _id or email not pressent in delete saved searches", {
+      email,
+      _id,
+    });
+
+    return res.status(400).json({
+      status: "error",
+      message: "There was an error deleting your saved search.",
+    });
+  }
+  try {
+    const updatedSavedSearchesForUserResponse =
+      await SavedSearchesService.deleteSpecificSavedSearchDB({
+        email: email.toLowerCase(),
+        _id,
+      });
+
+    console.log(
+      "Delete saved searches response is ",
+      updatedSavedSearchesForUserResponse
+    );
+
+    if (!updatedSavedSearchesForUserResponse) {
+      return res.status(403).json({
+        status: "error",
+        message: `There was an error processing the delete request`,
+      });
+    }
+    if (updatedSavedSearchesForUserResponse.status === "error") {
+      return res.status(403).json({
+        ...updatedSavedSearchesForUserResponse,
+      });
+    }
+    return res.status(200).json({
+      status: "success",
+      response: updatedSavedSearchesForUserResponse,
+      message: "Successfully deleted selected Saved Search.",
+    });
+  } catch (e) {
+    console.log(e);
+    res.status(500).json({ status: "error", message: JSON.stringify(e) });
+  }
+};
+
 module.exports = {
   addSavedSearch,
   getAllSavedSearches,
+  deleteSavedSearch,
 };

@@ -4,5 +4,6 @@ const router = express.Router();
 
 router.post("/add", savedSearchesControllers.addSavedSearch);
 router.get("/getAll", savedSearchesControllers.getAllSavedSearches);
+router.delete("/delete", savedSearchesControllers.deleteSavedSearch);
 
 module.exports = router;
