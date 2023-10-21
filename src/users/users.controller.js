@@ -454,13 +454,14 @@ const simpleProfile = async (req, res) => {
           customerID: user.billingID,
           email: user.email,
           firstName: user.firstName,
-          lastName: user.firstName,
+          lastName: user.lastName,
           email: user.email,
           hasActiveSubscription: user.hasActiveSubscription,
           plan: user.plan,
           role: user.role,
           token: user.token,
           survey: user.survey,
+          phoneNumber: user.phoneNumber,
         },
       });
     } else {
