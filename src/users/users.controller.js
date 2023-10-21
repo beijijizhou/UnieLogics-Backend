@@ -94,7 +94,7 @@ const checkAuthentication = async (req, res) => {
     let user = await UserService.getUserByEmail(email);
     let hasActiveSubscription = false;
 
-    if (user.role === "admin" || user.role === "wharehouseOwner") {
+    if (user.role === "admin" || user.role === "warehouseOwner") {
       hasActiveSubscription = true;
 
       user.hasActiveSubscription = true;
@@ -281,7 +281,7 @@ const login = async (req, res) => {
       let hasActiveSubscription = false;
       let hasTrial = false;
 
-      if (customer.role !== "wharehouseOwner") {
+      if (customer.role !== "warehouseOwner") {
         customerInfo = await Stripe.getCustomerByID(customer.billingID);
         const existingSubscription = await Stripe.getSubsription(
           customerInfo.id

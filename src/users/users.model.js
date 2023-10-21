@@ -17,7 +17,7 @@ const userSchema = new Schema({
   endDate: { type: Date, default: null },
   role: {
     type: String,
-    enum: ["user", "admin", "wharehouseOwner"],
+    enum: ["user", "admin", "warehouseOwner"],
     default: "user",
   },
   hasActiveSubscription: { type: Boolean, default: false },

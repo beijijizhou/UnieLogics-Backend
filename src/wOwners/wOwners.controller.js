@@ -131,7 +131,7 @@ const add = async (req, res) => {
       billingID: "warehouse-owner-billing-id-not-needed",
       plan: "none",
       endDate: null,
-      role: "wharehouseOwner",
+      role: "warehouseOwner",
       phoneNumber: wOwner.phoneNumber,
     });
 
