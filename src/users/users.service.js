@@ -16,7 +16,7 @@ const addUser =
 
 const registerUser =
   (User) =>
-  ({
+  async ({
     firstName,
     lastName,
     email,
@@ -26,7 +26,17 @@ const registerUser =
     plan,
     endDate,
     phoneNumber,
+    role,
   }) => {
+    const userAlreadyExists = await User.findOne({ email });
+
+    if (userAlreadyExists) {
+      return {
+        status: "error",
+        message: "There is already a user with this email address!",
+      };
+    }
+
     const user = new User({
       firstName,
       lastName,
@@ -37,6 +47,7 @@ const registerUser =
       plan,
       endDate,
       phoneNumber,
+      role: role ? role : "user",
     });
     user.hash = bcrypt.hashSync(password, 10);
 

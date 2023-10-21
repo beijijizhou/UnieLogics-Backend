@@ -94,7 +94,7 @@ const checkAuthentication = async (req, res) => {
     let user = await UserService.getUserByEmail(email);
     let hasActiveSubscription = false;
 
-    if (user.role === "admin") {
+    if (user.role === "admin" || user.role === "wharehouseOwner") {
       hasActiveSubscription = true;
 
       user.hasActiveSubscription = true;
@@ -227,6 +227,12 @@ const register = async (req, res) => {
         phoneNumber,
       });
 
+      if (customer?.status === "error") {
+        return res.status(403).json({
+          ...customer,
+        });
+      }
+
       console.log(
         `A new user signed up and addded to DB. The ID for ${email.toLowerCase()} is ${JSON.stringify(
           customerInfo
@@ -271,20 +277,27 @@ const login = async (req, res) => {
         email.toLowerCase(),
         password
       );
-      customerInfo = await Stripe.getCustomerByID(customer.billingID);
       console.log(customer);
-      const existingSubscription = await Stripe.getSubsription(customerInfo.id);
       let hasActiveSubscription = false;
       let hasTrial = false;
 
-      existingSubscription.data.forEach(function (item) {
-        if (item.status === "active" || item.status === "trialing") {
-          hasActiveSubscription = true;
-        }
-        if (item.status === "trialing") {
-          hasTrial = true;
-        }
-      });
+      if (customer.role !== "wharehouseOwner") {
+        customerInfo = await Stripe.getCustomerByID(customer.billingID);
+        const existingSubscription = await Stripe.getSubsription(
+          customerInfo.id
+        );
+
+        existingSubscription.data.forEach(function (item) {
+          if (item.status === "active" || item.status === "trialing") {
+            hasActiveSubscription = true;
+          }
+          if (item.status === "trialing") {
+            hasTrial = true;
+          }
+        });
+      } else {
+        hasActiveSubscription = true;
+      }
 
       if (hasActiveSubscription) {
         console.log("hasActiveSubscription value is", hasActiveSubscription);

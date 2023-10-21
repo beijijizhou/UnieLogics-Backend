@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 const userSchema = new Schema({
   email: { type: String, required: true },
   firstName: { type: String, required: true },
-  lastName: { type: String, required: true },
+  lastName: { type: String, required: false, default: "" },
   hash: { type: String, required: true },
   billingID: String,
   plan: {
@@ -15,7 +15,11 @@ const userSchema = new Schema({
   hasTrial: { type: Boolean, default: false },
   phoneNumber: { type: String, default: null },
   endDate: { type: Date, default: null },
-  role: { type: String, enum: ["user", "admin"], default: "user" },
+  role: {
+    type: String,
+    enum: ["user", "admin", "wharehouseOwner"],
+    default: "user",
+  },
   hasActiveSubscription: { type: Boolean, default: false },
   notifications: { type: Boolean, default: false },
   salesPerMonthCheck: { type: Number, default: null },
