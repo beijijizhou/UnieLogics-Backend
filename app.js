@@ -14,7 +14,7 @@ const keepaRouter = require("./src/keepa/keepa.routes");
 const brandsRouter = require("./src/brands/brands.routes");
 const fLinksRouter = require("./src/fLinks/fLinks.routes");
 const savedSearchesRouter = require("./src/savedSearches/savedSearches.routes");
-const wharehouseOwnersRouter = require("./src/whOwners/whOwners.routes");
+const warehouseOwnersRouter = require("./src/wOwners/wOwners.routes");
 const stripeWebhook = require("./src/webhook/stripe.webhook.routes");
 
 const app = express();
@@ -44,7 +44,7 @@ app.use("/keepa", keepaRouter);
 app.use("/brands", brandsRouter);
 app.use("/fLinks", fLinksRouter);
 app.use("/savedSearches", savedSearchesRouter);
-app.use("/whOwners", wharehouseOwnersRouter);
+app.use("/wOwners", warehouseOwnersRouter);
 app.use("/webhook", stripeWebhook);
 
 const port = process.env.PORT || 4242;
