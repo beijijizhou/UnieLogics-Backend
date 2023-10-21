@@ -1,4 +1,5 @@
 const dayjs = require("dayjs");
+const { randomUUID } = require("crypto");
 
 const addWOwnerToDatabase =
   (WOwners) =>
@@ -7,6 +8,7 @@ const addWOwnerToDatabase =
       email: wOwner.email,
       warehouses: [
         {
+          _id: randomUUID(),
           dateAdded: dayjs().format(),
           dateModified: dayjs().format(),
           name: wOwner.name.toString().toLowerCase(),

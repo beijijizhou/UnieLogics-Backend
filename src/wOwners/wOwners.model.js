@@ -5,6 +5,7 @@ const wOwners = new Schema({
   email: { type: String, required: true },
   warehouses: [
     {
+      _id: { type: String, default: null },
       dateAdded: { type: Date, default: null },
       dateModified: { type: Date, default: null },
       name: { type: String, required: true },
