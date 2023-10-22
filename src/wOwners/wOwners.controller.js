@@ -136,7 +136,7 @@ const add = async (req, res) => {
     });
 
     console.log(
-      `A new user signed up and addded to DB from Wharehouse management. The ID for ${wOwner.email.toLowerCase()} is ${JSON.stringify(
+      `A new user signed up and addded to DB from Warehouse management. The ID for ${wOwner.email.toLowerCase()} is ${JSON.stringify(
         createUserResponse
       )}`
     );
@@ -151,25 +151,37 @@ const add = async (req, res) => {
 
     console.log(createUserResponse);
     if (createUserResponse?.status === "error") {
-      return res.status(400).json({
-        ...createUserResponse,
+      const updateWarehousesForExistingOwnerResponse =
+        await WOwnersService.updateWarehousesInDBForExistingOwner({
+          wOwner,
+        });
+
+      if (updateWarehousesForExistingOwnerResponse?.status === "error") {
+        return res.status(400).json({
+          ...updateWarehousesForExistingOwnerResponse,
+        });
+      }
+
+      return res.status(200).json({
+        status: "success",
+        message: `Successfully updated Warehouses for existing Warehouse Owner!`,
+      });
+    } else {
+      const addWOwnerResponse = await WOwnersService.addWOwnerToDatabase({
+        wOwner,
+      });
+
+      if (addWOwnerResponse?.status === "error") {
+        return res.status(400).json({
+          ...addWOwnerResponse,
+        });
+      }
+
+      return res.status(200).json({
+        status: "success",
+        message: `Successfully added Warehouse Owner to the database!`,
       });
     }
-    const addWOwnerResponse = await WOwnersService.addWOwnerToDatabase({
-      wOwner,
-    });
-    console.log(addWOwnerResponse);
-
-    if (addWOwnerResponse?.status === "error") {
-      return res.status(400).json({
-        ...addWOwnerResponse,
-      });
-    }
-
-    return res.status(200).json({
-      status: "success",
-      message: `Successfully added Wharehouse Owner to the database!`,
-    });
   } catch (e) {
     console.log(e);
     res.status(500).json({ status: "error", message: JSON.stringify(e) });
