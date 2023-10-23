@@ -24,7 +24,7 @@ const welcomeMailBody = (from_who, email) => {
                           <td style="height:40px;">&nbsp;</td>
                         </tr>
                         <tr>
-                          <td><img src="https://www.asinmice.com/public/images/logo.png" alt="Logo" title="Logo" style="display:block;margin:0 auto;margin-bottom:15px;" width="120"/></td>
+                          <td><img src="https://www.asinmice.com/images/logo.png" alt="Logo" title="Logo" style="display:block;margin:0 auto;margin-bottom:15px;" width="120"/></td>
                         </tr>
                         <tr>
                           <td style="padding:0 35px;">
@@ -48,7 +48,7 @@ const welcomeMailBody = (from_who, email) => {
                                   Take 2 minutes to watch this welcome video and the potential behind our platform. 
                               </p><br />
                               <a href="https://www.youtube.com/watch?v=UA4giAM6deg" target="_blank" alt="welcome to AsinMice video">
-                                <img styl="margin: 0 auto;" src="https://www.asinmice.com/public/images/welcomeVideoThumbnail.png" alt="welcome to AsinMice image" />
+                                <img styl="margin: 0 auto;" src="https://www.asinmice.com/images/welcomeVideoThumbnail.png" alt="welcome to AsinMice image" />
                               </a><br />
                               <a href="https://www.asinmice.com/login"
                                 style="background:#a78c36;text-decoration:none !important; font-weight:500; margin-top:35px; color:#fff;text-transform:uppercase; font-size:14px;padding:10px 24px;display:inline-block;border-radius:50px;">Go to Login</a>
@@ -103,7 +103,7 @@ const forgotPasswordMailBody = (from_who, email, randomPassword) => {
                           <td style="height:40px;">&nbsp;</td>
                         </tr>
                         <tr>
-                          <td><img src="https://www.asinmice.com/public/images/logo.png" alt="Logo" title="Logo" style="display:block;margin:0 auto;margin-bottom:15px;" width="120"/></td>
+                          <td><img src="https://www.asinmice.com/images/logo.png" alt="Logo" title="Logo" style="display:block;margin:0 auto;margin-bottom:15px;" width="120"/></td>
                         </tr>
                         <tr>
                           <td style="padding:0 35px;">
