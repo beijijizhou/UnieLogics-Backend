@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const wOwners = new Schema({
+const wOwnersSchema = new Schema({
   email: { type: String, required: true },
   warehouses: [
     {
@@ -77,6 +77,6 @@ const wOwners = new Schema({
   ],
 });
 
-const whOwnersModel = mongoose.model("wOwners", wOwners, "wOwners");
+const wOwnersModel = mongoose.model("wOwners", wOwnersSchema, "wOwners");
 
-module.exports = whOwnersModel;
+module.exports = wOwnersModel;
