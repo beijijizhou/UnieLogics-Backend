@@ -102,7 +102,50 @@ const getAll = async (req, res) => {
     });
   }
 };
+
+const deleteSupplier = async (req, res) => {
+  const { email, _id } = req.body;
+
+  if (!_id || !email) {
+    console.log(
+      "No ID or EMAIL has been provided, so we don't know which supplier to delete!"
+    );
+
+    return res.status(400).json({
+      status: "errror",
+      message:
+        "No ID or EMAIL has been provided, so we don't know which supplier to delete!",
+    });
+  }
+
+  try {
+    const deleteSupplierResponse =
+      await SuppliersService.deleteSupplierFromSpecificUser({
+        email: email.toLowerCase(),
+        _id,
+      });
+
+    if (deleteSupplierResponse?.status === "error") {
+      console.log(deleteSupplierResponse);
+      return res.status(400).json({
+        ...deleteSupplierResponse,
+      });
+    } else {
+      console.log(deleteSupplierResponse);
+
+      return res.status(200).json({
+        status: "success",
+        message: `Successfully deleted supplier with id ${_id}`,
+        products: deleteSupplierResponse,
+      });
+    }
+  } catch (e) {
+    console.log(e);
+    res.status(500).json({ status: "error", message: JSON.stringify(e) });
+  }
+};
 module.exports = {
   add,
   getAll,
+  deleteSupplier,
 };
