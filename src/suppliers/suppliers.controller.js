@@ -136,7 +136,7 @@ const deleteSupplier = async (req, res) => {
       return res.status(200).json({
         status: "success",
         message: `Successfully deleted supplier with id ${_id}`,
-        products: deleteSupplierResponse,
+        response: deleteSupplierResponse,
       });
     }
   } catch (e) {
