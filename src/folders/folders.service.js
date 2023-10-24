@@ -279,6 +279,45 @@ const editDefaultFolderForUser =
     return await Folder.findOne({ email });
   };
 
+const updateSupplierForItem =
+  (Folder) =>
+  async ({
+    folderId,
+    productId,
+    _id,
+    supplierName,
+    supplierAddress,
+    supplierLink,
+    contactPerson,
+  }) => {
+    const filter = { "folders._id": folderId };
+    const update = {
+      $set: {
+        "folders.$[folder].folderItems.$[item].supplier": {
+          supplierName,
+          supplierAddress,
+          supplierLink,
+          contactPerson,
+          _id,
+        },
+      },
+    };
+    const options = {
+      arrayFilters: [{ "folder._id": folderId }, { "item._id": productId }],
+    };
+
+    const result = await Folder.findOneAndUpdate(filter, update, options);
+
+    if (!result) {
+      return {
+        status: "error",
+        message: "Folder Not Found",
+      };
+    }
+
+    return result;
+  };
+
 module.exports = (Folders) => {
   return {
     findFoldersByEmail: findFoldersByEmail(Folders),
@@ -289,5 +328,6 @@ module.exports = (Folders) => {
     addProductToSpecificFolder: addProductToSpecificFolder(Folders),
     deleteItemFromExistingFolder: deleteItemFromExistingFolder(Folders),
     editDefaultFolderForUser: editDefaultFolderForUser(Folders),
+    updateSupplierForItem: updateSupplierForItem(Folders),
   };
 };

@@ -321,6 +321,70 @@ const editDefaultFolder = async (req, res) => {
   }
 };
 
+const updateSupplierForItemInFolder = async (req, res) => {
+  const {
+    folderId,
+    productId,
+    _id,
+    supplierName,
+    supplierAddress,
+    supplierLink,
+    contactPerson,
+  } = req.body;
+  const missingFields = [];
+
+  if (!folderId) missingFields.push("folderId");
+  if (!productId) missingFields.push("productId");
+  if (!_id) missingFields.push("_id");
+  if (!supplierName) missingFields.push("supplierName");
+  if (!supplierAddress) missingFields.push("supplierAddress");
+  if (!supplierAddress?.street) missingFields.push("supplierAddress?.street");
+  if (!supplierAddress?.city) missingFields.push("supplierAddress?.city");
+  if (!supplierAddress?.state) missingFields.push("supplierAddress?.state");
+  if (!supplierAddress?.zipCode) missingFields.push("supplierAddress?.zipCode");
+  if (!supplierLink) missingFields.push("supplierLink");
+  if (!contactPerson) missingFields.push("contactPerson");
+  if (!contactPerson?.name) missingFields.push("contactPerson?.name");
+  if (!contactPerson?.email) missingFields.push("contactPerson?.email");
+  if (!contactPerson?.phoneNumber)
+    missingFields.push("contactPerson?.phoneNumber");
+  if (!contactPerson?.extensionCode)
+    missingFields.push("contactPerson?.extensionCode");
+
+  if (missingFields.length > 0) {
+    return res.status(400).json({
+      status: "error",
+      message: `You have mandatory fields missing: ${missingFields.join(", ")}`,
+    });
+  }
+  try {
+    const updateSupplierForItemResponse =
+      await FolderService.updateSupplierForItem({
+        folderId,
+        productId,
+        _id,
+        supplierName,
+        supplierAddress,
+        supplierLink,
+        contactPerson,
+      });
+
+    if (updateSupplierForItemResponse?.status === "error") {
+      return res.status(403).json({
+        ...updateSupplierForItemResponse,
+      });
+    }
+    res.status(200).json({
+      status: "success",
+      message: `Successfullt updated supplier for item ${productId}`,
+      response: updateSupplierForItemResponse,
+    });
+  } catch (e) {
+    console.log(e);
+    res.status(500).json({ status: "error", message: JSON.stringify(e) });
+  }
+};
+
 module.exports = {
   getAllFoldersForSpecificUser,
   addFolder,
@@ -329,4 +393,5 @@ module.exports = {
   addProductToFolder,
   deleteItemFromFolder,
   editDefaultFolder,
+  updateSupplierForItemInFolder,
 };

@@ -57,6 +57,23 @@ const profProductDeatailsSchema = new Schema({
           ],
           note: { type: String, required: false, default: "" },
           supplierUrl: { type: String, required: false, default: "" },
+          supplier: {
+            _id: { type: String, required: false, default: "" },
+            supplierName: { type: String, required: false, default: "" },
+            supplierAddress: {
+              street: { type: String, required: false, default: "" },
+              city: { type: String, required: false, default: "" },
+              state: { type: String, required: false, default: "" },
+              zipCode: { type: String, required: false, default: "" },
+            },
+            supplierLink: { type: String, required: false, default: "" },
+            contactPerson: {
+              name: { type: String, required: false, default: "" },
+              email: { type: String, required: false, default: "" },
+              phoneNumber: { type: String, required: false, default: "" },
+              extensionCode: { type: String, required: false, default: "" },
+            },
+          },
         },
       ],
     },

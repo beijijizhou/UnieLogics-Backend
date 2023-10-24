@@ -14,6 +14,23 @@ const foldersSchema = new Schema({
           price: { type: String, required: false, default: "" },
           imageUrl: { type: String, required: true, default: "New" },
           folderId: { type: String, required: true },
+          supplier: {
+            _id: { type: String, required: false, default: "" },
+            supplierName: { type: String, required: false, default: "" },
+            supplierAddress: {
+              street: { type: String, required: false, default: "" },
+              city: { type: String, required: false, default: "" },
+              state: { type: String, required: false, default: "" },
+              zipCode: { type: String, required: false, default: "" },
+            },
+            supplierLink: { type: String, required: false, default: "" },
+            contactPerson: {
+              name: { type: String, required: false, default: "" },
+              email: { type: String, required: false, default: "" },
+              phoneNumber: { type: String, required: false, default: "" },
+              extensionCode: { type: String, required: false, default: "" },
+            },
+          },
         },
       ],
       folderSelected: { type: Boolean, required: false, default: false },

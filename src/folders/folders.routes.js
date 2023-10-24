@@ -9,5 +9,9 @@ router.put("/update", foldersControllers.editFolderName);
 router.post("/addToFolder", foldersControllers.addProductToFolder);
 router.delete("/itemFromFolder", foldersControllers.deleteItemFromFolder);
 router.put("/editDefault", foldersControllers.editDefaultFolder);
+router.put(
+  "/updateSupplierForItemInFolder",
+  foldersControllers.updateSupplierForItemInFolder
+);
 
 module.exports = router;
