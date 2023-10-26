@@ -212,7 +212,50 @@ const getAll = async (req, res) => {
   }
 };
 
+const deleteWOwner = async (req, res) => {
+  const { email, _id } = req.body;
+
+  if (!_id || !email) {
+    console.log(
+      "No ID or EMAIL has been provided, so we don't know which Warehouse Owner to delete!"
+    );
+
+    return res.status(400).json({
+      status: "errror",
+      message:
+        "No ID or EMAIL has been provided, so we don't know which Warehouse Owner to delete!",
+    });
+  }
+
+  try {
+    const deleteWOwnerResponse =
+      await WOwnersService.deleteWOwnerFromSpecificUser({
+        email: email.toLowerCase(),
+        _id,
+      });
+
+    if (deleteWOwnerResponse?.status === "error") {
+      console.log(deleteWOwnerResponse);
+      return res.status(400).json({
+        ...deleteWOwnerResponse,
+      });
+    } else {
+      console.log(deleteWOwnerResponse);
+
+      return res.status(200).json({
+        status: "success",
+        message: `Successfully deleted warehouse owner with id ${_id}`,
+        response: deleteWOwnerResponse,
+      });
+    }
+  } catch (e) {
+    console.log(e);
+    res.status(500).json({ status: "error", message: JSON.stringify(e) });
+  }
+};
+
 module.exports = {
   getAll,
   add,
+  deleteWOwner,
 };

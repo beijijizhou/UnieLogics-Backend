@@ -1,5 +1,6 @@
 const dayjs = require("dayjs");
 const { randomUUID } = require("crypto");
+const helpers = require("../_helpers/utils");
 
 const addWOwnerToDatabase =
   (WOwners) =>
@@ -135,11 +136,49 @@ const getAllWOwnersFromDB = (WOwners) => async () => {
   return await WOwners.find();
 };
 
+const deleteWOwnerFromSpecificUser =
+  (WOwners) =>
+  async ({ email, _id }) => {
+    console.log(email, _id);
+    const userWithWOwners = await WOwners.findOne({ email });
+
+    if (!userWithWOwners) {
+      return {
+        status: "error",
+        message:
+          "The email and _id provided are not matching with a user with warehouse owners!",
+      };
+    }
+
+    const updateWOwnersWithDeletedOne = helpers.removeObjectWithId(
+      userWithWOwners.warehouses,
+      _id
+    );
+
+    if (updateWOwnersWithDeletedOne === "no_object_with_id") {
+      return {
+        status: "error",
+        message: "There is no warehouse owner with this id for this user.",
+      };
+    }
+    const updateObj = {
+      ...userWithWOwners,
+      warehouses: {
+        ...updateWOwnersWithDeletedOne,
+      },
+    };
+
+    await WOwners.findOneAndUpdate({ email }, updateObj);
+
+    return await WOwners.findOne({ email });
+  };
+
 module.exports = (WOwners) => {
   return {
     addWOwnerToDatabase: addWOwnerToDatabase(WOwners),
     getAllWOwnersFromDB: getAllWOwnersFromDB(WOwners),
     updateWarehousesInDBForExistingOwner:
       updateWarehousesInDBForExistingOwner(WOwners),
+    deleteWOwnerFromSpecificUser: deleteWOwnerFromSpecificUser(WOwners),
   };
 };
