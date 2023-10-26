@@ -35,67 +35,67 @@ const add = async (req, res) => {
     missingFields.push("customerServiceEmailAddress");
   if (!wOwner?.costPerItemLabeling) missingFields.push("costPerItemLabeling");
   if (!wOwner?.costPerBoxClosing) missingFields.push("costPerBoxClosing");
-  if (!wOwner?.costPerBox.length) missingFields.push("costPerBox");
+  if (!wOwner?.costPerBox?.length) missingFields.push("costPerBox");
 
-  if (!wOwner.handleHazmat) missingFields.push("handleHazmat");
+  if (!wOwner?.handleHazmat) missingFields.push("handleHazmat");
   else {
-    if (!isAnswerNo(wOwner.handleHazmat)) {
+    if (!isAnswerNo(wOwner?.handleHazmat)) {
       if (!wOwner.handleHazmat?.pricePerItem) {
         missingFields.push("handleHazmat.pricePerItem");
       }
     } else {
-      if (!wOwner.handleHazmat?.answer) {
+      if (!wOwner?.handleHazmat?.answer) {
         missingFields.push("handleHazmat.answer");
       }
     }
   }
 
-  if (!wOwner.bubbleWrapping) missingFields.push("bubbleWrapping");
+  if (!wOwner?.bubbleWrapping) missingFields.push("bubbleWrapping");
   else {
-    if (!isAnswerNo(wOwner.bubbleWrapping)) {
-      if (!wOwner.bubbleWrapping?.pricePerItem) {
+    if (!isAnswerNo(wOwner?.bubbleWrapping)) {
+      if (!wOwner?.bubbleWrapping?.pricePerItem) {
         missingFields.push("bubbleWrapping.pricePerItem");
       }
     } else {
-      if (!wOwner.bubbleWrapping?.answer) {
+      if (!wOwner?.bubbleWrapping?.answer) {
         missingFields.push("bubbleWrapping.answer");
       }
     }
   }
 
-  if (!wOwner.offerStorage) missingFields.push("offerStorage");
+  if (!wOwner?.offerStorage) missingFields.push("offerStorage");
   else {
-    if (!isAnswerNo(wOwner.offerStorage)) {
-      if (!wOwner.offerStorage?.pricePerPalet) {
+    if (!isAnswerNo(wOwner?.offerStorage)) {
+      if (!wOwner?.offerStorage?.pricePerPalet) {
         missingFields.push("offerStorage.pricePerPalet");
       }
-      if (!wOwner.offerStorage?.pricePerCubicFeet) {
+      if (!wOwner?.offerStorage?.pricePerCubicFeet) {
         missingFields.push("offerStorage.pricePerCubicFeet");
       }
     } else {
-      if (!wOwner.offerStorage?.answer) {
+      if (!wOwner?.offerStorage?.answer) {
         missingFields.push("offerStorage.answer");
       }
     }
   }
 
-  if (!wOwner.handleShrink) missingFields.push("handleShrink");
+  if (!wOwner?.handleShrink) missingFields.push("handleShrink");
   else {
-    if (!isAnswerNo(wOwner.handleShrink)) {
-      if (!wOwner.handleShrink?.answer) {
+    if (!isAnswerNo(wOwner?.handleShrink)) {
+      if (!wOwner?.handleShrink?.answer) {
         missingFields.push("handleShrink.answer");
       }
-      if (!wOwner.handleShrink?.small?.price) {
+      if (!wOwner?.handleShrink?.small?.price) {
         missingFields.push("handleShrink.small.price");
       }
-      if (!wOwner.handleShrink?.medium?.price) {
+      if (!wOwner?.handleShrink?.medium?.price) {
         missingFields.push("handleShrink.medium.price");
       }
-      if (!wOwner.handleShrink?.large?.price) {
+      if (!wOwner?.handleShrink?.large?.price) {
         missingFields.push("handleShrink.large.price");
       }
     } else {
-      if (!wOwner.handleShrink?.answer) {
+      if (!wOwner?.handleShrink?.answer) {
         missingFields.push("handleShrink.answer");
       }
     }
@@ -109,7 +109,7 @@ const add = async (req, res) => {
   }
 
   if (
-    wOwner.password.length < 6 ||
+    wOwner?.password?.length < 6 ||
     !/[A-Z]/.test(wOwner.password) ||
     !/[!@#$%^&*]/.test(wOwner.password)
   ) {
