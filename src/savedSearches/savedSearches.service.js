@@ -1,5 +1,6 @@
 const { randomUUID } = require("crypto");
 const helpers = require("../_helpers/utils");
+const dayjs = require("dayjs");
 
 const addSavedSearchToDatabase =
   (SavedSearches) =>
@@ -27,6 +28,7 @@ const addSavedSearchToDatabase =
             savedSearchTerm,
             savedSearchUrl,
             tunnelVisionAvg,
+            dateAdded: dayjs().format(),
           },
         ],
       }).save();
@@ -40,6 +42,7 @@ const addSavedSearchToDatabase =
             savedSearchTerm,
             savedSearchUrl,
             tunnelVisionAvg,
+            dateAdded: dayjs().format(),
           },
         ],
       };
