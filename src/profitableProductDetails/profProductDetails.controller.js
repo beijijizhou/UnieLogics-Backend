@@ -33,7 +33,7 @@ const addProfProductDetails = async (req, res) => {
     buyboxStatistics,
     variations,
     note,
-    supplierUrl,
+    supplier,
     folderId,
   } = req.body;
 
@@ -74,7 +74,7 @@ const addProfProductDetails = async (req, res) => {
           buyboxStatistics,
           variations,
           note,
-          supplierUrl,
+          supplier,
         }
       );
 

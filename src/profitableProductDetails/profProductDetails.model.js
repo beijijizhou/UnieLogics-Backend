@@ -56,7 +56,6 @@ const profProductDeatailsSchema = new Schema({
             },
           ],
           note: { type: String, required: false, default: "" },
-          supplierUrl: { type: String, required: false, default: "" },
           supplier: {
             _id: { type: String, required: false, default: "" },
             supplierName: { type: String, required: false, default: "" },

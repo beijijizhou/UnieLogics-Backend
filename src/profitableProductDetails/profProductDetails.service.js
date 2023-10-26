@@ -34,7 +34,7 @@ const addProductToSpecificFolderAndIfFlderNotExistCreateIt =
     buyboxStatistics,
     variations,
     note,
-    supplierUrl,
+    supplier,
   }) => {
     const userWithProfProductDetails = await ProfProductDetails.findOne({
       email,
@@ -81,7 +81,7 @@ const addProductToSpecificFolderAndIfFlderNotExistCreateIt =
                 buyboxStatistics,
                 variations,
                 note,
-                supplierUrl,
+                supplier,
               },
             ],
           },
@@ -134,7 +134,7 @@ const addProductToSpecificFolderAndIfFlderNotExistCreateIt =
               buyboxStatistics,
               variations,
               note,
-              supplierUrl,
+              supplier,
             });
 
             folder.folderItemsCount = folder.folderItems.length;
@@ -174,7 +174,7 @@ const addProductToSpecificFolderAndIfFlderNotExistCreateIt =
                 item.buyboxStatistics = buyboxStatistics;
                 item.variations = variations;
                 item.note = note;
-                item.supplierUrl = supplierUrl;
+                item.supplier = supplier;
 
                 profProductDetailsUpdated = true;
               }
@@ -213,7 +213,7 @@ const addProductToSpecificFolderAndIfFlderNotExistCreateIt =
                 buyboxStatistics,
                 variations,
                 note,
-                supplierUrl,
+                supplier,
               });
 
               folder.folderItemsCount = folder.folderItems.length;
@@ -260,7 +260,7 @@ const addProductToSpecificFolderAndIfFlderNotExistCreateIt =
             buyboxStatistics,
             variations,
             note,
-            supplierUrl,
+            supplier,
           },
         ],
       });

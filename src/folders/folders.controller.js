@@ -185,7 +185,7 @@ const editFolderName = async (req, res) => {
 };
 
 const addProductToFolder = async (req, res) => {
-  const { title, asin, price, imageUrl, folderId, email } = req.body;
+  const { title, asin, price, imageUrl, folderId, email, supplier } = req.body;
 
   if (!folderId) {
     return res.status(403).json({
@@ -213,6 +213,7 @@ const addProductToFolder = async (req, res) => {
         price,
         imageUrl,
         folderId,
+        supplier,
       });
     console.log(
       "Add Product to folder response is " + addProductToFolderResponse
