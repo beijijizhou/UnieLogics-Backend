@@ -140,7 +140,13 @@ const add = async (req, res) => {
         createUserResponse
       )}`
     );
-    if (createUserResponse?.status === "error") {
+    const currentUserWarehouses = await WOwnersService.getWarehousesForThisUser(
+      {
+        email: wOwner.email.toLowerCase(),
+      }
+    );
+
+    if (createUserResponse?.status === "error" && currentUserWarehouses) {
       const updateWarehousesForExistingOwnerResponse =
         await WOwnersService.updateWarehousesInDBForExistingOwner({
           wOwner,

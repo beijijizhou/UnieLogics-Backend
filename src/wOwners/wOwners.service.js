@@ -175,6 +175,12 @@ const deleteWOwnerFromSpecificUser =
     return await WOwners.findOne({ email });
   };
 
+const getWarehousesForThisUser =
+  (WOwners) =>
+  async ({ email }) => {
+    return await WOwners.findOne({ email });
+  };
+
 module.exports = (WOwners) => {
   return {
     addWOwnerToDatabase: addWOwnerToDatabase(WOwners),
@@ -182,5 +188,6 @@ module.exports = (WOwners) => {
     updateWarehousesInDBForExistingOwner:
       updateWarehousesInDBForExistingOwner(WOwners),
     deleteWOwnerFromSpecificUser: deleteWOwnerFromSpecificUser(WOwners),
+    getWarehousesForThisUser: getWarehousesForThisUser(WOwners),
   };
 };
