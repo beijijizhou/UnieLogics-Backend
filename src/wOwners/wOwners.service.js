@@ -40,6 +40,7 @@ const addWOwnerToDatabase =
             };
           }),
           handleShrink: {
+            answer: wOwner.handleShrink.answer,
             small: { price: wOwner.handleShrink.small.price },
             medium: { price: wOwner.handleShrink.medium.price },
             large: { price: wOwner.handleShrink.large.price },
@@ -109,6 +110,7 @@ const updateWarehousesInDBForExistingOwner =
             };
           }),
           handleShrink: {
+            answer: wOwner.handleShrink.answer,
             small: { price: wOwner.handleShrink.small.price },
             medium: { price: wOwner.handleShrink.medium.price },
             large: { price: wOwner.handleShrink.large.price },
