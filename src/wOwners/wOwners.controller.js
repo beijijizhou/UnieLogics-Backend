@@ -146,7 +146,10 @@ const add = async (req, res) => {
       }
     );
 
-    if (createUserResponse?.status === "error" && currentUserWarehouses) {
+    if (
+      createUserResponse?.status === "error" &&
+      currentUserWarehouses?.warehouses
+    ) {
       const updateWarehousesForExistingOwnerResponse =
         await WOwnersService.updateWarehousesInDBForExistingOwner({
           wOwner,
