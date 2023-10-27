@@ -70,6 +70,8 @@ const updateWarehousesInDBForExistingOwner =
     const currentUserWithWarehouses = await WOwners.findOne({
       email: wOwner.email,
     });
+    console.log("Warehouses for this email are:");
+    console.log(currentUserWithWarehouses.warehouses);
 
     updateObj = {
       email: wOwner.email,

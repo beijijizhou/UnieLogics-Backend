@@ -140,16 +140,6 @@ const add = async (req, res) => {
         createUserResponse
       )}`
     );
-    const mailBody = emailTemplates.welcomeMailBody(from_who, wOwner.email);
-
-    mailgun.messages().send(mailBody, (sendError, body) => {
-      if (sendError) {
-        console.log(sendError);
-      }
-      console.log(body);
-    });
-
-    console.log(createUserResponse);
     if (createUserResponse?.status === "error") {
       const updateWarehousesForExistingOwnerResponse =
         await WOwnersService.updateWarehousesInDBForExistingOwner({
@@ -167,6 +157,17 @@ const add = async (req, res) => {
         message: `Successfully updated Warehouses for existing Warehouse Owner!`,
       });
     } else {
+      const mailBody = emailTemplates.welcomeMailBody(from_who, wOwner.email);
+
+      mailgun.messages().send(mailBody, (sendError, body) => {
+        if (sendError) {
+          console.log(sendError);
+        }
+        console.log(body);
+      });
+
+      console.log(createUserResponse);
+
       const addWOwnerResponse = await WOwnersService.addWOwnerToDatabase({
         wOwner,
       });
