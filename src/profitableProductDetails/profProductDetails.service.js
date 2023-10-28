@@ -39,11 +39,10 @@ const addProductToSpecificFolderAndIfFlderNotExistCreateIt =
     const userWithProfProductDetails = await ProfProductDetails.findOne({
       email,
     });
-    let profProductDetailsUpdated = false;
-    let folderWithIdFound = false;
 
     if (!userWithProfProductDetails) {
-      const shapeforUserWithProfProductDetails = new ProfProductDetails({
+      // Create a new user and product details if the user doesn't exist
+      const newUserWithProductDetails = new ProfProductDetails({
         email,
         folders: [
           {
@@ -87,146 +86,113 @@ const addProductToSpecificFolderAndIfFlderNotExistCreateIt =
           },
         ],
       });
-      await shapeforUserWithProfProductDetails.save();
+      await newUserWithProductDetails.save();
 
       return {
         status: "success",
         message: "Successfully saved product details.",
       };
     }
-    const updateSpecificFolderWithProductDetails =
-      userWithProfProductDetails.folders.map((folder) => {
-        // we verify here the folder.folderId instead of folder.id because the id is added by mongo to be unique and
-        // we need the specific folder id where the product has been saved
-        if (JSON.stringify(folder.folderId) === JSON.stringify(folderId)) {
-          folderWithIdFound = true;
 
-          if (folder.folderItems.length === 0) {
-            folder.folderItems.push({
-              date,
-              asin,
-              title,
-              price,
-              imageUrl,
-              amazonFees,
-              pickPack,
-              totalFees,
-              breakEven,
-              costPerItem,
-              miscExpenses,
-              totalCostPerSale,
-              netProfit,
-              units,
-              totalProfit,
-              netSalesMargin,
-              netROI,
-              buyboxIsFBA,
-              offerCountFBA,
-              offerCountFBM,
-              qtyPerSet,
-              productGroup,
-              brand,
-              ian,
-              lastPriceChange,
-              weight,
-              WxHxL,
-              chartsURL,
-              buyboxStatistics,
-              variations,
-              note,
-              supplier,
-            });
+    // Find the folder with the provided folderId or create a new folder
+    let folderWithIdFound = false;
+    userWithProfProductDetails.folders.forEach((folder) => {
+      if (JSON.stringify(folder.folderId) === JSON.stringify(folderId)) {
+        folderWithIdFound = true;
 
-            folder.folderItemsCount = folder.folderItems.length;
-          } else {
-            folder.folderItems.map((item) => {
-              if (item.asin === asin) {
-                // Update the values of the item when product exists
-
-                item.date = date;
-                item.asin = asin;
-                item.title = title;
-                item.price = price;
-                item.imageUrl = imageUrl;
-                item.amazonFees = amazonFees;
-                item.pickPack = pickPack;
-                item.totalFees = totalFees;
-                item.breakEven = breakEven;
-                item.costPerItem = costPerItem;
-                item.miscExpenses = miscExpenses;
-                item.totalCostPerSale = totalCostPerSale;
-                item.netProfit = netProfit;
-                item.units = units;
-                item.totalProfit = totalProfit;
-                item.netSalesMargin = netSalesMargin;
-                item.netROI = netROI;
-                item.buyboxIsFBA = buyboxIsFBA;
-                item.offerCountFBA = offerCountFBA;
-                item.offerCountFBM = offerCountFBM;
-                item.qtyPerSet = qtyPerSet;
-                item.productGroup = productGroup;
-                item.brand = brand;
-                item.ian = ian;
-                item.lastPriceChange = lastPriceChange;
-                item.weight = weight;
-                item.WxHxL = WxHxL;
-                item.chartsURL = chartsURL;
-                item.buyboxStatistics = buyboxStatistics;
-                item.variations = variations;
-                item.note = note;
-                item.supplier = supplier;
-
-                profProductDetailsUpdated = true;
-              }
-              return item;
-            });
-            if (!profProductDetailsUpdated) {
-              folder.folderItems.push({
-                date,
-                asin,
-                title,
-                price,
-                imageUrl,
-                amazonFees,
-                pickPack,
-                totalFees,
-                breakEven,
-                costPerItem,
-                miscExpenses,
-                totalCostPerSale,
-                netProfit,
-                units,
-                totalProfit,
-                netSalesMargin,
-                netROI,
-                buyboxIsFBA,
-                offerCountFBA,
-                offerCountFBM,
-                qtyPerSet,
-                productGroup,
-                brand,
-                ian,
-                lastPriceChange,
-                weight,
-                WxHxL,
-                chartsURL,
-                buyboxStatistics,
-                variations,
-                note,
-                supplier,
-              });
-
-              folder.folderItemsCount = folder.folderItems.length;
+        // Find the product with the provided ASIN or create a new product
+        let productFound = false;
+        folder.folderItems.forEach((item) => {
+          if (item.asin === asin) {
+            // Update the values of the item when the product exists
+            if (
+              supplier !== undefined &&
+              supplier !== null &&
+              supplier !== "" &&
+              Object.keys(supplier).length > 0
+            ) {
+              item.supplier = supplier;
             }
+            if (date) item.date = date;
+            if (title) item.title = title;
+            if (price) item.price = price;
+            if (imageUrl) item.imageUrl = imageUrl;
+            if (amazonFees) item.amazonFees = amazonFees;
+            if (pickPack) item.pickPack = pickPack;
+            if (totalFees) item.totalFees = totalFees;
+            if (breakEven) item.breakEven = breakEven;
+            if (costPerItem) item.costPerItem = costPerItem;
+            if (miscExpenses) item.miscExpenses = miscExpenses;
+            if (totalCostPerSale) item.totalCostPerSale = totalCostPerSale;
+            if (netProfit) item.netProfit = netProfit;
+            if (units) item.units = units;
+            if (totalProfit) item.totalProfit = totalProfit;
+            if (netSalesMargin) item.netSalesMargin = netSalesMargin;
+            if (netROI) item.netROI = netROI;
+            if (buyboxIsFBA) item.buyboxIsFBA = buyboxIsFBA;
+            if (offerCountFBA) item.offerCountFBA = offerCountFBA;
+            if (offerCountFBM) item.offerCountFBM = offerCountFBM;
+            if (qtyPerSet) item.qtyPerSet = qtyPerSet;
+            if (productGroup) item.productGroup = productGroup;
+            if (brand) item.brand = brand;
+            if (ian) item.ian = ian;
+            if (lastPriceChange) item.lastPriceChange = lastPriceChange;
+            if (weight) item.weight = weight;
+            if (WxHxL) item.WxHxL = WxHxL;
+            if (chartsURL) item.chartsURL = chartsURL;
+            if (buyboxStatistics) item.buyboxStatistics = buyboxStatistics;
+            if (variations) item.variations = variations;
+            if (note) item.note = note;
+            productFound = true;
           }
+        });
+
+        if (!productFound) {
+          // Create a new product with provided fields
+          folder.folderItems.push({
+            date,
+            asin,
+            title,
+            price,
+            imageUrl,
+            amazonFees,
+            pickPack,
+            totalFees,
+            breakEven,
+            costPerItem,
+            miscExpenses,
+            totalCostPerSale,
+            netProfit,
+            units,
+            totalProfit,
+            netSalesMargin,
+            netROI,
+            buyboxIsFBA,
+            offerCountFBA,
+            offerCountFBM,
+            qtyPerSet,
+            productGroup,
+            brand,
+            ian,
+            lastPriceChange,
+            weight,
+            WxHxL,
+            chartsURL,
+            buyboxStatistics,
+            variations,
+            note,
+            supplier,
+          });
+          folder.folderItemsCount = folder.folderItems.length;
         }
-        return folder;
-      });
+      }
+    });
 
     if (!folderWithIdFound) {
+      // Create a new folder with the provided product details
       userWithProfProductDetails.folders.push({
         folderId,
-        folderItemsCount: 0,
+        folderItemsCount: 1, // Since we're adding a new product
         folderItems: [
           {
             date,
@@ -266,20 +232,12 @@ const addProductToSpecificFolderAndIfFlderNotExistCreateIt =
       });
     }
 
-    const updateObj = {
-      ...userWithProfProductDetails,
-      folders: {
-        ...updateSpecificFolderWithProductDetails,
-      },
-    };
-
-    await ProfProductDetails.findOneAndUpdate({ email }, updateObj);
+    // Save the updated user document
+    await userWithProfProductDetails.save();
 
     return {
       status: "success",
-      message: `Successfully ${
-        profProductDetailsUpdated ? "updated" : "saved"
-      } product details.`,
+      message: "Successfully updated/saved product details.",
     };
   };
 
