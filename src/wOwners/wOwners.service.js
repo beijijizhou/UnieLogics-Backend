@@ -1,6 +1,7 @@
 const dayjs = require("dayjs");
 const { randomUUID } = require("crypto");
 const helpers = require("../_helpers/utils");
+const UserService = require("../users");
 
 const addWOwnerToDatabase =
   (WOwners) =>
@@ -143,7 +144,6 @@ const getAllWOwnersFromDB = (WOwners) => async () => {
 const deleteWOwnerFromSpecificUser =
   (WOwners) =>
   async ({ email, _id }) => {
-    console.log(email, _id);
     const userWithWOwners = await WOwners.findOne({ email });
 
     if (!userWithWOwners) {
@@ -167,8 +167,10 @@ const deleteWOwnerFromSpecificUser =
     }
 
     if (updateWOwnersWithDeletedOne.length === 0) {
-      // If there are no more warehouses, delete the user
+      // If there are no more warehouses, delete the user from both warehouse collections
       await WOwners.deleteOne({ email });
+      const userInTheUsersCollection = await UserService.getUserByEmail(email);
+      await UserService._delete(userInTheUsersCollection._id);
     } else {
       const updateObj = {
         ...userWithWOwners,
