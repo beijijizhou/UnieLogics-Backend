@@ -337,20 +337,24 @@ const updateSupplierForItemInFolder = async (req, res) => {
   if (!folderId) missingFields.push("folderId");
   if (!productId) missingFields.push("productId");
   if (!_id) missingFields.push("_id");
-  if (!supplierName) missingFields.push("supplierName");
-  if (!supplierAddress) missingFields.push("supplierAddress");
-  if (!supplierAddress?.street) missingFields.push("supplierAddress?.street");
-  if (!supplierAddress?.city) missingFields.push("supplierAddress?.city");
-  if (!supplierAddress?.state) missingFields.push("supplierAddress?.state");
-  if (!supplierAddress?.zipCode) missingFields.push("supplierAddress?.zipCode");
-  if (!supplierLink) missingFields.push("supplierLink");
-  if (!contactPerson) missingFields.push("contactPerson");
-  if (!contactPerson?.name) missingFields.push("contactPerson?.name");
-  if (!contactPerson?.email) missingFields.push("contactPerson?.email");
-  if (!contactPerson?.phoneNumber)
-    missingFields.push("contactPerson?.phoneNumber");
-  if (!contactPerson?.extensionCode)
-    missingFields.push("contactPerson?.extensionCode");
+
+  if (_id !== "no-supplier") {
+    if (!supplierName) missingFields.push("supplierName");
+    if (!supplierAddress) missingFields.push("supplierAddress");
+    if (!supplierAddress?.street) missingFields.push("supplierAddress?.street");
+    if (!supplierAddress?.city) missingFields.push("supplierAddress?.city");
+    if (!supplierAddress?.state) missingFields.push("supplierAddress?.state");
+    if (!supplierAddress?.zipCode)
+      missingFields.push("supplierAddress?.zipCode");
+    if (!supplierLink) missingFields.push("supplierLink");
+    if (!contactPerson) missingFields.push("contactPerson");
+    if (!contactPerson?.name) missingFields.push("contactPerson?.name");
+    if (!contactPerson?.email) missingFields.push("contactPerson?.email");
+    if (!contactPerson?.phoneNumber)
+      missingFields.push("contactPerson?.phoneNumber");
+    if (!contactPerson?.extensionCode)
+      missingFields.push("contactPerson?.extensionCode");
+  }
 
   if (missingFields.length > 0) {
     return res.status(400).json({
@@ -363,7 +367,7 @@ const updateSupplierForItemInFolder = async (req, res) => {
       await FolderService.updateSupplierForItem({
         folderId,
         productId,
-        _id,
+        _id: _id !== "no-supplier" ? _id : "",
         supplierName,
         supplierAddress,
         supplierLink,
