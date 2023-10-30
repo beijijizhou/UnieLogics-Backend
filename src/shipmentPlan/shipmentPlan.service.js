@@ -20,7 +20,7 @@ const updateShipmentPlansForExistingEmailInDB =
     const currentUserWithShipmentPlans = await ShipmentPlan.findOne({ email });
 
     // Check if all product.asin values are already present in any existing shipment plan
-    const hasDuplicates = currentUserWithShipmentPlans.shipmentPlans.some(
+    const existingPlan = currentUserWithShipmentPlans.shipmentPlans.find(
       (plan) => {
         const existingAsins = plan.products.map((product) => product.asin);
         return products.every((product) =>
@@ -29,10 +29,13 @@ const updateShipmentPlansForExistingEmailInDB =
       }
     );
 
-    if (hasDuplicates) {
+    if (existingPlan) {
       return {
         status: "error",
         message: "Shipment plan with all ASINs already exists",
+        response: {
+          planId: existingPlan._id,
+        },
       };
     }
 

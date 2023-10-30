@@ -44,6 +44,9 @@ const add = async (req, res) => {
       return res.status(200).json({
         status: "success",
         message: `Successfully added Shipment Plan to the database.`,
+        response: {
+          planId: existingShipmentPlansResponse._id,
+        },
       });
     } else {
       const updateShipmentPlanResponse =
@@ -61,6 +64,9 @@ const add = async (req, res) => {
       return res.status(200).json({
         status: "success",
         message: `Successfully updated Shipment Plan for existing email.`,
+        response: {
+          planId: updateShipmentPlanResponse._id,
+        },
       });
     }
   } catch (e) {
