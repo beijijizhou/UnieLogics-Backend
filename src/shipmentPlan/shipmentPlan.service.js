@@ -17,12 +17,27 @@ const addShipmentPlanToDB =
 const updateShipmentPlansForExistingEmailInDB =
   (ShipmentPlan) =>
   async ({ email, products }) => {
-    let updateObj = {};
-    const currentUserWithShipmentPlans = await ShipmentPlan.findOne({
-      email,
-    });
+    const currentUserWithShipmentPlans = await ShipmentPlan.findOne({ email });
 
-    updateObj = {
+    // Check if all product.asin values are already present in any existing shipment plan
+    const hasDuplicates = currentUserWithShipmentPlans.shipmentPlans.some(
+      (plan) => {
+        const existingAsins = plan.products.map((product) => product.asin);
+        return products.every((product) =>
+          existingAsins.includes(product.asin)
+        );
+      }
+    );
+
+    if (hasDuplicates) {
+      return {
+        status: "error",
+        message: "Shipment plan with all ASINs already exists",
+      };
+    }
+
+    // If no duplicates are found, update the shipment plan
+    const updateObj = {
       email,
       shipmentPlans: [
         ...currentUserWithShipmentPlans.shipmentPlans,
