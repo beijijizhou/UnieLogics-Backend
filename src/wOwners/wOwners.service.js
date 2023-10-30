@@ -165,14 +165,20 @@ const deleteWOwnerFromSpecificUser =
         message: "There is no warehouse owner with this id for this user.",
       };
     }
-    const updateObj = {
-      ...userWithWOwners,
-      warehouses: {
-        ...updateWOwnersWithDeletedOne,
-      },
-    };
 
-    await WOwners.findOneAndUpdate({ email }, updateObj);
+    if (updateWOwnersWithDeletedOne.length === 0) {
+      // If there are no more warehouses, delete the user
+      await WOwners.deleteOne({ email });
+    } else {
+      const updateObj = {
+        ...userWithWOwners,
+        warehouses: {
+          ...updateWOwnersWithDeletedOne,
+        },
+      };
+
+      await WOwners.findOneAndUpdate({ email }, updateObj);
+    }
 
     return await WOwners.findOne({ email });
   };

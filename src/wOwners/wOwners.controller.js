@@ -255,7 +255,7 @@ const deleteWOwner = async (req, res) => {
       return res.status(200).json({
         status: "success",
         message: `Successfully deleted warehouse owner with id ${_id}`,
-        response: deleteWOwnerResponse,
+        response: deleteWOwnerResponse ? deleteWOwnerResponse : [],
       });
     }
   } catch (e) {
