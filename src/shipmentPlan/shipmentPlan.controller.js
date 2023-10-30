@@ -104,7 +104,50 @@ const getAll = async (req, res) => {
     });
   }
 };
+
+const deleteShipmentPlan = async (req, res) => {
+  const { email, _id } = req.body;
+
+  if (!_id || !email) {
+    console.log(
+      "No ID or EMAIL has been provided, so we don't know which shipment plan to delete!"
+    );
+
+    return res.status(400).json({
+      status: "errror",
+      message:
+        "No ID or EMAIL has been provided, so we don't know which shipment plan to delete!",
+    });
+  }
+
+  try {
+    const deleteShipmentPlanResponse =
+      await ShipmentPlanService.deleteShipmentPlanFromSpecificUser({
+        email: email.toLowerCase(),
+        _id,
+      });
+
+    if (deleteShipmentPlanResponse?.status === "error") {
+      console.log(deleteShipmentPlanResponse);
+      return res.status(400).json({
+        ...deleteShipmentPlanResponse,
+      });
+    } else {
+      console.log(deleteShipmentPlanResponse);
+
+      return res.status(200).json({
+        status: "success",
+        message: `Successfully deleted supplier with id ${_id}`,
+        response: deleteShipmentPlanResponse,
+      });
+    }
+  } catch (e) {
+    console.log(e);
+    res.status(500).json({ status: "error", message: JSON.stringify(e) });
+  }
+};
 module.exports = {
   add,
   getAll,
+  deleteShipmentPlan,
 };

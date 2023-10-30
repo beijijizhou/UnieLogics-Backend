@@ -1,4 +1,5 @@
 const { randomUUID } = require("crypto");
+const helpers = require("../_helpers/utils");
 
 const addShipmentPlanToDB =
   (ShipmentPlan) =>
@@ -62,11 +63,53 @@ const getAllShipmentPlansFromDB =
     return await ShipmentPlan.findOne({ email });
   };
 
+const deleteShipmentPlanFromSpecificUser =
+  (ShipmentPlan) =>
+  async ({ email, _id }) => {
+    console.log(email, _id);
+    const userWithShipmentPlans = await ShipmentPlan.findOne({ email });
+
+    if (!userWithShipmentPlans) {
+      return {
+        status: "error",
+        message:
+          "The email and _id provided are not matching with a user with shipment plans!",
+      };
+    }
+
+    const updateShipmentPlansWithDeletedOne = helpers.removeObjectWithId(
+      userWithShipmentPlans.shipmentPlans,
+      _id
+    );
+
+    console.log("updateShipmentPlansWithDeletedOne");
+    console.log(updateShipmentPlansWithDeletedOne);
+
+    if (updateShipmentPlansWithDeletedOne === "no_object_with_id") {
+      return {
+        status: "error",
+        message: "There is no shipment plan with this id for this user.",
+      };
+    }
+    const updateObj = {
+      ...userWithShipmentPlans,
+      shipmentPlans: {
+        ...updateShipmentPlansWithDeletedOne,
+      },
+    };
+
+    await ShipmentPlan.findOneAndUpdate({ email }, updateObj);
+
+    return await ShipmentPlan.findOne({ email });
+  };
+
 module.exports = (ShipmentPlan) => {
   return {
     addShipmentPlanToDB: addShipmentPlanToDB(ShipmentPlan),
     getAllShipmentPlansFromDB: getAllShipmentPlansFromDB(ShipmentPlan),
     updateShipmentPlansForExistingEmailInDB:
       updateShipmentPlansForExistingEmailInDB(ShipmentPlan),
+    deleteShipmentPlanFromSpecificUser:
+      deleteShipmentPlanFromSpecificUser(ShipmentPlan),
   };
 };
