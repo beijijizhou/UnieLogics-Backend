@@ -45,7 +45,7 @@ const add = async (req, res) => {
         status: "success",
         message: `Successfully added Shipment Plan to the database.`,
         response: {
-          planId: existingShipmentPlansResponse._id,
+          planId: addShipmentPlanToDBResponse.shipmentPlans[0]._id,
         },
       });
     } else {
@@ -54,6 +54,8 @@ const add = async (req, res) => {
           email,
           products,
         });
+
+      console.log(updateShipmentPlanResponse);
 
       if (updateShipmentPlanResponse?.status === "error") {
         return res.status(400).json({

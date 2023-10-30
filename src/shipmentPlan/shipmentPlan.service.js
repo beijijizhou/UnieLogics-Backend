@@ -3,7 +3,7 @@ const { randomUUID } = require("crypto");
 const addShipmentPlanToDB =
   (ShipmentPlan) =>
   async ({ email, products }) => {
-    new ShipmentPlan({
+    const newShipmentPlan = new ShipmentPlan({
       email,
       shipmentPlans: [
         {
@@ -11,7 +11,11 @@ const addShipmentPlanToDB =
           products,
         },
       ],
-    }).save();
+    });
+
+    await newShipmentPlan.save();
+
+    return await ShipmentPlan.findOne({ email });
   };
 
 const updateShipmentPlansForExistingEmailInDB =
@@ -40,18 +44,16 @@ const updateShipmentPlansForExistingEmailInDB =
     }
 
     // If no duplicates are found, update the shipment plan
-    const updateObj = {
-      email,
-      shipmentPlans: [
-        ...currentUserWithShipmentPlans.shipmentPlans,
-        {
-          _id: randomUUID(),
-          products,
-        },
-      ],
+    const newShipmentPlan = {
+      _id: randomUUID(),
+      products,
     };
 
-    return await ShipmentPlan.findOneAndUpdate({ email }, updateObj);
+    currentUserWithShipmentPlans.shipmentPlans.push(newShipmentPlan);
+
+    // Save the updated document and return the updated shipment plan
+    await currentUserWithShipmentPlans.save();
+    return newShipmentPlan;
   };
 
 const getAllShipmentPlansFromDB =
