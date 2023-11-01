@@ -44,7 +44,7 @@ const getAllSuppliersFromDB =
   };
 
 const deleteSupplierFromSpecificUser =
-  (Suppliers) =>
+  (Suppliers, Folders) =>
   async ({ email, _id }) => {
     console.log(email, _id);
     const userWithSuppliers = await Suppliers.findOne({ email });
@@ -62,8 +62,8 @@ const deleteSupplierFromSpecificUser =
       _id
     );
 
-    console.log("updateSuppliersWithDeletedOne");
-    console.log(updateSuppliersWithDeletedOne);
+    // console.log("updateSuppliersWithDeletedOne");
+    // console.log(updateSuppliersWithDeletedOne);
 
     if (updateSuppliersWithDeletedOne === "no_object_with_id") {
       return {
@@ -80,15 +80,58 @@ const deleteSupplierFromSpecificUser =
 
     await Suppliers.findOneAndUpdate({ email }, updateObj);
 
+    const userWithFolderItemsWithSuppliers = await Folders.findOne({ email });
+
+    const updatedFolders = userWithFolderItemsWithSuppliers.folders.map(
+      (folder) => {
+        folder.folderItems.map((folderItem) => {
+          if (JSON.stringify(folderItem.supplier._id) === JSON.stringify(_id)) {
+            folderItem.supplier = {
+              supplierAddress: {
+                street: "",
+                city: "",
+                state: "",
+                zipCode: "",
+              },
+              contactPerson: {
+                name: "",
+                email: "",
+                phoneNumber: "",
+                extensionCode: "",
+              },
+              _id: "",
+              supplierName: "",
+              supplierLink: "",
+            };
+          }
+          return folderItem;
+        });
+        return folder;
+      }
+    );
+
+    const updatedFolderItemsWithSuppliers = {
+      ...userWithFolderItemsWithSuppliers,
+      folder: {
+        ...updatedFolders,
+      },
+    };
+
+    // Update the user's folders with the updated folderItems in the database
+    await Folders.findOneAndUpdate({ email }, updatedFolderItemsWithSuppliers);
+
     return await Suppliers.findOne({ email });
   };
 
-module.exports = (Suppliers) => {
+module.exports = (Suppliers, Folders) => {
   return {
     getAllSuppliersFromDB: getAllSuppliersFromDB(Suppliers),
     addSuppliersToDB: addSuppliersToDB(Suppliers),
     updateSuppliersForExistingEmailInDB:
       updateSuppliersForExistingEmailInDB(Suppliers),
-    deleteSupplierFromSpecificUser: deleteSupplierFromSpecificUser(Suppliers),
+    deleteSupplierFromSpecificUser: deleteSupplierFromSpecificUser(
+      Suppliers,
+      Folders
+    ),
   };
 };

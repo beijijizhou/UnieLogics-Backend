@@ -3,9 +3,10 @@ const helpers = require("../_helpers/utils");
 
 const addShipmentPlanToDB =
   (ShipmentPlan) =>
-  async ({ email, products }) => {
+  async ({ email, shipmentTitle, products }) => {
     const newShipmentPlan = new ShipmentPlan({
       email,
+      shipmentTitle,
       shipmentPlans: [
         {
           _id: randomUUID(),
@@ -21,7 +22,7 @@ const addShipmentPlanToDB =
 
 const updateShipmentPlansForExistingEmailInDB =
   (ShipmentPlan) =>
-  async ({ email, products }) => {
+  async ({ email, shipmentTitle, products }) => {
     const currentUserWithShipmentPlans = await ShipmentPlan.findOne({ email });
 
     // Check if all product.asin values are already present in any existing shipment plan
@@ -49,7 +50,7 @@ const updateShipmentPlansForExistingEmailInDB =
       _id: randomUUID(),
       products,
     };
-
+    currentUserWithShipmentPlans.shipmentTitle = shipmentTitle;
     currentUserWithShipmentPlans.shipmentPlans.push(newShipmentPlan);
 
     // Save the updated document and return the updated shipment plan

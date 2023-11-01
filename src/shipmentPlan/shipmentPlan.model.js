@@ -3,6 +3,7 @@ const Schema = mongoose.Schema;
 
 const shipmentPlanSchema = new Schema({
   email: { type: String, required: true },
+  shipmentTitle: { type: String, required: true },
   shipmentPlans: [
     {
       _id: { type: String, required: true },

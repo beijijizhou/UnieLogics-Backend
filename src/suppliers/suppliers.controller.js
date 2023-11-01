@@ -131,7 +131,7 @@ const deleteSupplier = async (req, res) => {
         ...deleteSupplierResponse,
       });
     } else {
-      console.log(deleteSupplierResponse);
+      // console.log(deleteSupplierResponse);
 
       return res.status(200).json({
         status: "success",

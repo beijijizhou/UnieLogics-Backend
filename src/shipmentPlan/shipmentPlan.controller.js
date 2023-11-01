@@ -1,10 +1,11 @@
 const ShipmentPlanService = require(".");
 
 const add = async (req, res) => {
-  const { email, products } = req.body;
+  const { email, shipmentTitle, products } = req.body;
   const missingFields = [];
 
   if (!email) missingFields.push("email");
+  if (!shipmentTitle) missingFields.push("shipmentTitle");
   if (!products || !Array.isArray(products) || products.length === 0) {
     missingFields.push("products");
   } else {
@@ -33,7 +34,11 @@ const add = async (req, res) => {
 
     if (!existingShipmentPlansResponse) {
       const addShipmentPlanToDBResponse =
-        await ShipmentPlanService.addShipmentPlanToDB({ email, products });
+        await ShipmentPlanService.addShipmentPlanToDB({
+          email,
+          shipmentTitle,
+          products,
+        });
 
       if (addShipmentPlanToDBResponse?.status === "error") {
         return res.status(400).json({
@@ -52,6 +57,7 @@ const add = async (req, res) => {
       const updateShipmentPlanResponse =
         await ShipmentPlanService.updateShipmentPlansForExistingEmailInDB({
           email,
+          shipmentTitle,
           products,
         });
 
