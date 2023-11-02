@@ -9,15 +9,18 @@ const add = async (req, res) => {
   if (!products || !Array.isArray(products) || products.length === 0) {
     missingFields.push("products");
   } else {
-    products.forEach((plan, index) => {
-      if (!plan.asin) missingFields.push(`products[${index}].asin`);
-      if (!plan.title) missingFields.push(`products[${index}].title`);
-      if (!plan.inventory) missingFields.push(`products[${index}].inventory`);
-      if (!plan.dateAdded) missingFields.push(`products[${index}].dateAdded`);
-      if (!plan.wxhxl) missingFields.push(`products[${index}].wxhxl`);
-      if (!plan.amazonPrice)
+    products.forEach((product, index) => {
+      if (!product.asin) missingFields.push(`products[${index}].asin`);
+      if (!product.title) missingFields.push(`products[${index}].title`);
+      if (!product.inventory)
+        missingFields.push(`products[${index}].inventory`);
+      if (!product.dateAdded)
+        missingFields.push(`products[${index}].dateAdded`);
+      if (!product.wxhxl) missingFields.push(`products[${index}].wxhxl`);
+      if (!product.amazonPrice)
         missingFields.push(`products[${index}].amazonPrice`);
-      if (!plan.supplier) missingFields.push(`products[${index}].supplier`);
+      if (!product.supplier) missingFields.push(`products[${index}].supplier`);
+      if (!product.imageUrl) missingFields.push(`products[${index}].imageUrl`);
     });
   }
 

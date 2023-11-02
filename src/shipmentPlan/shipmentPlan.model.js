@@ -17,6 +17,7 @@ const shipmentPlanSchema = new Schema({
           dateAdded: { type: String, required: true },
           wxhxl: { type: String, required: true },
           amazonPrice: { type: String, required: true },
+          imageUrl: { type: String, required: true },
           supplier: {
             _id: { type: String, required: true },
             supplierName: { type: String, required: true },
