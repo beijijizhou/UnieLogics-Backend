@@ -1,5 +1,6 @@
 const { randomUUID } = require("crypto");
 const helpers = require("../_helpers/utils");
+const dayjs = require("dayjs");
 
 const addShipmentPlanToDB =
   (ShipmentPlan) =>
@@ -11,6 +12,7 @@ const addShipmentPlanToDB =
           _id: randomUUID(),
           products,
           shipmentTitle,
+          dateAdded: dayjs().format(),
         },
       ],
     });
@@ -50,6 +52,7 @@ const updateShipmentPlansForExistingEmailInDB =
       _id: randomUUID(),
       products,
       shipmentTitle,
+      dateAdded: dayjs().format(),
     };
     currentUserWithShipmentPlans.shipmentPlans.push(newShipmentPlan);
 
