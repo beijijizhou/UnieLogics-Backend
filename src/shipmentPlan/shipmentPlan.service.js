@@ -6,11 +6,11 @@ const addShipmentPlanToDB =
   async ({ email, shipmentTitle, products }) => {
     const newShipmentPlan = new ShipmentPlan({
       email,
-      shipmentTitle,
       shipmentPlans: [
         {
           _id: randomUUID(),
           products,
+          shipmentTitle,
         },
       ],
     });
@@ -49,8 +49,8 @@ const updateShipmentPlansForExistingEmailInDB =
     const newShipmentPlan = {
       _id: randomUUID(),
       products,
+      shipmentTitle,
     };
-    currentUserWithShipmentPlans.shipmentTitle = shipmentTitle;
     currentUserWithShipmentPlans.shipmentPlans.push(newShipmentPlan);
 
     // Save the updated document and return the updated shipment plan
