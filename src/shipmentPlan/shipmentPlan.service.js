@@ -112,7 +112,7 @@ const getShipmentPlanByIdFromDb =
   async ({ email, _id }) => {
     const userWithShipmentPlans = await ShipmentPlan.findOne({ email });
 
-    return (shipmentPlan = userWithShipmentPlans.shipmentPlans.filter(
+    return (shipmentPlan = userWithShipmentPlans?.shipmentPlans?.filter(
       (shipmentPlan) => {
         return JSON.stringify(shipmentPlan._id) === JSON.stringify(_id);
       }
