@@ -12,11 +12,8 @@ const add = async (req, res) => {
     products.forEach((product, index) => {
       if (!product.asin) missingFields.push(`products[${index}].asin`);
       if (!product.title) missingFields.push(`products[${index}].title`);
-      if (!product.inventory)
-        missingFields.push(`products[${index}].inventory`);
       if (!product.dateAdded)
         missingFields.push(`products[${index}].dateAdded`);
-      if (!product.wxhxl) missingFields.push(`products[${index}].wxhxl`);
       if (!product.amazonPrice)
         missingFields.push(`products[${index}].amazonPrice`);
       if (!product.supplier) missingFields.push(`products[${index}].supplier`);

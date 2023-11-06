@@ -13,9 +13,9 @@ const shipmentPlanSchema = new Schema({
         {
           asin: { type: String, required: true },
           title: { type: String, required: true },
-          inventory: { type: String, required: true },
+          inventory: { type: String, required: false, default: "" },
           dateAdded: { type: String, required: true },
-          wxhxl: { type: String, required: true },
+          wxhxl: { type: String, required: false, default: "" },
           amazonPrice: { type: String, required: true },
           imageUrl: { type: String, required: true },
           supplier: {
