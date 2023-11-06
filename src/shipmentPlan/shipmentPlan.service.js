@@ -107,6 +107,18 @@ const deleteShipmentPlanFromSpecificUser =
     return await ShipmentPlan.findOne({ email });
   };
 
+const getShipmentPlanByIdFromDb =
+  (ShipmentPlan) =>
+  async ({ email, _id }) => {
+    const userWithShipmentPlans = await ShipmentPlan.findOne({ email });
+
+    return (shipmentPlan = userWithShipmentPlans.shipmentPlans.filter(
+      (shipmentPlan) => {
+        return JSON.stringify(shipmentPlan._id) === JSON.stringify(_id);
+      }
+    ));
+  };
+
 module.exports = (ShipmentPlan) => {
   return {
     addShipmentPlanToDB: addShipmentPlanToDB(ShipmentPlan),
@@ -115,5 +127,6 @@ module.exports = (ShipmentPlan) => {
       updateShipmentPlansForExistingEmailInDB(ShipmentPlan),
     deleteShipmentPlanFromSpecificUser:
       deleteShipmentPlanFromSpecificUser(ShipmentPlan),
+    getShipmentPlanByIdFromDb: getShipmentPlanByIdFromDb(ShipmentPlan),
   };
 };

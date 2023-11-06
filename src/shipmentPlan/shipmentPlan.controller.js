@@ -155,8 +155,47 @@ const deleteShipmentPlan = async (req, res) => {
     res.status(500).json({ status: "error", message: JSON.stringify(e) });
   }
 };
+
+const getById = async (req, res) => {
+  const { email, _id } = req.query;
+
+  const missingFields = [];
+
+  if (!email) missingFields.push("email");
+  if (!_id) missingFields.push("_id");
+
+  if (missingFields.length > 0) {
+    return res.status(400).json({
+      status: "error",
+      message: `You have mandatory fields missing: ${missingFields.join(", ")}`,
+    });
+  }
+
+  try {
+    const retrieveShipmentPlanById =
+      await ShipmentPlanService.getShipmentPlanByIdFromDb({ email, _id });
+
+    if (retrieveShipmentPlanById.length === 0) {
+      return res.status(403).json({
+        status: "error",
+        message: `Sorry, there are no Shipment Plans with id: ${_id}`,
+        response: retrieveShipmentPlanById,
+      });
+    }
+
+    return res.status(200).json({
+      status: "success",
+      message: `Successfully retrieved Shipment Plan with id ${_id}`,
+      response: retrieveShipmentPlanById,
+    });
+  } catch (e) {
+    console.log(e);
+    res.status(500).json({ status: "error", message: JSON.stringify(e) });
+  }
+};
 module.exports = {
   add,
   getAll,
+  getById,
   deleteShipmentPlan,
 };
