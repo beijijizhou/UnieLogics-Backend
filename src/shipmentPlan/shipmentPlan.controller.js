@@ -178,7 +178,7 @@ const getById = async (req, res) => {
     if (retrieveShipmentPlanById?.length === 0 || !retrieveShipmentPlanById) {
       return res.status(403).json({
         status: "error",
-        message: `Sorry, there are no Shipment Plans with id: ${_id}`,
+        message: `Sorry, there are no Shipment Plans with id: ${_id} for user: ${email}`,
         response: retrieveShipmentPlanById || [],
       });
     }
