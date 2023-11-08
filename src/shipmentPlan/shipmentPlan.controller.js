@@ -208,7 +208,11 @@ const updateShipmentPlan = async (req, res) => {
         missingFields.push(`products[${index}].dateAdded`);
       if (!product.inventory)
         missingFields.push(`products[${index}].inventory`);
-      if (!product.wxhxl) missingFields.push(`products[${index}].wxhxl`);
+      if (!product.boxWidth) missingFields.push(`products[${index}].boxWidth`);
+      if (!product.boxHeight)
+        missingFields.push(`products[${index}].boxHeight`);
+      if (!product.boxLength)
+        missingFields.push(`products[${index}].boxLength`);
       if (!product.amazonPrice)
         missingFields.push(`products[${index}].amazonPrice`);
       if (!product.supplier) missingFields.push(`products[${index}].supplier`);
