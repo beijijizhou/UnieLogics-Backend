@@ -8,6 +8,7 @@ const shipmentPlanSchema = new Schema({
       _id: { type: String, required: true },
       shipmentTitle: { type: String, required: true },
       dateAdded: { type: Date, required: false, default: null },
+      dateUpdated: { type: Date, required: false, default: null },
       status: { type: String, required: false, default: "Added" },
       products: [
         {

@@ -119,6 +119,49 @@ const getShipmentPlanByIdFromDb =
     ));
   };
 
+const updateShipmentPlanBasedOnId =
+  (ShipmentPlan) =>
+  async ({ email, shipmentPlanId, shipmentTitle, products }) => {
+    const currentUserWithShipmentPlans = await ShipmentPlan.findOne({ email });
+
+    let shipmentPlanExistsForThisUser = false;
+    const updatedShipmentPlansWithProductsForSpecificShipmentPlan =
+      currentUserWithShipmentPlans.shipmentPlans.map((shipmentPlan) => {
+        if (
+          JSON.stringify(shipmentPlan._id) === JSON.stringify(shipmentPlanId)
+        ) {
+          shipmentPlanExistsForThisUser = true;
+          shipmentPlan.products = products;
+          shipmentPlan.dateUpdated = dayjs().format();
+        }
+        return shipmentPlan;
+      });
+
+    if (!shipmentPlanExistsForThisUser) {
+      return {
+        status: "error",
+        message: `There is no shipment plan matchind with id: ${shipmentPlanId} for user ${email}`,
+        response: [],
+      };
+    }
+    const updateObj = {
+      ...currentUserWithShipmentPlans,
+      shipmentPlans: {
+        ...updatedShipmentPlansWithProductsForSpecificShipmentPlan,
+      },
+    };
+
+    await ShipmentPlan.findOneAndUpdate({ email }, updateObj);
+
+    const userWithShipmentPlans = await ShipmentPlan.findOne({ email });
+
+    return userWithShipmentPlans?.shipmentPlans?.filter((shipmentPlan) => {
+      return (
+        JSON.stringify(shipmentPlan._id) === JSON.stringify(shipmentPlanId)
+      );
+    });
+  };
+
 module.exports = (ShipmentPlan) => {
   return {
     addShipmentPlanToDB: addShipmentPlanToDB(ShipmentPlan),
@@ -128,5 +171,6 @@ module.exports = (ShipmentPlan) => {
     deleteShipmentPlanFromSpecificUser:
       deleteShipmentPlanFromSpecificUser(ShipmentPlan),
     getShipmentPlanByIdFromDb: getShipmentPlanByIdFromDb(ShipmentPlan),
+    updateShipmentPlanBasedOnId: updateShipmentPlanBasedOnId(ShipmentPlan),
   };
 };

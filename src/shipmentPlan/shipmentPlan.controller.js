@@ -190,9 +190,71 @@ const getById = async (req, res) => {
     res.status(500).json({ status: "error", message: JSON.stringify(e) });
   }
 };
+
+const updateShipmentPlan = async (req, res) => {
+  const { email, shipmentPlanId, products, shipmentTitle } = req.body;
+
+  const missingFields = [];
+
+  if (!email) missingFields.push("email");
+  if (!shipmentPlanId) missingFields.push("shipmentPlanId");
+  if (!products || !Array.isArray(products) || products.length === 0) {
+    missingFields.push("products");
+  } else {
+    products.forEach((product, index) => {
+      if (!product.asin) missingFields.push(`products[${index}].asin`);
+      if (!product.title) missingFields.push(`products[${index}].title`);
+      if (!product.dateAdded)
+        missingFields.push(`products[${index}].dateAdded`);
+      if (!product.inventory)
+        missingFields.push(`products[${index}].inventory`);
+      if (!product.wxhxl) missingFields.push(`products[${index}].wxhxl`);
+      if (!product.amazonPrice)
+        missingFields.push(`products[${index}].amazonPrice`);
+      if (!product.supplier) missingFields.push(`products[${index}].supplier`);
+      if (!product.imageUrl) missingFields.push(`products[${index}].imageUrl`);
+    });
+  }
+
+  if (missingFields.length > 0) {
+    return res.status(400).json({
+      status: "error",
+      message: `You have mandatory fields missing: ${missingFields.join(", ")}`,
+    });
+  }
+
+  try {
+    const updateShipmentPlanResponse =
+      await ShipmentPlanService.updateShipmentPlanBasedOnId({
+        email,
+        shipmentPlanId,
+        shipmentTitle,
+        products,
+      });
+
+    console.log("updateShipmentPlanResponse", updateShipmentPlanResponse);
+
+    if (updateShipmentPlanResponse?.status === "error") {
+      return res.status(400).json({
+        ...updateShipmentPlanResponse,
+      });
+    }
+
+    return res.status(200).json({
+      status: "success",
+      message: `Successfully updated Shipment Plan with id ${shipmentPlanId} for user: ${email}`,
+      response: updateShipmentPlanResponse,
+    });
+  } catch (e) {
+    console.log(e);
+    res.status(500).json({ status: "error", message: JSON.stringify(e) });
+  }
+};
+
 module.exports = {
   add,
   getAll,
   getById,
   deleteShipmentPlan,
+  updateShipmentPlan,
 };
