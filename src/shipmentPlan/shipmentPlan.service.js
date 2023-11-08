@@ -133,6 +133,7 @@ const updateShipmentPlanBasedOnId =
           shipmentPlanExistsForThisUser = true;
           shipmentPlan.products = products;
           shipmentPlan.dateUpdated = dayjs().format();
+          shipmentPlan.shipmentTitle = shipmentTitle;
         }
         return shipmentPlan;
       });
