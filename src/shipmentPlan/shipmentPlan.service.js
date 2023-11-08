@@ -70,7 +70,6 @@ const getAllShipmentPlansFromDB =
 const deleteShipmentPlanFromSpecificUser =
   (ShipmentPlan) =>
   async ({ email, _id }) => {
-    console.log(email, _id);
     const userWithShipmentPlans = await ShipmentPlan.findOne({ email });
 
     if (!userWithShipmentPlans) {
@@ -85,9 +84,6 @@ const deleteShipmentPlanFromSpecificUser =
       userWithShipmentPlans.shipmentPlans,
       _id
     );
-
-    console.log("updateShipmentPlansWithDeletedOne");
-    console.log(updateShipmentPlansWithDeletedOne);
 
     if (updateShipmentPlansWithDeletedOne === "no_object_with_id") {
       return {
@@ -163,6 +159,67 @@ const updateShipmentPlanBasedOnId =
     });
   };
 
+const deleteProductFromShipmentPlanFromSpecificUser =
+  (ShipmentPlan) =>
+  async ({ email, shipmentPlanId, productId }) => {
+    const userWithShipmentPlans = await ShipmentPlan.findOne({ email });
+
+    if (!userWithShipmentPlans) {
+      return {
+        status: "error",
+        message:
+          "The email and shipmentPlanId provided are not matching with a user with shipment plans!",
+      };
+    }
+
+    let noProductWithId = false;
+    const updatedShipmentPlansWithProductsForSpecificShipmentPlan =
+      userWithShipmentPlans.shipmentPlans.map((shipmentPlan) => {
+        if (
+          JSON.stringify(shipmentPlan._id) === JSON.stringify(shipmentPlanId)
+        ) {
+          const updateShipmentPlansWithDeletedOne = helpers.removeObjectWithId(
+            shipmentPlan.products,
+            productId
+          );
+          if (updateShipmentPlansWithDeletedOne === "no_object_with_id") {
+            noProductWithId = true;
+          } else {
+            shipmentPlan.products = updateShipmentPlansWithDeletedOne;
+          }
+        }
+        return shipmentPlan;
+      });
+
+    if (noProductWithId) {
+      return {
+        status: "error",
+        message:
+          "There is no product with this id in the provided shipment plan.",
+      };
+    }
+
+    const updateObj = {
+      ...userWithShipmentPlans,
+      shipmentPlans: {
+        ...updatedShipmentPlansWithProductsForSpecificShipmentPlan,
+      },
+    };
+    await ShipmentPlan.findOneAndUpdate({ email }, updateObj);
+
+    const userWithShipmentPlansAfterDelete = await ShipmentPlan.findOne({
+      email,
+    });
+
+    return userWithShipmentPlansAfterDelete?.shipmentPlans?.filter(
+      (shipmentPlan) => {
+        return (
+          JSON.stringify(shipmentPlan._id) === JSON.stringify(shipmentPlanId)
+        );
+      }
+    );
+  };
+
 module.exports = (ShipmentPlan) => {
   return {
     addShipmentPlanToDB: addShipmentPlanToDB(ShipmentPlan),
@@ -173,5 +230,7 @@ module.exports = (ShipmentPlan) => {
       deleteShipmentPlanFromSpecificUser(ShipmentPlan),
     getShipmentPlanByIdFromDb: getShipmentPlanByIdFromDb(ShipmentPlan),
     updateShipmentPlanBasedOnId: updateShipmentPlanBasedOnId(ShipmentPlan),
+    deleteProductFromShipmentPlanFromSpecificUser:
+      deleteProductFromShipmentPlanFromSpecificUser(ShipmentPlan),
   };
 };

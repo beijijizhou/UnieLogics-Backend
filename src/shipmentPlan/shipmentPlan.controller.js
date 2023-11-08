@@ -251,10 +251,42 @@ const updateShipmentPlan = async (req, res) => {
   }
 };
 
+const deleteProductFromShipmentPlan = async (req, res) => {
+  const { email, shipmentPlanId, productId } = req.body;
+
+  try {
+    const deleteProductFromShipmentPlanResponse =
+      await ShipmentPlanService.deleteProductFromShipmentPlanFromSpecificUser({
+        email: email.toLowerCase(),
+        shipmentPlanId,
+        productId,
+      });
+
+    if (deleteProductFromShipmentPlanResponse?.status === "error") {
+      console.log(deleteProductFromShipmentPlanResponse);
+      return res.status(400).json({
+        ...deleteProductFromShipmentPlanResponse,
+      });
+    } else {
+      console.log(deleteProductFromShipmentPlanResponse);
+
+      return res.status(200).json({
+        status: "success",
+        message: `Successfully deleted products from shipment plan with id: ${shipmentPlanId}`,
+        response: deleteProductFromShipmentPlanResponse,
+      });
+    }
+  } catch (e) {
+    console.log(e);
+    res.status(500).json({ status: "error", message: JSON.stringify(e) });
+  }
+};
+
 module.exports = {
   add,
   getAll,
   getById,
   deleteShipmentPlan,
   updateShipmentPlan,
+  deleteProductFromShipmentPlan,
 };

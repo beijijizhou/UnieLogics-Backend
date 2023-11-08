@@ -7,5 +7,9 @@ router.get("/getAll", shipmentPlanControllers.getAll);
 router.get("/getById", shipmentPlanControllers.getById);
 router.put("/update", shipmentPlanControllers.updateShipmentPlan);
 router.delete("/delete", shipmentPlanControllers.deleteShipmentPlan);
+router.delete(
+  "/deleteProduct",
+  shipmentPlanControllers.deleteProductFromShipmentPlan
+);
 
 module.exports = router;
