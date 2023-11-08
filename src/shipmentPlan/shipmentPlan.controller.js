@@ -271,6 +271,12 @@ const deleteProductFromShipmentPlan = async (req, res) => {
       return res.status(400).json({
         ...deleteProductFromShipmentPlanResponse,
       });
+    } else if (deleteProductFromShipmentPlanResponse?.status === "conflict") {
+      return res.status(200).json({
+        status: "success",
+        message: `Successfully deleted products from shipment plan with id: ${shipmentPlanId}, and shipment plan removed due to empty products.`,
+        response: [],
+      });
     } else {
       console.log(deleteProductFromShipmentPlanResponse);
 

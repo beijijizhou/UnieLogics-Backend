@@ -173,16 +173,28 @@ const deleteProductFromShipmentPlanFromSpecificUser =
     }
 
     let noProductWithId = false;
+    let deleteShipmentPlan = false;
+    let shipmentPlanFound = false;
+
     const updatedShipmentPlansWithProductsForSpecificShipmentPlan =
       userWithShipmentPlans.shipmentPlans.map((shipmentPlan) => {
         if (
           JSON.stringify(shipmentPlan._id) === JSON.stringify(shipmentPlanId)
         ) {
+          shipmentPlanFound = true;
           const updateShipmentPlansWithDeletedOne = helpers.removeObjectWithId(
             shipmentPlan.products,
             productId
           );
-          if (updateShipmentPlansWithDeletedOne === "no_object_with_id") {
+          if (
+            Array.isArray(updateShipmentPlansWithDeletedOne) &&
+            updateShipmentPlansWithDeletedOne.length === 0
+          ) {
+            // Set the flag to indicate that the shipment plan should be deleted
+            deleteShipmentPlan = true;
+          } else if (
+            updateShipmentPlansWithDeletedOne === "no_object_with_id"
+          ) {
             noProductWithId = true;
           } else {
             shipmentPlan.products = updateShipmentPlansWithDeletedOne;
@@ -190,6 +202,14 @@ const deleteProductFromShipmentPlanFromSpecificUser =
         }
         return shipmentPlan;
       });
+
+    if (!shipmentPlanFound) {
+      return {
+        status: "error",
+        message:
+          "There is no Shipment Plan mathing the id and user combination.",
+      };
+    }
 
     if (noProductWithId) {
       return {
@@ -199,13 +219,31 @@ const deleteProductFromShipmentPlanFromSpecificUser =
       };
     }
 
+    if (deleteShipmentPlan) {
+      // Filter out the shipment plan to be deleted
+      userWithShipmentPlans.shipmentPlans = helpers.removeObjectWithId(
+        userWithShipmentPlans.shipmentPlans,
+        shipmentPlanId
+      );
+    }
+
     const updateObj = {
       ...userWithShipmentPlans,
-      shipmentPlans: {
-        ...updatedShipmentPlansWithProductsForSpecificShipmentPlan,
-      },
     };
+
+    if (!deleteShipmentPlan) {
+      // Update shipment plans with the modified products
+      updateObj.shipmentPlans =
+        updatedShipmentPlansWithProductsForSpecificShipmentPlan;
+    }
+
     await ShipmentPlan.findOneAndUpdate({ email }, updateObj);
+
+    if (deleteShipmentPlan) {
+      return {
+        status: "conflict",
+      };
+    }
 
     const userWithShipmentPlansAfterDelete = await ShipmentPlan.findOne({
       email,
