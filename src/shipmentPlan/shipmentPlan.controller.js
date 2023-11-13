@@ -384,6 +384,12 @@ const uploadShipmentPlanFiles = async (req, res, next) => {
           fileType,
           filename,
         });
+
+      if (uploadShipmentPlanFileToDBResponse?.status === "error") {
+        return res.status(400).json({
+          ...uploadShipmentPlanFileToDBResponse,
+        });
+      }
       res.status(200).json({
         status: "success",
         message: "Success",

@@ -267,6 +267,17 @@ const uploadFilesToDB =
     const currentUserWithShipmentPlans = await ShipmentPlan.findOne({ email });
 
     let shipmentPlanExistsForThisUser = false;
+    console.log(currentUserWithShipmentPlans);
+    if (
+      !currentUserWithShipmentPlans ||
+      !currentUserWithShipmentPlans?.shipmentPlans
+    ) {
+      return {
+        status: "error",
+        message: `There is no shipment plan matchind with id: ${shipmentPlanId} for user ${email}`,
+        response: [],
+      };
+    }
     const updatedShipmentPlansWithProductsForSpecificShipmentPlan =
       currentUserWithShipmentPlans.shipmentPlans.map(async (shipmentPlan) => {
         if (
