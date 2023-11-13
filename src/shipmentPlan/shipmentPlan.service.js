@@ -265,7 +265,6 @@ const uploadFilesToDB =
     const currentUserWithShipmentPlans = await ShipmentPlan.findOne({ email });
 
     let shipmentPlanExistsForThisUser = false;
-    let
     const updatedShipmentPlansWithProductsForSpecificShipmentPlan =
       currentUserWithShipmentPlans.shipmentPlans.map((shipmentPlan) => {
         if (

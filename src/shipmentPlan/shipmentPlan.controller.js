@@ -16,7 +16,7 @@ const storage = multer.diskStorage({
   },
   filename: function (req, file, cb) {
     const uniqueSuffix = Date.now();
-    cb(null, uniqueSuffix + file.originalname);
+    cb(null, `${uniqueSuffix}_${file.originalname}`);
   },
 });
 const upload = multer({ storage: storage });
@@ -364,7 +364,7 @@ const uploadShipmentPlanFiles = async (req, res, next) => {
     if (!fileType) missingFields.push("fileType");
 
     if (fileType !== FileType.FBALabels && fileType !== FileType.SKULabels) {
-      missingFields.push("fileType needs to be shipmentFBA or skuLabels");
+      missingFields.push("fileType needs to be fbaLabels or skuLabels");
     }
     if (missingFields.length > 0) {
       return res.status(400).json({
