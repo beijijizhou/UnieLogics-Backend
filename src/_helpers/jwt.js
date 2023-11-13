@@ -14,6 +14,7 @@ function jwt() {
       "/users/checkout",
       // /^\/keepa\//, //whatever is in keepa doesn't need authorization
       "/keepa/getChartData",
+      /^\/uploads\/.*/,
     ],
   });
 }

@@ -20,6 +20,7 @@ const suppliersRouter = require("./src/suppliers/suppliers.routes");
 const stripeWebhook = require("./src/webhook/stripe.webhook.routes");
 
 const app = express();
+const path = require("path");
 
 app
   .use(cors())
@@ -37,8 +38,11 @@ app
   .use(bodyParser.json())
   .use(bodyParser.urlencoded({ extended: true }));
 
+const uploadsPath = path.join(__dirname, "uploads");
+console.log("Resolved uploads path:", uploadsPath);
+app.use("/uploads", express.static(uploadsPath));
+
 //routes
-app.use("/files", express.static("files"));
 app.use("/users", usersRouter);
 app.use("/buckets", bucketsProductsRouter);
 app.use("/folders", foldersRouter);
