@@ -1,6 +1,7 @@
 const { randomUUID } = require("crypto");
 const helpers = require("../_helpers/utils");
 const dayjs = require("dayjs");
+const FileType = require("./fileTypesEnum");
 
 const addShipmentPlanToDB =
   (ShipmentPlan) =>
@@ -258,6 +259,53 @@ const deleteProductFromShipmentPlanFromSpecificUser =
     );
   };
 
+const uploadFilesToDB =
+  (ShipmentPlan) =>
+  async ({ email, shipmentPlanId, fileType, filename }) => {
+    const currentUserWithShipmentPlans = await ShipmentPlan.findOne({ email });
+
+    let shipmentPlanExistsForThisUser = false;
+    let
+    const updatedShipmentPlansWithProductsForSpecificShipmentPlan =
+      currentUserWithShipmentPlans.shipmentPlans.map((shipmentPlan) => {
+        if (
+          JSON.stringify(shipmentPlan._id) === JSON.stringify(shipmentPlanId)
+        ) {
+          shipmentPlanExistsForThisUser = true;
+          if (fileType === FileType.FBALabels) {
+            shipmentPlan.files.fbaLabels.filename = filename;
+          } else if (fileType === FileType.SKULabels) {
+            shipmentPlan.files.skuLabels.filename = filename;
+          }
+        }
+        return shipmentPlan;
+      });
+
+    if (!shipmentPlanExistsForThisUser) {
+      return {
+        status: "error",
+        message: `There is no shipment plan matchind with id: ${shipmentPlanId} for user ${email}`,
+        response: [],
+      };
+    }
+    const updateObj = {
+      ...currentUserWithShipmentPlans,
+      shipmentPlans: {
+        ...updatedShipmentPlansWithProductsForSpecificShipmentPlan,
+      },
+    };
+
+    await ShipmentPlan.findOneAndUpdate({ email }, updateObj);
+
+    const userWithShipmentPlans = await ShipmentPlan.findOne({ email });
+
+    return userWithShipmentPlans?.shipmentPlans?.filter((shipmentPlan) => {
+      return (
+        JSON.stringify(shipmentPlan._id) === JSON.stringify(shipmentPlanId)
+      );
+    });
+  };
+
 module.exports = (ShipmentPlan) => {
   return {
     addShipmentPlanToDB: addShipmentPlanToDB(ShipmentPlan),
@@ -270,5 +318,6 @@ module.exports = (ShipmentPlan) => {
     updateShipmentPlanBasedOnId: updateShipmentPlanBasedOnId(ShipmentPlan),
     deleteProductFromShipmentPlanFromSpecificUser:
       deleteProductFromShipmentPlanFromSpecificUser(ShipmentPlan),
+    uploadFilesToDB: uploadFilesToDB(ShipmentPlan),
   };
 };

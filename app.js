@@ -38,6 +38,7 @@ app
   .use(bodyParser.urlencoded({ extended: true }));
 
 //routes
+app.use("/files", express.static("files"));
 app.use("/users", usersRouter);
 app.use("/buckets", bucketsProductsRouter);
 app.use("/folders", foldersRouter);

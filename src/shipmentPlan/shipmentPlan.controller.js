@@ -1,4 +1,25 @@
 const ShipmentPlanService = require(".");
+const FileType = require("./fileTypesEnum");
+const multer = require("multer");
+const fs = require("fs");
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    const uploadDir = "uploads/";
+
+    // Create the directory if it doesn't exist
+    if (!fs.existsSync(uploadDir)) {
+      fs.mkdirSync(uploadDir, { recursive: true });
+    }
+
+    cb(null, uploadDir);
+  },
+  filename: function (req, file, cb) {
+    const uniqueSuffix = Date.now();
+    cb(null, uniqueSuffix + file.originalname);
+  },
+});
+const upload = multer({ storage: storage });
 
 const add = async (req, res) => {
   const { email, shipmentTitle, products } = req.body;
@@ -226,6 +247,36 @@ const updateShipmentPlan = async (req, res) => {
       message: `You have mandatory fields missing: ${missingFields.join(", ")}`,
     });
   }
+  if (!email) missingFields.push("email");
+  if (!shipmentPlanId) missingFields.push("shipmentPlanId");
+  if (!products || !Array.isArray(products) || products.length === 0) {
+    missingFields.push("products");
+  } else {
+    products.forEach((product, index) => {
+      if (!product.asin) missingFields.push(`products[${index}].asin`);
+      if (!product.title) missingFields.push(`products[${index}].title`);
+      if (!product.dateAdded)
+        missingFields.push(`products[${index}].dateAdded`);
+      if (!product.inventory)
+        missingFields.push(`products[${index}].inventory`);
+      if (!product.boxWidth) missingFields.push(`products[${index}].boxWidth`);
+      if (!product.boxHeight)
+        missingFields.push(`products[${index}].boxHeight`);
+      if (!product.boxLength)
+        missingFields.push(`products[${index}].boxLength`);
+      if (!product.amazonPrice)
+        missingFields.push(`products[${index}].amazonPrice`);
+      if (!product.supplier) missingFields.push(`products[${index}].supplier`);
+      if (!product.imageUrl) missingFields.push(`products[${index}].imageUrl`);
+    });
+  }
+
+  if (missingFields.length > 0) {
+    return res.status(400).json({
+      status: "error",
+      message: `You have mandatory fields missing: ${missingFields.join(", ")}`,
+    });
+  }
 
   try {
     const updateShipmentPlanResponse =
@@ -292,6 +343,57 @@ const deleteProductFromShipmentPlan = async (req, res) => {
   }
 };
 
+const uploadShipmentPlanFiles = async (req, res, next) => {
+  // Use the upload.single middleware to handle the file upload
+  upload.single("file")(req, res, async (err) => {
+    if (err) {
+      return res.status(400).json({
+        status: "error",
+        message: "File upload failed",
+        err,
+      });
+    }
+    const { email, shipmentPlanId, fileType } = req.body;
+    const file = req.file;
+    const { filename } = file;
+    const missingFields = [];
+
+    if (!email) missingFields.push("email");
+    if (!shipmentPlanId) missingFields.push("shipmentPlanId");
+    if (!file) missingFields.push("file");
+    if (!fileType) missingFields.push("fileType");
+
+    if (fileType !== FileType.FBALabels && fileType !== FileType.SKULabels) {
+      missingFields.push("fileType needs to be shipmentFBA or skuLabels");
+    }
+    if (missingFields.length > 0) {
+      return res.status(400).json({
+        status: "error",
+        message: `You have mandatory fields missing: ${missingFields.join(
+          ", "
+        )}`,
+      });
+    }
+
+    try {
+      const uploadShipmentPlanFileToDBResponse =
+        await ShipmentPlanService.uploadFilesToDB({
+          email,
+          shipmentPlanId,
+          fileType,
+          filename,
+        });
+      res.status(200).json({
+        status: "success",
+        message: "Success",
+        response: uploadShipmentPlanFileToDBResponse,
+      });
+    } catch (e) {
+      console.log(e);
+      res.status(500).json({ status: "error", message: JSON.stringify(e) });
+    }
+  });
+};
 module.exports = {
   add,
   getAll,
@@ -299,4 +401,5 @@ module.exports = {
   deleteShipmentPlan,
   updateShipmentPlan,
   deleteProductFromShipmentPlan,
+  uploadShipmentPlanFiles,
 };

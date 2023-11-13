@@ -10,6 +10,14 @@ const shipmentPlanSchema = new Schema({
       dateAdded: { type: Date, required: false, default: null },
       dateUpdated: { type: Date, required: false, default: null },
       status: { type: String, required: false, default: "Added" },
+      files: {
+        fbaLabels: {
+          filename: { type: String, required: false, default: "" },
+        },
+        skuLabels: {
+          filename: { type: String, required: false, default: "" },
+        },
+      },
       products: [
         {
           asin: { type: String, required: true },
