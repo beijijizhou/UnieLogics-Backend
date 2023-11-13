@@ -2,6 +2,8 @@ const { randomUUID } = require("crypto");
 const helpers = require("../_helpers/utils");
 const dayjs = require("dayjs");
 const FileType = require("./fileTypesEnum");
+const fs = require("fs").promises;
+const path = require("path");
 
 const addShipmentPlanToDB =
   (ShipmentPlan) =>
@@ -266,15 +268,45 @@ const uploadFilesToDB =
 
     let shipmentPlanExistsForThisUser = false;
     const updatedShipmentPlansWithProductsForSpecificShipmentPlan =
-      currentUserWithShipmentPlans.shipmentPlans.map((shipmentPlan) => {
+      currentUserWithShipmentPlans.shipmentPlans.map(async (shipmentPlan) => {
         if (
           JSON.stringify(shipmentPlan._id) === JSON.stringify(shipmentPlanId)
         ) {
           shipmentPlanExistsForThisUser = true;
+
+          // Delete existing file from the disk
+          const existingFilename =
+            fileType === FileType.FBALabels
+              ? shipmentPlan.files.fbaLabels.filename
+              : shipmentPlan.files.skuLabels.filename;
+
+          // Update the filename in the shipment plan
           if (fileType === FileType.FBALabels) {
             shipmentPlan.files.fbaLabels.filename = filename;
           } else if (fileType === FileType.SKULabels) {
             shipmentPlan.files.skuLabels.filename = filename;
+          }
+
+          if (existingFilename) {
+            const filePath = path.join(
+              __dirname,
+              "../..",
+              "uploads",
+              existingFilename
+            );
+
+            try {
+              await fs.unlink(filePath);
+              console.log(`Deleted file: ${filePath}`);
+            } catch (err) {
+              if (err.code === "ENOENT") {
+                console.log(`File not found: ${filePath}`);
+              } else {
+                console.error(`Error deleting file: ${filePath}`, err);
+              }
+            }
+          } else {
+            console.log("No existing filename to delete.");
           }
         }
         return shipmentPlan;
