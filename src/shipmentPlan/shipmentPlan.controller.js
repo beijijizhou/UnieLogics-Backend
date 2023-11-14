@@ -354,9 +354,10 @@ const uploadShipmentPlanFiles = async (req, res, next) => {
         err,
       });
     }
+
     const { email, shipmentPlanId, fileType } = req.body;
     const file = req.file;
-    const { filename } = file;
+    console.log(file);
     const missingFields = [];
 
     if (!email) missingFields.push("email");
@@ -367,12 +368,25 @@ const uploadShipmentPlanFiles = async (req, res, next) => {
     if (fileType !== FileType.FBALabels && fileType !== FileType.SKULabels) {
       missingFields.push("fileType needs to be fbaLabels or skuLabels");
     }
+
     if (missingFields.length > 0) {
       return res.status(400).json({
         status: "error",
         message: `You have mandatory fields missing: ${missingFields.join(
           ", "
         )}`,
+      });
+    }
+    const { filename, size } = file;
+
+    if (
+      !filename.toLowerCase().endsWith(".pdf") ||
+      size > 10 * 1024 * 1024 // 10 MB limit
+    ) {
+      return res.status(400).json({
+        status: "error",
+        message:
+          "Invalid file type or size. Only PDF files up to 10 MB are allowed.",
       });
     }
 
@@ -401,6 +415,7 @@ const uploadShipmentPlanFiles = async (req, res, next) => {
     }
   });
 };
+
 module.exports = {
   add,
   getAll,
