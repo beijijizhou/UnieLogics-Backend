@@ -23,7 +23,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 const add = async (req, res) => {
-  const { email, shipmentTitle, products } = req.body;
+  const { email, shipmentTitle, products, poNo, orderDate } = req.body;
   const missingFields = [];
 
   if (!email) missingFields.push("email");
@@ -60,6 +60,8 @@ const add = async (req, res) => {
           email,
           shipmentTitle,
           products,
+          poNo,
+          orderDate,
         });
 
       if (addShipmentPlanToDBResponse?.status === "error") {
@@ -81,6 +83,8 @@ const add = async (req, res) => {
           email,
           shipmentTitle,
           products,
+          poNo,
+          orderDate,
         });
 
       console.log(updateShipmentPlanResponse);
@@ -214,42 +218,15 @@ const getById = async (req, res) => {
 };
 
 const updateShipmentPlan = async (req, res) => {
-  const { email, shipmentPlanId, products, shipmentTitle } = req.body;
+  const { email, shipmentPlanId, products, shipmentTitle, poNo, orderDate } =
+    req.body;
 
   const missingFields = [];
 
   if (!email) missingFields.push("email");
   if (!shipmentPlanId) missingFields.push("shipmentPlanId");
-  if (!products || !Array.isArray(products) || products.length === 0) {
-    missingFields.push("products");
-  } else {
-    products.forEach((product, index) => {
-      if (!product.asin) missingFields.push(`products[${index}].asin`);
-      if (!product.title) missingFields.push(`products[${index}].title`);
-      if (!product.dateAdded)
-        missingFields.push(`products[${index}].dateAdded`);
-      if (!product.inventory)
-        missingFields.push(`products[${index}].inventory`);
-      if (!product.boxWidth) missingFields.push(`products[${index}].boxWidth`);
-      if (!product.boxHeight)
-        missingFields.push(`products[${index}].boxHeight`);
-      if (!product.boxLength)
-        missingFields.push(`products[${index}].boxLength`);
-      if (!product.amazonPrice)
-        missingFields.push(`products[${index}].amazonPrice`);
-      if (!product.supplier) missingFields.push(`products[${index}].supplier`);
-      if (!product.imageUrl) missingFields.push(`products[${index}].imageUrl`);
-    });
-  }
-
-  if (missingFields.length > 0) {
-    return res.status(400).json({
-      status: "error",
-      message: `You have mandatory fields missing: ${missingFields.join(", ")}`,
-    });
-  }
-  if (!email) missingFields.push("email");
-  if (!shipmentPlanId) missingFields.push("shipmentPlanId");
+  if (!poNo) missingFields.push("poNo");
+  if (!orderDate) missingFields.push("orderDate");
   if (!products || !Array.isArray(products) || products.length === 0) {
     missingFields.push("products");
   } else {
@@ -286,6 +263,8 @@ const updateShipmentPlan = async (req, res) => {
         shipmentPlanId,
         shipmentTitle,
         products,
+        poNo,
+        orderDate,
       });
 
     console.log("updateShipmentPlanResponse", updateShipmentPlanResponse);

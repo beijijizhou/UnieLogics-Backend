@@ -7,7 +7,7 @@ const path = require("path");
 
 const addShipmentPlanToDB =
   (ShipmentPlan) =>
-  async ({ email, shipmentTitle, products }) => {
+  async ({ email, shipmentTitle, products, poNo, orderDate }) => {
     const newShipmentPlan = new ShipmentPlan({
       email,
       shipmentPlans: [
@@ -16,6 +16,8 @@ const addShipmentPlanToDB =
           products,
           shipmentTitle,
           dateAdded: dayjs().format(),
+          poNo,
+          orderDate,
         },
       ],
     });
@@ -27,7 +29,7 @@ const addShipmentPlanToDB =
 
 const updateShipmentPlansForExistingEmailInDB =
   (ShipmentPlan) =>
-  async ({ email, shipmentTitle, products }) => {
+  async ({ email, shipmentTitle, products, poNo, orderDate }) => {
     const currentUserWithShipmentPlans = await ShipmentPlan.findOne({ email });
 
     // Check if all product.asin values are already present in any existing shipment plan
@@ -56,6 +58,8 @@ const updateShipmentPlansForExistingEmailInDB =
       products,
       shipmentTitle,
       dateAdded: dayjs().format(),
+      poNo,
+      orderDate,
     };
     currentUserWithShipmentPlans.shipmentPlans.push(newShipmentPlan);
 
@@ -120,7 +124,14 @@ const getShipmentPlanByIdFromDb =
 
 const updateShipmentPlanBasedOnId =
   (ShipmentPlan) =>
-  async ({ email, shipmentPlanId, shipmentTitle, products }) => {
+  async ({
+    email,
+    shipmentPlanId,
+    shipmentTitle,
+    products,
+    poNo,
+    orderDate,
+  }) => {
     const currentUserWithShipmentPlans = await ShipmentPlan.findOne({ email });
 
     let shipmentPlanExistsForThisUser = false;
@@ -133,6 +144,8 @@ const updateShipmentPlanBasedOnId =
           shipmentPlan.products = products;
           shipmentPlan.dateUpdated = dayjs().format();
           shipmentPlan.shipmentTitle = shipmentTitle;
+          shipmentPlan.poNo = poNo;
+          shipmentPlan.orderDate = orderDate;
         }
         return shipmentPlan;
       });

@@ -18,6 +18,8 @@ const shipmentPlanSchema = new Schema({
           filename: { type: String, required: false, default: "" },
         },
       },
+      poNo: { type: String, required: false, default: "" },
+      orderDate: { type: Date, required: false, default: null },
       products: [
         {
           asin: { type: String, required: true },
