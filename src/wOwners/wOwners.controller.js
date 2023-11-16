@@ -6,6 +6,7 @@ const mailgun = require("mailgun-js")({
   domain: process.env.MAILGUN_DOMAIN,
 });
 const from_who = "donotreply@asinmice.com";
+const helpers = require("../_helpers/utils");
 
 const add = async (req, res) => {
   const { loggedInEmail, wOwner } = req.body;
@@ -33,6 +34,19 @@ const add = async (req, res) => {
   if (!wOwner?.llcName) missingFields.push("llcName");
   if (!wOwner?.businessName) missingFields.push("businessName");
   if (!wOwner?.businessAddress) missingFields.push("businessAddress");
+  if (wOwner?.businessAddress) {
+    if (!wOwner?.businessAddress.zipCode) {
+      missingFields.push("businessAddress.zipCode");
+    } else {
+      // Add a rule to check if the ZIP code is from the U.S.
+      if (!helpers.isUSZipCode(wOwner.businessAddress.zipCode)) {
+        return res.status(400).json({
+          status: "error",
+          message: "ZIP code needs to be from the U.S.",
+        });
+      }
+    }
+  }
   if (!wOwner?.businessPhoneNumber) missingFields.push("businessPhoneNumber");
   if (!wOwner?.customerServiceEmailAddress)
     missingFields.push("customerServiceEmailAddress");

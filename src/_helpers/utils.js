@@ -11,4 +11,12 @@ const removeObjectWithId = (arr, id) => {
   }
 };
 
+const isUSZipCode = (zipCode) => {
+  // Regular expression pattern for U.S. ZIP codes
+  var usZipPattern = /^\d{5}(?:-\d{4})?$/;
+
+  return usZipPattern.test(zipCode);
+};
+
 exports.removeObjectWithId = removeObjectWithId;
+exports.isUSZipCode = isUSZipCode;

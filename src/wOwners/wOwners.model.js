@@ -18,7 +18,9 @@ const wOwnersSchema = new Schema({
       businessAddress: {
         type: Array,
         required: true,
-        default: [{ address: "", state: "", city: "", zipCode: "" }],
+        default: [
+          { address: "", state: "", city: "", zipCode: "", lat: "", long: "" },
+        ],
       },
       businessPhoneNumber: { type: String, required: true },
       password: { type: String, required: false },
