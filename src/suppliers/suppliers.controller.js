@@ -1,4 +1,5 @@
 const SuppliersService = require(".");
+const helpers = require("../_helpers/utils");
 
 const add = async (req, res) => {
   const { email, supplier } = req.body;
@@ -16,6 +17,19 @@ const add = async (req, res) => {
     missingFields.push("supplierAddress.state");
   if (!supplier?.supplierAddress.zipCode)
     missingFields.push("supplierAddress.zipCode");
+  if (supplier?.supplierAddress) {
+    if (!supplier?.supplierAddress.zipCode) {
+      missingFields.push("supplierAddress.zipCode");
+    } else {
+      // Add a rule to check if the ZIP code is from the U.S.
+      if (!helpers.isUSZipCode(supplier.supplierAddress.zipCode)) {
+        return res.status(400).json({
+          status: "error",
+          message: "ZIP code needs to be from the U.S.",
+        });
+      }
+    }
+  }
   if (!supplier?.supplierLink) missingFields.push("supplierLink");
   if (!supplier?.contactPerson) missingFields.push("contactPerson");
   if (!supplier?.contactPerson.name) missingFields.push("contactPerson.name");

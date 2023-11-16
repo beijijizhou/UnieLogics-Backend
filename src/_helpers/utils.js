@@ -1,3 +1,5 @@
+const request = require("request");
+
 const removeObjectWithId = (arr, id) => {
   const objWithIdIndex = arr.findIndex(
     (obj) => JSON.stringify(obj._id) === JSON.stringify(id)
@@ -18,5 +20,32 @@ const isUSZipCode = (zipCode) => {
   return usZipPattern.test(zipCode);
 };
 
+//https://opencagedata.com/ with my gmai login and we have the free plan
+const getLatLongFromZipCode = (zipCode) => {
+  return new Promise((resolve, reject) => {
+    const apiKey = "af76e3cbdbc945548a7c47c3ebf5e7e9";
+    const apiUrl = `https://api.opencagedata.com/geocode/v1/json?key=${apiKey}&q=${zipCode}&countrycode=US`;
+
+    request.get(apiUrl, { json: true }, (error, response, body) => {
+      if (error) {
+        reject(error);
+        return;
+      }
+
+      console.log("OpenCage API response:", body); // Log the entire response
+
+      if (body.results.length > 0) {
+        const location = body.results[0].geometry;
+        const latitude = location.lat;
+        const longitude = location.lng;
+        resolve({ latitude, longitude });
+      } else {
+        reject("Geocoding failed. No results found.");
+      }
+    });
+  });
+};
+
 exports.removeObjectWithId = removeObjectWithId;
 exports.isUSZipCode = isUSZipCode;
+exports.getLatLongFromZipCode = getLatLongFromZipCode;
