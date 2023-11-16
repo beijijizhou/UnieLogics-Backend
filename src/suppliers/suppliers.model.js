@@ -12,6 +12,8 @@ const suppliersSchema = new Schema({
         city: { type: String, required: true },
         state: { type: String, required: true },
         zipCode: { type: String, required: true },
+        lat: { type: String, required: false, default: "" },
+        long: { type: String, required: false, default: "" },
       },
       supplierLink: { type: String, required: true },
       contactPerson: {

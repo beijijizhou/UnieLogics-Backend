@@ -4,37 +4,99 @@ const helpers = require("../_helpers/utils");
 const addSuppliersToDB =
   (Suppliers) =>
   async ({ email, supplier }) => {
-    new Suppliers({
-      email,
-      suppliers: [
-        {
-          _id: randomUUID(),
-          ...supplier,
-        },
-      ],
-    }).save();
+    try {
+      const geoLocationObject = await helpers.getLatLongFromZipCode(
+        supplier.supplierAddress.zipCode
+      );
+
+      if (
+        geoLocationObject.latitude === undefined ||
+        geoLocationObject.longitude === undefined
+      ) {
+        return {
+          status: "error",
+          message:
+            "There was an error finding the latitude and longitude for your zipCode. Please contact us if the problem persists.",
+        };
+      }
+      new Suppliers({
+        email,
+        suppliers: [
+          {
+            _id: randomUUID(),
+            ...supplier,
+            supplierAddress: {
+              street: supplier.supplierAddress.street,
+              city: supplier.supplierAddress.city,
+
+              state: supplier.supplierAddress.state,
+              zipCode: supplier.supplierAddress.zipCode,
+              lat: geoLocationObject.latitude.toString(),
+              long: geoLocationObject.longitude.toString(),
+            },
+          },
+        ],
+      }).save();
+    } catch (error) {
+      return {
+        status: "error",
+        message:
+          "There was an error finding the latitude and longitude for your zipCode. Please contact us if the problem persists.",
+      };
+    }
   };
 
 const updateSuppliersForExistingEmailInDB =
   (Suppliers) =>
   async ({ email, supplier }) => {
-    let updateObj = {};
-    const currentUserWithSuppliers = await Suppliers.findOne({
-      email,
-    });
+    try {
+      const geoLocationObject = await helpers.getLatLongFromZipCode(
+        supplier.supplierAddress.zipCode
+      );
 
-    updateObj = {
-      email,
-      suppliers: [
-        ...currentUserWithSuppliers.suppliers,
-        {
-          _id: randomUUID(),
-          ...supplier,
-        },
-      ],
-    };
+      if (
+        geoLocationObject.latitude === undefined ||
+        geoLocationObject.longitude === undefined
+      ) {
+        return {
+          status: "error",
+          message:
+            "There was an error finding the latitude and longitude for your zipCode. Please contact us if the problem persists.",
+        };
+      }
+      let updateObj = {};
+      const currentUserWithSuppliers = await Suppliers.findOne({
+        email,
+      });
 
-    return await Suppliers.findOneAndUpdate({ email }, updateObj);
+      updateObj = {
+        email,
+        suppliers: [
+          ...currentUserWithSuppliers.suppliers,
+          {
+            _id: randomUUID(),
+            ...supplier,
+            supplierAddress: {
+              street: supplier.supplierAddress.street,
+              city: supplier.supplierAddress.city,
+
+              state: supplier.supplierAddress.state,
+              zipCode: supplier.supplierAddress.zipCode,
+              lat: geoLocationObject.latitude.toString(),
+              long: geoLocationObject.longitude.toString(),
+            },
+          },
+        ],
+      };
+
+      return await Suppliers.findOneAndUpdate({ email }, updateObj);
+    } catch (error) {
+      return {
+        status: "error",
+        message:
+          "There was an error finding the latitude and longitude for your zipCode. Please contact us if the problem persists.",
+      };
+    }
   };
 
 const getAllSuppliersFromDB =
