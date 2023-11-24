@@ -40,7 +40,6 @@ const add = async (req, res) => {
         missingFields.push(`products[${index}].amazonPrice`);
       if (!product.supplier) missingFields.push(`products[${index}].supplier`);
       if (product.supplier) {
-        console.log(product.supplier);
         if (!product.supplier.supplierAddress.lat)
           missingFields.push(`products[${index}].supplier.supplierAddress.lat`);
         if (!product.supplier.supplierAddress.long)
