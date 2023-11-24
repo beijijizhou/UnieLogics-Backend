@@ -22,6 +22,8 @@ const foldersSchema = new Schema({
               city: { type: String, required: false, default: "" },
               state: { type: String, required: false, default: "" },
               zipCode: { type: String, required: false, default: "" },
+              lat: { type: String, required: false, default: "" },
+              long: { type: String, required: false, default: "" },
             },
             supplierLink: { type: String, required: false, default: "" },
             contactPerson: {

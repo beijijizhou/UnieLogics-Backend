@@ -341,6 +341,10 @@ const updateSupplierForItemInFolder = async (req, res) => {
   if (_id !== "no-supplier") {
     if (!supplierName) missingFields.push("supplierName");
     if (!supplierAddress) missingFields.push("supplierAddress");
+    if (supplierAddress) {
+      if (!supplierAddress.lat) missingFields.push("supplierAddress.lat");
+      if (!supplierAddress.long) missingFields.push("supplierAddress.long");
+    }
     if (!supplierAddress?.street) missingFields.push("supplierAddress?.street");
     if (!supplierAddress?.city) missingFields.push("supplierAddress?.city");
     if (!supplierAddress?.state) missingFields.push("supplierAddress?.state");
