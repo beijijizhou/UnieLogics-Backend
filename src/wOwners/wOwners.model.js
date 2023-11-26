@@ -16,11 +16,16 @@ const wOwnersSchema = new Schema({
       llcName: { type: String, required: true },
       businessName: { type: String, required: true },
       businessAddress: {
-        type: Array,
+        type: Object,
         required: true,
-        default: [
-          { address: "", state: "", city: "", zipCode: "", lat: "", long: "" },
-        ],
+        default: {
+          address: "",
+          state: "",
+          city: "",
+          zipCode: "",
+          lat: "",
+          long: "",
+        },
       },
       businessPhoneNumber: { type: String, required: true },
       password: { type: String, required: false },
