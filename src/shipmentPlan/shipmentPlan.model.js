@@ -32,6 +32,7 @@ const shipmentPlanSchema = new Schema({
           amazonPrice: { type: String, required: true },
           imageUrl: { type: String, required: true },
           fnsku: { type: String, required: false, default: "" },
+          boxes: { type: String, required: false, default: "" },
           supplier: {
             _id: { type: String, required: true },
             supplierName: { type: String, required: true },
