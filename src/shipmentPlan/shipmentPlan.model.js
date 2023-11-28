@@ -34,6 +34,7 @@ const shipmentPlanSchema = new Schema({
           fnsku: { type: String, required: false, default: "" },
           boxes: { type: String, required: false, default: "" },
           weightPerBox: { type: String, required: false, default: "" },
+          upc: { type: String, required: false, default: "" },
           supplier: {
             _id: { type: String, required: true },
             supplierName: { type: String, required: true },
