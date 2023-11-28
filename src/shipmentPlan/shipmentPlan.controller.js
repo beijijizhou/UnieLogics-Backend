@@ -243,8 +243,8 @@ const updateShipmentPlan = async (req, res) => {
       if (!product.title) missingFields.push(`products[${index}].title`);
       if (!product.dateAdded)
         missingFields.push(`products[${index}].dateAdded`);
-      if (!product.inventory)
-        missingFields.push(`products[${index}].inventory`);
+      if (!product.unitsPerBox)
+        missingFields.push(`products[${index}].unitsPerBox`);
       if (!product.boxWidth) missingFields.push(`products[${index}].boxWidth`);
       if (!product.boxHeight)
         missingFields.push(`products[${index}].boxHeight`);

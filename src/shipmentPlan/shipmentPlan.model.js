@@ -24,7 +24,7 @@ const shipmentPlanSchema = new Schema({
         {
           asin: { type: String, required: true },
           title: { type: String, required: true },
-          inventory: { type: String, required: false, default: "" },
+          unitsPerBox: { type: String, required: false, default: "" },
           dateAdded: { type: String, required: true },
           boxWidth: { type: String, required: false, default: "" },
           boxHeight: { type: String, required: false, default: "" },
