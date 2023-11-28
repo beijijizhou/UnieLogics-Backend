@@ -36,8 +36,9 @@ const updateShipmentPlansForExistingEmailInDB =
     const existingPlan = currentUserWithShipmentPlans.shipmentPlans.find(
       (plan) => {
         const existingAsins = plan.products.map((product) => product.asin);
-        return products.every((product) =>
-          existingAsins.includes(product.asin)
+        return (
+          products.length === existingAsins.length &&
+          products.every((product) => existingAsins.includes(product.asin))
         );
       }
     );
