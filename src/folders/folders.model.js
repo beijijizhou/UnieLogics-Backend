@@ -14,7 +14,7 @@ const foldersSchema = new Schema({
           price: { type: String, required: false, default: "" },
           imageUrl: { type: String, required: true, default: "New" },
           folderId: { type: String, required: true },
-          isHazmat: { type: String, required: true },
+          isHazmat: { type: Boolean, required: false, default: false },
           supplier: {
             _id: { type: String, required: false, default: "" },
             supplierName: { type: String, required: false, default: "" },

@@ -55,7 +55,7 @@ const profProductDeatailsSchema = new Schema({
               reviews: { type: String, required: false, default: "" },
             },
           ],
-          isHazmat: { type: String, required: false, default: false },
+          isHazmat: { type: Boolean, required: false, default: false },
           note: { type: String, required: false, default: "" },
           supplier: {
             _id: { type: String, required: false, default: "" },
