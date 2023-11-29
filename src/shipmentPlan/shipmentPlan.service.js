@@ -303,13 +303,13 @@ const uploadFilesToDB =
           const existingFilename =
             fileType === FileType.FBALabels
               ? shipmentPlan.files.fbaLabels.filename
-              : shipmentPlan.files.skuLabels.filename;
+              : shipmentPlan.files.otherFiles.filename;
 
           // Update the filename in the shipment plan
           if (fileType === FileType.FBALabels) {
             shipmentPlan.files.fbaLabels.filename = filename;
-          } else if (fileType === FileType.SKULabels) {
-            shipmentPlan.files.skuLabels.filename = filename;
+          } else if (fileType === FileType.OtherFiles) {
+            shipmentPlan.files.otherFiles.filename = filename;
           }
 
           if (existingFilename) {

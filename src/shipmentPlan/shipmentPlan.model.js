@@ -14,7 +14,7 @@ const shipmentPlanSchema = new Schema({
         fbaLabels: {
           filename: { type: String, required: false, default: "" },
         },
-        skuLabels: {
+        otherFiles: {
           filename: { type: String, required: false, default: "" },
         },
       },

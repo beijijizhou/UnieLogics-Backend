@@ -1,6 +1,6 @@
 const FileType = {
   FBALabels: "fbaLabels",
-  SKULabels: "skuLabels",
+  OtherFiles: "otherFiles",
 };
 
 module.exports = FileType;

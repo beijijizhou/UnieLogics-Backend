@@ -352,8 +352,8 @@ const uploadShipmentPlanFiles = async (req, res, next) => {
     if (!file) missingFields.push("file");
     if (!fileType) missingFields.push("fileType");
 
-    if (fileType !== FileType.FBALabels && fileType !== FileType.SKULabels) {
-      missingFields.push("fileType needs to be fbaLabels or skuLabels");
+    if (fileType !== FileType.FBALabels && fileType !== FileType.OtherFiles) {
+      missingFields.push("fileType needs to be fbaLabels or otherFiles");
     }
 
     if (missingFields.length > 0) {
