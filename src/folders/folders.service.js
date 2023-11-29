@@ -113,7 +113,17 @@ const editFolderNameForExistingUser =
 
 const addProductToSpecificFolder =
   (Folder) =>
-  async ({ email, date, title, asin, price, imageUrl, folderId, supplier }) => {
+  async ({
+    email,
+    date,
+    title,
+    asin,
+    price,
+    imageUrl,
+    folderId,
+    supplier,
+    isHazmat,
+  }) => {
     const userWithFolders = await Folder.findOne({ email });
     let productAlreadyAdded = false;
     let folderWithIdFound = false;
@@ -138,6 +148,7 @@ const addProductToSpecificFolder =
               imageUrl,
               folderId,
               supplier,
+              isHazmat,
             });
 
             folder.folderItemsCount = folder.folderItems.length;
@@ -152,6 +163,7 @@ const addProductToSpecificFolder =
                 item.imageUrl = imageUrl;
                 item.folderId = folderId;
                 item.supplier = supplier;
+                item.isHazmat = isHazmat;
 
                 productAlreadyAdded = true;
               }
@@ -166,6 +178,7 @@ const addProductToSpecificFolder =
                 imageUrl,
                 folderId,
                 supplier,
+                isHazmat,
               });
 
               folder.folderItemsCount = folder.folderItems.length;

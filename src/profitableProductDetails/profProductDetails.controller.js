@@ -35,6 +35,7 @@ const addProfProductDetails = async (req, res) => {
     note,
     supplier,
     folderId,
+    isHazmat,
   } = req.body;
 
   try {
@@ -75,6 +76,7 @@ const addProfProductDetails = async (req, res) => {
           variations,
           note,
           supplier,
+          isHazmat,
         }
       );
 

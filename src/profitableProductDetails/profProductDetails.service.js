@@ -35,6 +35,7 @@ const addProductToSpecificFolderAndIfFlderNotExistCreateIt =
     variations,
     note,
     supplier,
+    isHazmat,
   }) => {
     const userWithProfProductDetails = await ProfProductDetails.findOne({
       email,
@@ -81,6 +82,7 @@ const addProductToSpecificFolderAndIfFlderNotExistCreateIt =
                 variations,
                 note,
                 supplier,
+                isHazmat,
               },
             ],
           },
@@ -143,6 +145,7 @@ const addProductToSpecificFolderAndIfFlderNotExistCreateIt =
             if (buyboxStatistics) item.buyboxStatistics = buyboxStatistics;
             if (variations) item.variations = variations;
             if (note) item.note = note;
+            if (isHazmat) item.isHazmat = isHazmat;
             productFound = true;
           }
         });
@@ -182,6 +185,7 @@ const addProductToSpecificFolderAndIfFlderNotExistCreateIt =
             variations,
             note,
             supplier,
+            isHazmat,
           });
           folder.folderItemsCount = folder.folderItems.length;
         }
@@ -227,6 +231,7 @@ const addProductToSpecificFolderAndIfFlderNotExistCreateIt =
             variations,
             note,
             supplier,
+            isHazmat,
           },
         ],
       });
