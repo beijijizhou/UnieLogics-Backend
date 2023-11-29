@@ -23,7 +23,8 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 const add = async (req, res) => {
-  const { email, shipmentTitle, products, orderNo, orderDate } = req.body;
+  const { email, shipmentTitle, products, orderNo, receiptNo, orderDate } =
+    req.body;
   const missingFields = [];
 
   if (!email) missingFields.push("email");
@@ -69,6 +70,7 @@ const add = async (req, res) => {
           shipmentTitle,
           products,
           orderNo,
+          receiptNo,
           orderDate,
         });
 
@@ -92,6 +94,7 @@ const add = async (req, res) => {
           shipmentTitle,
           products,
           orderNo,
+          receiptNo,
           orderDate,
         });
 
@@ -226,8 +229,15 @@ const getById = async (req, res) => {
 };
 
 const updateShipmentPlan = async (req, res) => {
-  const { email, shipmentPlanId, products, shipmentTitle, orderNo, orderDate } =
-    req.body;
+  const {
+    email,
+    shipmentPlanId,
+    products,
+    shipmentTitle,
+    orderNo,
+    receiptNo,
+    orderDate,
+  } = req.body;
 
   const missingFields = [];
 
@@ -272,6 +282,7 @@ const updateShipmentPlan = async (req, res) => {
         shipmentTitle,
         products,
         orderNo,
+        receiptNo,
         orderDate,
       });
 

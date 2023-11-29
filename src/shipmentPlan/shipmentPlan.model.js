@@ -19,6 +19,7 @@ const shipmentPlanSchema = new Schema({
         },
       },
       orderNo: { type: String, required: false, default: "" },
+      receiptNo: { type: String, required: false, default: "" },
       orderDate: { type: Date, required: false, default: null },
       products: [
         {
