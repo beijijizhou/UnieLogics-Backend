@@ -23,7 +23,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 const add = async (req, res) => {
-  const { email, shipmentTitle, products, poNo, orderDate } = req.body;
+  const { email, shipmentTitle, products, orderNo, orderDate } = req.body;
   const missingFields = [];
 
   if (!email) missingFields.push("email");
@@ -68,7 +68,7 @@ const add = async (req, res) => {
           email,
           shipmentTitle,
           products,
-          poNo,
+          orderNo,
           orderDate,
         });
 
@@ -91,7 +91,7 @@ const add = async (req, res) => {
           email,
           shipmentTitle,
           products,
-          poNo,
+          orderNo,
           orderDate,
         });
 
@@ -226,14 +226,14 @@ const getById = async (req, res) => {
 };
 
 const updateShipmentPlan = async (req, res) => {
-  const { email, shipmentPlanId, products, shipmentTitle, poNo, orderDate } =
+  const { email, shipmentPlanId, products, shipmentTitle, orderNo, orderDate } =
     req.body;
 
   const missingFields = [];
 
   if (!email) missingFields.push("email");
   if (!shipmentPlanId) missingFields.push("shipmentPlanId");
-  if (!poNo) missingFields.push("poNo");
+  if (!orderNo) missingFields.push("orderNo");
   if (!orderDate) missingFields.push("orderDate");
   if (!products || !Array.isArray(products) || products.length === 0) {
     missingFields.push("products");
@@ -271,7 +271,7 @@ const updateShipmentPlan = async (req, res) => {
         shipmentPlanId,
         shipmentTitle,
         products,
-        poNo,
+        orderNo,
         orderDate,
       });
 

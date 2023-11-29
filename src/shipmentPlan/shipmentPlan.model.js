@@ -18,7 +18,7 @@ const shipmentPlanSchema = new Schema({
           filename: { type: String, required: false, default: "" },
         },
       },
-      poNo: { type: String, required: false, default: "" },
+      orderNo: { type: String, required: false, default: "" },
       orderDate: { type: Date, required: false, default: null },
       products: [
         {
