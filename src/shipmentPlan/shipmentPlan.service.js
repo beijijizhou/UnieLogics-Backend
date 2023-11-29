@@ -147,14 +147,12 @@ const updateShipmentPlanBasedOnId =
         ) {
           shipmentPlanExistsForThisUser = true;
 
-          if (shipmentTitle !== undefined)
-            shipmentPlan.shipmentTitle = shipmentTitle;
-          if (products !== undefined) shipmentPlan.products = products;
-          if (orderNo !== undefined) shipmentPlan.orderNo = orderNo;
-          if (receiptNo !== undefined) shipmentPlan.receiptNo = receiptNo;
-          if (orderDate !== undefined) shipmentPlan.orderDate = orderDate;
-          if (warehouseOwner !== undefined)
-            shipmentPlan.warehouseOwner = warehouseOwner;
+          if (shipmentTitle) shipmentPlan.shipmentTitle = shipmentTitle;
+          if (products) shipmentPlan.products = products;
+          if (orderNo) shipmentPlan.orderNo = orderNo;
+          if (receiptNo) shipmentPlan.receiptNo = receiptNo;
+          if (orderDate) shipmentPlan.orderDate = orderDate;
+          if (warehouseOwner) shipmentPlan.warehouseOwner = warehouseOwner;
           shipmentPlan.dateUpdated = dayjs().format();
         }
         return shipmentPlan;
