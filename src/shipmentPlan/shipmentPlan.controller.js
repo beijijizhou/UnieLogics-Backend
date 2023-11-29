@@ -244,18 +244,18 @@ const updateShipmentPlan = async (req, res) => {
 
   if (!email) missingFields.push("email");
   if (!shipmentPlanId) missingFields.push("shipmentPlanId");
-  if (!products || !Array.isArray(products) || products.length === 0) {
-    missingFields.push("products");
-  } else {
-    products.forEach((product, index) => {
-      if (!product.asin) missingFields.push(`products[${index}].asin`);
-      if (!product.title) missingFields.push(`products[${index}].title`);
-      if (!product.dateAdded)
-        missingFields.push(`products[${index}].dateAdded`);
-      if (!product.supplier) missingFields.push(`products[${index}].supplier`);
-      if (!product.imageUrl) missingFields.push(`products[${index}].imageUrl`);
-    });
-  }
+  // if (!products || !Array.isArray(products) || products.length === 0) {
+  //   missingFields.push("products");
+  // } else {
+  //   products.forEach((product, index) => {
+  //     if (!product.asin) missingFields.push(`products[${index}].asin`);
+  //     if (!product.title) missingFields.push(`products[${index}].title`);
+  //     if (!product.dateAdded)
+  //       missingFields.push(`products[${index}].dateAdded`);
+  //     if (!product.supplier) missingFields.push(`products[${index}].supplier`);
+  //     if (!product.imageUrl) missingFields.push(`products[${index}].imageUrl`);
+  //   });
+  // }
 
   if (warehouseOwner) {
     if (!warehouseOwner.city) missingFields.push("warehouseOwner.city");
