@@ -135,6 +135,7 @@ const updateShipmentPlanBasedOnId =
     orderNo,
     receiptNo,
     orderDate,
+    warehouseOwner,
   }) => {
     const currentUserWithShipmentPlans = await ShipmentPlan.findOne({ email });
 
@@ -145,12 +146,16 @@ const updateShipmentPlanBasedOnId =
           JSON.stringify(shipmentPlan._id) === JSON.stringify(shipmentPlanId)
         ) {
           shipmentPlanExistsForThisUser = true;
-          shipmentPlan.products = products;
+
+          if (shipmentTitle !== undefined)
+            shipmentPlan.shipmentTitle = shipmentTitle;
+          if (products !== undefined) shipmentPlan.products = products;
+          if (orderNo !== undefined) shipmentPlan.orderNo = orderNo;
+          if (receiptNo !== undefined) shipmentPlan.receiptNo = receiptNo;
+          if (orderDate !== undefined) shipmentPlan.orderDate = orderDate;
+          if (warehouseOwner !== undefined)
+            shipmentPlan.warehouseOwner = warehouseOwner;
           shipmentPlan.dateUpdated = dayjs().format();
-          shipmentPlan.shipmentTitle = shipmentTitle;
-          shipmentPlan.orderNo = orderNo;
-          shipmentPlan.receiptNo = receiptNo;
-          shipmentPlan.orderDate = orderDate;
         }
         return shipmentPlan;
       });

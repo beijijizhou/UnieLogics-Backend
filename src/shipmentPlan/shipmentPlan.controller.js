@@ -237,14 +237,13 @@ const updateShipmentPlan = async (req, res) => {
     orderNo,
     receiptNo,
     orderDate,
+    warehouseOwner,
   } = req.body;
 
   const missingFields = [];
 
   if (!email) missingFields.push("email");
   if (!shipmentPlanId) missingFields.push("shipmentPlanId");
-  if (!orderNo) missingFields.push("orderNo");
-  if (!orderDate) missingFields.push("orderDate");
   if (!products || !Array.isArray(products) || products.length === 0) {
     missingFields.push("products");
   } else {
@@ -253,18 +252,19 @@ const updateShipmentPlan = async (req, res) => {
       if (!product.title) missingFields.push(`products[${index}].title`);
       if (!product.dateAdded)
         missingFields.push(`products[${index}].dateAdded`);
-      if (!product.unitsPerBox)
-        missingFields.push(`products[${index}].unitsPerBox`);
-      if (!product.boxWidth) missingFields.push(`products[${index}].boxWidth`);
-      if (!product.boxHeight)
-        missingFields.push(`products[${index}].boxHeight`);
-      if (!product.boxLength)
-        missingFields.push(`products[${index}].boxLength`);
-      if (!product.amazonPrice)
-        missingFields.push(`products[${index}].amazonPrice`);
       if (!product.supplier) missingFields.push(`products[${index}].supplier`);
       if (!product.imageUrl) missingFields.push(`products[${index}].imageUrl`);
     });
+  }
+
+  if (warehouseOwner) {
+    if (!warehouseOwner.city) missingFields.push("warehouseOwner.city");
+    if (!warehouseOwner.address) missingFields.push("warehouseOwner.address");
+    if (!warehouseOwner.state) missingFields.push("warehouseOwner.state");
+    if (!warehouseOwner.zipCode) missingFields.push("warehouseOwner.zipCode");
+    if (!warehouseOwner.lat) missingFields.push("warehouseOwner.lat");
+    if (!warehouseOwner.long) missingFields.push("warehouseOwner.long");
+    if (!warehouseOwner._id) missingFields.push("warehouseOwner.long");
   }
 
   if (missingFields.length > 0) {
@@ -284,6 +284,7 @@ const updateShipmentPlan = async (req, res) => {
         orderNo,
         receiptNo,
         orderDate,
+        warehouseOwner,
       });
 
     console.log("updateShipmentPlanResponse", updateShipmentPlanResponse);

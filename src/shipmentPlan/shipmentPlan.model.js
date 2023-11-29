@@ -21,6 +21,15 @@ const shipmentPlanSchema = new Schema({
       orderNo: { type: String, required: false, default: "" },
       receiptNo: { type: String, required: false, default: "" },
       orderDate: { type: Date, required: false, default: null },
+      warehouseOwner: {
+        city: { type: String, required: false, default: "" },
+        address: { type: String, required: false, default: "" },
+        state: { type: String, required: false, default: "" },
+        zipCode: { type: String, required: false, default: "" },
+        lat: { type: String, required: false, default: "" },
+        long: { type: String, required: false, default: "" },
+        _id: { type: String, required: false, default: "" },
+      },
       products: [
         {
           asin: { type: String, required: true },
