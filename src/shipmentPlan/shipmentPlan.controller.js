@@ -344,8 +344,7 @@ const deleteProductFromShipmentPlan = async (req, res) => {
 };
 
 const uploadShipmentPlanFiles = async (req, res, next) => {
-  // Use the upload.single middleware to handle the file upload
-  upload.single("file")(req, res, async (err) => {
+  upload.array("files")(req, res, async (err) => {
     if (err) {
       return res.status(400).json({
         status: "error",
@@ -355,13 +354,12 @@ const uploadShipmentPlanFiles = async (req, res, next) => {
     }
 
     const { email, shipmentPlanId, fileType } = req.body;
-    const file = req.file;
-    console.log(file);
+    const files = req.files;
     const missingFields = [];
 
     if (!email) missingFields.push("email");
     if (!shipmentPlanId) missingFields.push("shipmentPlanId");
-    if (!file) missingFields.push("file");
+    if (!files || files.length === 0) missingFields.push("files");
     if (!fileType) missingFields.push("fileType");
 
     if (fileType !== FileType.FBALabels && fileType !== FileType.OtherFiles) {
@@ -376,17 +374,17 @@ const uploadShipmentPlanFiles = async (req, res, next) => {
         )}`,
       });
     }
-    const { filename, size } = file;
 
-    if (
-      !filename.toLowerCase().endsWith(".pdf") ||
-      size > 10 * 1024 * 1024 // 10 MB limit
-    ) {
-      return res.status(400).json({
-        status: "error",
-        message:
-          "Invalid file type or size. Only PDF files up to 10 MB are allowed.",
-      });
+    for (const file of files) {
+      const { filename, size } = file;
+
+      if (!filename.toLowerCase().endsWith(".pdf") || size > 10 * 1024 * 1024) {
+        return res.status(400).json({
+          status: "error",
+          message:
+            "Invalid file type or size. Only PDF files up to 10 MB are allowed.",
+        });
+      }
     }
 
     try {
@@ -395,7 +393,7 @@ const uploadShipmentPlanFiles = async (req, res, next) => {
           email,
           shipmentPlanId,
           fileType,
-          filename,
+          files,
         });
 
       if (uploadShipmentPlanFileToDBResponse?.status === "error") {
@@ -403,6 +401,7 @@ const uploadShipmentPlanFiles = async (req, res, next) => {
           ...uploadShipmentPlanFileToDBResponse,
         });
       }
+
       res.status(200).json({
         status: "success",
         message: "Success",

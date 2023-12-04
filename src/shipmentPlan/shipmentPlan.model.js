@@ -11,12 +11,16 @@ const shipmentPlanSchema = new Schema({
       dateUpdated: { type: Date, required: false, default: null },
       status: { type: String, required: false, default: "Added" },
       files: {
-        fbaLabels: {
-          filename: { type: String, required: false, default: "" },
-        },
-        otherFiles: {
-          filename: { type: String, required: false, default: "" },
-        },
+        fbaLabels: [
+          {
+            filename: { type: String, required: false, default: "" },
+          },
+        ],
+        otherFiles: [
+          {
+            filename: { type: String, required: false, default: "" },
+          },
+        ],
       },
       orderNo: { type: String, required: false, default: "" },
       receiptNo: { type: String, required: false, default: "" },

@@ -284,21 +284,22 @@ const deleteProductFromShipmentPlanFromSpecificUser =
 
 const uploadFilesToDB =
   (ShipmentPlan) =>
-  async ({ email, shipmentPlanId, fileType, filename }) => {
+  async ({ email, shipmentPlanId, fileType, files }) => {
     const currentUserWithShipmentPlans = await ShipmentPlan.findOne({ email });
 
     let shipmentPlanExistsForThisUser = false;
-    console.log(currentUserWithShipmentPlans);
+
     if (
       !currentUserWithShipmentPlans ||
       !currentUserWithShipmentPlans?.shipmentPlans
     ) {
       return {
         status: "error",
-        message: `There is no shipment plan matchind with id: ${shipmentPlanId} for user ${email}`,
+        message: `There is no shipment plan matching with id: ${shipmentPlanId} for user ${email}`,
         response: [],
       };
     }
+
     const updatedShipmentPlansWithProductsForSpecificShipmentPlan =
       currentUserWithShipmentPlans.shipmentPlans.map(async (shipmentPlan) => {
         if (
@@ -306,40 +307,39 @@ const uploadFilesToDB =
         ) {
           shipmentPlanExistsForThisUser = true;
 
-          // Delete existing file from the disk
-          const existingFilename =
-            fileType === FileType.FBALabels
-              ? shipmentPlan.files.fbaLabels.filename
-              : shipmentPlan.files.otherFiles.filename;
-
-          // Update the filename in the shipment plan
-          if (fileType === FileType.FBALabels) {
-            shipmentPlan.files.fbaLabels.filename = filename;
-          } else if (fileType === FileType.OtherFiles) {
-            shipmentPlan.files.otherFiles.filename = filename;
-          }
-
-          if (existingFilename) {
-            const filePath = path.join(
+          // Filter files in are equal with files sent from files
+          const filesToDelete = shipmentPlan.files[fileType].filter((dbFile) =>
+            files.some(
+              (file) =>
+                file.filename.split("_")[1] === dbFile.filename.split("_")[1]
+            )
+          );
+          console.log("FILES TO DELETE");
+          console.log(filesToDelete);
+          // Delete files that already exists
+          for (const fileToDelete of filesToDelete) {
+            const filePathToDelete = path.join(
               __dirname,
               "../..",
               "uploads",
-              existingFilename
+              fileToDelete.filename
             );
-
             try {
-              await fs.unlink(filePath);
-              console.log(`Deleted file: ${filePath}`);
+              await fs.unlink(filePathToDelete);
+              console.log(`Deleted file: ${filePathToDelete}`);
             } catch (err) {
               if (err.code === "ENOENT") {
-                console.log(`File not found: ${filePath}`);
+                console.log(`File not found: ${filePathToDelete}`);
               } else {
-                console.error(`Error deleting file: ${filePath}`, err);
+                console.error(`Error deleting file: ${filePathToDelete}`, err);
               }
             }
-          } else {
-            console.log("No existing filename to delete.");
           }
+
+          // Update the existing object in the array with the new filenames
+          shipmentPlan.files[fileType] = files.map((file) => ({
+            filename: file.filename,
+          }));
         }
         return shipmentPlan;
       });
@@ -347,15 +347,16 @@ const uploadFilesToDB =
     if (!shipmentPlanExistsForThisUser) {
       return {
         status: "error",
-        message: `There is no shipment plan matchind with id: ${shipmentPlanId} for user ${email}`,
+        message: `There is no shipment plan matching with id: ${shipmentPlanId} for user ${email}`,
         response: [],
       };
     }
+
     const updateObj = {
       ...currentUserWithShipmentPlans,
-      shipmentPlans: {
-        ...updatedShipmentPlansWithProductsForSpecificShipmentPlan,
-      },
+      shipmentPlans: await Promise.all(
+        updatedShipmentPlansWithProductsForSpecificShipmentPlan
+      ),
     };
 
     await ShipmentPlan.findOneAndUpdate({ email }, updateObj);
