@@ -4,46 +4,70 @@ const helpers = require("../_helpers/utils");
 const add = async (req, res) => {
   const { email, supplier } = req.body;
   const missingFields = [];
+  let supplierToBeSentToDB = supplier;
 
   if (!email) missingFields.push("email");
   if (!supplier) missingFields.push("supplier");
   if (!supplier?.supplierName) missingFields.push("supplierName");
-  if (!supplier?.supplierAddress) missingFields.push("supplierAddress");
-  if (!supplier?.supplierAddress.street)
-    missingFields.push("supplierAddress.street");
-  if (!supplier?.supplierAddress.city)
-    missingFields.push("supplierAddress.city");
-  if (!supplier?.supplierAddress.state)
-    missingFields.push("supplierAddress.state");
-  if (!supplier?.supplierAddress.zipCode)
-    missingFields.push("supplierAddress.zipCode");
-  if (supplier?.supplierAddress) {
-    if (!supplier?.supplierAddress.zipCode) {
+  if (!supplier?.supplierLink) missingFields.push("supplierLink");
+  if (!supplier?.onlineSupplier) missingFields.push("onlineSupplier");
+  if (supplier?.onlineSupplier.toLowerCase() !== "yes") {
+    if (!supplier?.supplierAddress) missingFields.push("supplierAddress");
+    if (!supplier?.supplierAddress.street)
+      missingFields.push("supplierAddress.street");
+    if (!supplier?.supplierAddress.city)
+      missingFields.push("supplierAddress.city");
+    if (!supplier?.supplierAddress.state)
+      missingFields.push("supplierAddress.state");
+    if (!supplier?.supplierAddress.zipCode)
       missingFields.push("supplierAddress.zipCode");
-    } else {
-      // Add a rule to check if the ZIP code is from the U.S.
-      if (!helpers.isUSZipCode(supplier.supplierAddress.zipCode)) {
-        return res.status(400).json({
-          status: "error",
-          message: "ZIP code needs to be from the U.S.",
-        });
+    if (supplier?.supplierAddress) {
+      if (!supplier?.supplierAddress.zipCode) {
+        missingFields.push("supplierAddress.zipCode");
+      } else {
+        // Add a rule to check if the ZIP code is from the U.S.
+        if (!helpers.isUSZipCode(supplier.supplierAddress.zipCode)) {
+          return res.status(400).json({
+            status: "error",
+            message: "ZIP code needs to be from the U.S.",
+          });
+        }
       }
     }
+    if (!supplier?.contactPerson) missingFields.push("contactPerson");
+    if (!supplier?.contactPerson.name) missingFields.push("contactPerson.name");
+    if (!supplier?.contactPerson.email)
+      missingFields.push("contactPerson.email");
+    if (!supplier?.contactPerson.phoneNumber)
+      missingFields.push("contactPerson.phoneNumber");
+    if (!supplier?.contactPerson.extensionCode)
+      missingFields.push("contactPerson.extensionCode");
   }
-  if (!supplier?.supplierLink) missingFields.push("supplierLink");
-  if (!supplier?.contactPerson) missingFields.push("contactPerson");
-  if (!supplier?.contactPerson.name) missingFields.push("contactPerson.name");
-  if (!supplier?.contactPerson.email) missingFields.push("contactPerson.email");
-  if (!supplier?.contactPerson.phoneNumber)
-    missingFields.push("contactPerson.phoneNumber");
-  if (!supplier?.contactPerson.extensionCode)
-    missingFields.push("contactPerson.extensionCode");
 
   if (missingFields.length > 0) {
     return res.status(400).json({
       status: "error",
       message: `You have mandatory fields missing: ${missingFields.join(", ")}`,
     });
+  }
+
+  if (supplier?.onlineSupplier.toLowerCase() === "yes") {
+    supplierToBeSentToDB = {
+      ...supplier,
+      onlineSupplier: "yes",
+      supplierAddress: {
+        street: "-",
+        city: "-",
+        state: "-",
+        zipCode: "10010",
+      },
+      contactPerson: {
+        name: "Online Supplier",
+        email: "-",
+        phoneNumber: "-",
+        extensionCode: "-",
+      },
+    };
   }
 
   try {
@@ -55,7 +79,7 @@ const add = async (req, res) => {
       const updateSuppliersExistingOwnerResponse =
         await SuppliersService.updateSuppliersForExistingEmailInDB({
           email,
-          supplier,
+          supplier: supplierToBeSentToDB,
         });
 
       if (updateSuppliersExistingOwnerResponse?.status === "error") {
@@ -71,7 +95,7 @@ const add = async (req, res) => {
     } else {
       const addSupplierResponse = await SuppliersService.addSuppliersToDB({
         email,
-        supplier,
+        supplier: supplierToBeSentToDB,
       });
 
       if (addSupplierResponse?.status === "error") {

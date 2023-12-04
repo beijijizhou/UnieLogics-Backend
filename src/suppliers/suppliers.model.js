@@ -6,6 +6,7 @@ const suppliersSchema = new Schema({
   suppliers: [
     {
       _id: { type: String, required: true },
+      onlineSupplier: { type: String, required: true },
       supplierName: { type: String, required: true },
       supplierAddress: {
         street: { type: String, required: true },
