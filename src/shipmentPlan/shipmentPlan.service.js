@@ -316,7 +316,8 @@ const uploadFilesToDB =
           );
           console.log("FILES TO DELETE");
           console.log(filesToDelete);
-          // Delete files that already exists
+
+          // Delete files that already exist
           for (const fileToDelete of filesToDelete) {
             const filePathToDelete = path.join(
               __dirname,
@@ -337,9 +338,34 @@ const uploadFilesToDB =
           }
 
           // Update the existing object in the array with the new filenames
-          shipmentPlan.files[fileType] = files.map((file) => ({
-            filename: file.filename,
-          }));
+          shipmentPlan.files[fileType] = shipmentPlan.files[fileType].map(
+            (dbFile) => {
+              const matchingFile = files.find(
+                (file) =>
+                  file.filename.split("_")[1] === dbFile.filename.split("_")[1]
+              );
+              return matchingFile
+                ? { filename: matchingFile.filename }
+                : dbFile;
+            }
+          );
+
+          // Append new files to the existing array
+          shipmentPlan.files[fileType] = [
+            ...shipmentPlan.files[fileType],
+            ...files
+              .filter(
+                (file) =>
+                  !shipmentPlan.files[fileType].some(
+                    (dbFile) =>
+                      file.filename.split("_")[1] ===
+                      dbFile.filename.split("_")[1]
+                  )
+              )
+              .map((file) => ({
+                filename: file.filename,
+              })),
+          ];
         }
         return shipmentPlan;
       });
