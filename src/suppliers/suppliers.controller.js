@@ -51,7 +51,7 @@ const add = async (req, res) => {
     });
   }
 
-  if (supplier?.onlineSupplier.toLowerCase() === "yes") {
+  if (supplier?.onlineSupplier?.toLowerCase() === "yes") {
     supplierToBeSentToDB = {
       ...supplier,
       onlineSupplier: "yes",
