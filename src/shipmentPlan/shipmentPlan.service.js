@@ -396,6 +396,113 @@ const uploadFilesToDB =
     });
   };
 
+const deleteFileFromShipmentPlan =
+  (ShipmentPlan) =>
+  async ({ email, shipmentPlanId, fileToDelete, fileType }) => {
+    try {
+      const currentUserWithShipmentPlans = await ShipmentPlan.findOne({
+        email,
+      });
+
+      if (
+        !currentUserWithShipmentPlans ||
+        !currentUserWithShipmentPlans.shipmentPlans
+      ) {
+        return {
+          status: "error",
+          message: `There is no shipment plan matching with id: ${shipmentPlanId} for user ${email}`,
+          response: [],
+        };
+      }
+
+      let noFileFound = false;
+      let shipmentPlanWithIdNotFound = false;
+      const updatedShipmentPlans = await Promise.all(
+        currentUserWithShipmentPlans.shipmentPlans.map(async (shipmentPlan) => {
+          if (
+            JSON.stringify(shipmentPlan._id) === JSON.stringify(shipmentPlanId)
+          ) {
+            shipmentPlanWithIdNotFound = true;
+            const filesInType = shipmentPlan.files[fileType];
+
+            // Find the file to delete
+            const fileIndex = filesInType.findIndex(
+              (file) => file._id.toString() === fileToDelete.toString()
+            );
+
+            if (fileIndex !== -1) {
+              // Delete the file from the disk
+              const filenameToDelete = filesInType[fileIndex].filename;
+              const filePathToDelete = path.join(
+                __dirname,
+                "../..",
+                "uploads",
+                filenameToDelete
+              );
+
+              filesInType.splice(fileIndex, 1);
+              shipmentPlan.files[fileType] = filesInType;
+              try {
+                await fs.unlink(filePathToDelete);
+                console.log(`Deleted file: ${filePathToDelete}`);
+              } catch (err) {
+                if (err.code === "ENOENT") {
+                  console.log(`File not found: ${filePathToDelete}`);
+                } else {
+                  console.error(
+                    `Error deleting file: ${filePathToDelete}`,
+                    err
+                  );
+                }
+              }
+            } else {
+              noFileFound = true;
+            }
+          }
+          return shipmentPlan;
+        })
+      );
+
+      // Update the database with the modified shipment plans
+      await ShipmentPlan.findOneAndUpdate(
+        { email },
+        { shipmentPlans: updatedShipmentPlans }
+      );
+
+      const userWithShipmentPlans = await ShipmentPlan.findOne({ email });
+
+      if (!shipmentPlanWithIdNotFound) {
+        return {
+          status: "error",
+          message:
+            "We were not able to find any shipment plan with provided id",
+        };
+      }
+
+      if (noFileFound) {
+        return {
+          status: "error",
+          message: "We couldn't find this file.",
+        };
+      }
+
+      return userWithShipmentPlans?.shipmentPlans?.filter((shipmentPlan) => {
+        return (
+          JSON.stringify(shipmentPlan._id) === JSON.stringify(shipmentPlanId)
+        );
+      });
+    } catch (error) {
+      console.error("An error occurred:", error);
+      return {
+        status: "error",
+        message: "An error occurred during file deletion.",
+        response: [],
+      };
+    }
+  };
+
+module.exports = deleteFileFromShipmentPlan;
+
 module.exports = (ShipmentPlan) => {
   return {
     addShipmentPlanToDB: addShipmentPlanToDB(ShipmentPlan),
@@ -409,5 +516,6 @@ module.exports = (ShipmentPlan) => {
     deleteProductFromShipmentPlanFromSpecificUser:
       deleteProductFromShipmentPlanFromSpecificUser(ShipmentPlan),
     uploadFilesToDB: uploadFilesToDB(ShipmentPlan),
+    deleteFileFromShipmentPlan: deleteFileFromShipmentPlan(ShipmentPlan),
   };
 };

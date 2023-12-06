@@ -9,6 +9,10 @@ router.put("/update", shipmentPlanControllers.updateShipmentPlan);
 router.post("/upload-files", shipmentPlanControllers.uploadShipmentPlanFiles);
 router.delete("/delete", shipmentPlanControllers.deleteShipmentPlan);
 router.delete(
+  "/delete-file",
+  shipmentPlanControllers.deleteFileFromShipmentPlan
+);
+router.delete(
   "/deleteProduct",
   shipmentPlanControllers.deleteProductFromShipmentPlan
 );

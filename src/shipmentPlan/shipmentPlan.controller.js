@@ -244,18 +244,6 @@ const updateShipmentPlan = async (req, res) => {
 
   if (!email) missingFields.push("email");
   if (!shipmentPlanId) missingFields.push("shipmentPlanId");
-  // if (!products || !Array.isArray(products) || products.length === 0) {
-  //   missingFields.push("products");
-  // } else {
-  //   products.forEach((product, index) => {
-  //     if (!product.asin) missingFields.push(`products[${index}].asin`);
-  //     if (!product.title) missingFields.push(`products[${index}].title`);
-  //     if (!product.dateAdded)
-  //       missingFields.push(`products[${index}].dateAdded`);
-  //     if (!product.supplier) missingFields.push(`products[${index}].supplier`);
-  //     if (!product.imageUrl) missingFields.push(`products[${index}].imageUrl`);
-  //   });
-  // }
 
   if (warehouseOwner) {
     if (!warehouseOwner.city) missingFields.push("warehouseOwner.city");
@@ -414,6 +402,56 @@ const uploadShipmentPlanFiles = async (req, res, next) => {
   });
 };
 
+const deleteFileFromShipmentPlan = async (req, res) => {
+  const { email, shipmentPlanId, fileToDelete, fileType } = req.body;
+
+  const missingFields = [];
+
+  if (!email) missingFields.push("email");
+  if (!shipmentPlanId) missingFields.push("shipmentPlanId");
+  if (!fileToDelete) missingFields.push("fileToDelete");
+  if (!fileType) missingFields.push("fileType");
+
+  if (missingFields.length > 0) {
+    return res.status(400).json({
+      status: "error",
+      message: `You have mandatory fields missing: ${missingFields.join(", ")}`,
+    });
+  }
+
+  if (fileType !== FileType.FBALabels && fileType !== FileType.OtherFiles) {
+    return res.status(400).json({
+      status: "error",
+      message: "File type must be fbaLabels or otherFiles.",
+    });
+  }
+
+  try {
+    const deleteFileFromSpecificShipmentPlanResponse =
+      await ShipmentPlanService.deleteFileFromShipmentPlan({
+        email,
+        shipmentPlanId,
+        fileToDelete,
+        fileType,
+      });
+
+    if (deleteFileFromSpecificShipmentPlanResponse?.status === "error") {
+      return res.status(400).json({
+        ...deleteFileFromSpecificShipmentPlanResponse,
+      });
+    }
+
+    return res.status(200).json({
+      status: "success",
+      message: "Success",
+      response: deleteFileFromSpecificShipmentPlanResponse,
+    });
+  } catch (e) {
+    console.log(e);
+    res.status(500).json({ status: "error", message: JSON.stringify(e) });
+  }
+};
+
 module.exports = {
   add,
   getAll,
@@ -422,4 +460,5 @@ module.exports = {
   updateShipmentPlan,
   deleteProductFromShipmentPlan,
   uploadShipmentPlanFiles,
+  deleteFileFromShipmentPlan,
 };
