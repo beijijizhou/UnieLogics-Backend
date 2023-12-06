@@ -81,7 +81,7 @@ const shipmentPlanSchema = new Schema({
           {
             amazonReferenceId: { type: String, required: false, default: "" },
             boxes: { type: String, required: false, default: "" },
-            carriesCharges: { type: String, required: false, default: "" },
+            carrierCharges: { type: String, required: false, default: "" },
             contents: {
               boxes: { type: String, required: false, default: "" },
               skus: { type: String, required: false, default: "" },
