@@ -56,10 +56,10 @@ const add = async (req, res) => {
       ...supplier,
       onlineSupplier: "yes",
       supplierAddress: {
-        street: "-",
-        city: "-",
-        state: "-",
-        zipCode: "10010",
+        street: "823 Westfield Ave",
+        city: "Elizabeth",
+        state: "NJ",
+        zipCode: "07208",
       },
       contactPerson: {
         name: "Online Supplier",
