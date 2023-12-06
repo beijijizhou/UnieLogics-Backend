@@ -238,6 +238,7 @@ const updateShipmentPlan = async (req, res) => {
     receiptNo,
     orderDate,
     warehouseOwner,
+    amazonData,
   } = req.body;
 
   const missingFields = [];
@@ -273,6 +274,7 @@ const updateShipmentPlan = async (req, res) => {
         receiptNo,
         orderDate,
         warehouseOwner,
+        amazonData,
       });
 
     console.log("updateShipmentPlanResponse", updateShipmentPlanResponse);

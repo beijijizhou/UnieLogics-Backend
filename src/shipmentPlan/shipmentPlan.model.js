@@ -71,6 +71,34 @@ const shipmentPlanSchema = new Schema({
           },
         },
       ],
+      amazonData: {
+        genericFrom: { type: String, required: false, default: "" },
+        shipDate: { type: String, required: false, default: "" },
+        workFlowId: { type: String, required: false, default: "" },
+        trackShipment: { type: String, required: false, default: "" },
+        shipments: [
+          {
+            amazonReferenceId: { type: String, required: false, default: "" },
+            boxes: { type: String, required: false, default: "" },
+            carriesCharges: { type: String, required: false, default: "" },
+            contents: {
+              boxes: { type: String, required: false, default: "" },
+              skus: { type: String, required: false, default: "" },
+              units: { type: String, required: false, default: "" },
+              weight: { type: String, required: false, default: "" },
+            },
+            shipFrom: { type: String, required: false, default: "" },
+            shipTo: { type: String, required: false, default: "" },
+            shipmentId: { type: String, required: false, default: "" },
+            shipmentName: { type: String, required: false, default: "" },
+            skus: { type: String, required: false, default: "" },
+            units: { type: String, required: false, default: "" },
+            thumbnailUrls: [
+              { url: { type: String, required: false, default: "" } },
+            ],
+          },
+        ],
+      },
     },
   ],
 });

@@ -153,6 +153,8 @@ const updateShipmentPlanBasedOnId =
           if (receiptNo) shipmentPlan.receiptNo = receiptNo;
           if (orderDate) shipmentPlan.orderDate = orderDate;
           if (warehouseOwner) shipmentPlan.warehouseOwner = warehouseOwner;
+          if (amazonData && amazonData?.length !== 0)
+            shipmentPlan.amazonData = amazonData;
           shipmentPlan.dateUpdated = dayjs().format();
         }
         return shipmentPlan;
