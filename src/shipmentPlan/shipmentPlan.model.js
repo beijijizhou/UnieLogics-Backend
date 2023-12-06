@@ -75,7 +75,8 @@ const shipmentPlanSchema = new Schema({
         genericFrom: { type: String, required: false, default: "" },
         shipDate: { type: String, required: false, default: "" },
         workFlowId: { type: String, required: false, default: "" },
-        trackShipment: { type: String, required: false, default: "" },
+        trackShipmentValue: { type: String, required: false, default: "" },
+        trackShipmentUrl: { type: String, required: false, default: "" },
         shipments: [
           {
             amazonReferenceId: { type: String, required: false, default: "" },
