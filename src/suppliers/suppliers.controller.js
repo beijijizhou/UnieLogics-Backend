@@ -11,7 +11,7 @@ const add = async (req, res) => {
   if (!supplier?.supplierName) missingFields.push("supplierName");
   if (!supplier?.supplierLink) missingFields.push("supplierLink");
   if (!supplier?.onlineSupplier) missingFields.push("onlineSupplier");
-  if (supplier?.onlineSupplier.toLowerCase() !== "yes") {
+  if (supplier?.onlineSupplier?.toLowerCase() !== "yes") {
     if (!supplier?.supplierAddress) missingFields.push("supplierAddress");
     if (!supplier?.supplierAddress.street)
       missingFields.push("supplierAddress.street");
