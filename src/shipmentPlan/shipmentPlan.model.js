@@ -77,11 +77,14 @@ const shipmentPlanSchema = new Schema({
         workFlowId: { type: String, required: false, default: "" },
         trackShipmentValue: { type: String, required: false, default: "" },
         trackShipmentUrl: { type: String, required: false, default: "" },
+        shippingCharges: { type: String, required: false, default: "" },
+        placementFees: { type: String, required: false, default: "" },
+        prepLabelFees: { type: String, required: false, default: "" },
+        feeSummary: { type: String, required: false, default: "" },
         shipments: [
           {
             amazonReferenceId: { type: String, required: false, default: "" },
             boxes: { type: String, required: false, default: "" },
-            carrierCharges: { type: String, required: false, default: "" },
             contents: {
               boxes: { type: String, required: false, default: "" },
               skus: { type: String, required: false, default: "" },
