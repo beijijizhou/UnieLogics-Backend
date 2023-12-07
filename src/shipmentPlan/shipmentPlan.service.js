@@ -136,6 +136,7 @@ const updateShipmentPlanBasedOnId =
     receiptNo,
     orderDate,
     warehouseOwner,
+    amazonData,
   }) => {
     const currentUserWithShipmentPlans = await ShipmentPlan.findOne({ email });
 
