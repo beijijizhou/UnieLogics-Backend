@@ -217,12 +217,12 @@ const add = async (req, res) => {
 
 const getAll = async (req, res) => {
   const { loggedInEmail } = req.query;
-  if (!loggedInEmail || loggedInEmail !== "franco@peri-mail.com") {
-    return res.status(403).json({
-      status: "error",
-      message: "Sorry, you cannot retrieve the WH data!",
-    });
-  }
+  // if (!loggedInEmail || loggedInEmail !== "franco@peri-mail.com") {
+  //   return res.status(403).json({
+  //     status: "error",
+  //     message: "Sorry, you cannot retrieve the WH data!",
+  //   });
+  // }
   try {
     const existingWOwnersResponse = await WOwnersService.getAllWOwnersFromDB();
 
