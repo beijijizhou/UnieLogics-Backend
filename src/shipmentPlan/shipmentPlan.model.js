@@ -50,7 +50,6 @@ const shipmentPlanSchema = new Schema({
           weightPerBox: { type: String, required: false, default: "" },
           upc: { type: String, required: false, default: "" },
           isHazmat: { type: Boolean, required: false, default: false },
-          inventory: { type: String, required: false, default: "" },
           supplier: {
             _id: { type: String, required: true },
             supplierName: { type: String, required: true },
