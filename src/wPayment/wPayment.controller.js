@@ -5,25 +5,25 @@ const Stripe = stripe(process.env.STRIPE_SECRET_KEY, {
 });
 
 const createPaymentIntent = async (req, res) => {
-  const { amount, customerID } = req.body;
+  const { amount, customerId, shipmentPlanId, email } = req.body;
 
   try {
     const paymentIntentSession = await Stripe.checkout.sessions.create({
       mode: "payment",
       payment_method_types: ["card"],
-      customer: customerID,
+      customer: customerId,
       customer_update: {
         address: "auto",
       },
-      payment_intent_data: {
-        capture_method: "manual",
-      },
+      // payment_intent_data: {
+      //   capture_method: "manual",
+      // },
       line_items: [
         {
           price_data: {
             currency: "USD",
             product_data: {
-              name: "My awesome product",
+              name: "Automatic warehouse management",
             },
             tax_behavior: "exclusive",
             unit_amount: amount * 100,
@@ -45,7 +45,7 @@ const createPaymentIntent = async (req, res) => {
     console.log(e);
     res.status(500).json({
       status: "error",
-      message: e.raw.message,
+      message: e?.raw?.message || "There was an error processing your request",
     });
   }
 };
