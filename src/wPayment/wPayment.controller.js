@@ -1,0 +1,55 @@
+const stripe = require("stripe");
+
+const Stripe = stripe(process.env.STRIPE_SECRET_KEY, {
+  apiVersion: "2020-08-27",
+});
+
+const createPaymentIntent = async (req, res) => {
+  const { amount, customerID } = req.body;
+
+  try {
+    const paymentIntentSession = await Stripe.checkout.sessions.create({
+      mode: "payment",
+      payment_method_types: ["card"],
+      customer: customerID,
+      customer_update: {
+        address: "auto",
+      },
+      payment_intent_data: {
+        capture_method: "manual",
+      },
+      line_items: [
+        {
+          price_data: {
+            currency: "USD",
+            product_data: {
+              name: "My awesome product",
+            },
+            tax_behavior: "exclusive",
+            unit_amount: amount * 100,
+          },
+          quantity: 1,
+        },
+      ],
+      allow_promotion_codes: true,
+      success_url: `${process.env.DOMAIN}/w-payment-thank-you?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${process.env.DOMAIN}/checkout-error`,
+    });
+
+    res.status(200).json({
+      status: "success",
+      message: "Successfully created Payment Intent",
+      response: paymentIntentSession,
+    });
+  } catch (e) {
+    console.log(e);
+    res.status(500).json({
+      status: "error",
+      message: e.raw.message,
+    });
+  }
+};
+
+module.exports = {
+  createPaymentIntent,
+};
