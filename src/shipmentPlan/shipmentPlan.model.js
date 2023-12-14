@@ -50,6 +50,9 @@ const shipmentPlanSchema = new Schema({
           weightPerBox: { type: String, required: false, default: "" },
           upc: { type: String, required: false, default: "" },
           isHazmat: { type: Boolean, required: false, default: false },
+          shrinkWrap: { type: Boolean, required: false, default: false },
+          specialPackaging: { type: Boolean, required: false, default: false },
+          comments: { type: String, required: false, default: "" },
           supplier: {
             _id: { type: String, required: true },
             supplierName: { type: String, required: true },
@@ -97,9 +100,7 @@ const shipmentPlanSchema = new Schema({
             shipmentName: { type: String, required: false, default: "" },
             skus: { type: String, required: false, default: "" },
             units: { type: String, required: false, default: "" },
-            thumbnailUrls: [
-              { url: { type: String, required: false, default: "" } },
-            ],
+            thumbnailUrls: [{ url: { type: String, required: false, default: "" } }],
           },
         ],
       },
@@ -107,10 +108,6 @@ const shipmentPlanSchema = new Schema({
   ],
 });
 
-const shipmentPlanModel = mongoose.model(
-  "shipmentPlans",
-  shipmentPlanSchema,
-  "shipmentPlans"
-);
+const shipmentPlanModel = mongoose.model("shipmentPlans", shipmentPlanSchema, "shipmentPlans");
 
 module.exports = shipmentPlanModel;

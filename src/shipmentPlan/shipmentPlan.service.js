@@ -34,15 +34,12 @@ const updateShipmentPlansForExistingEmailInDB =
     const currentUserWithShipmentPlans = await ShipmentPlan.findOne({ email });
 
     // Check if all product.asin values are already present in any existing shipment plan
-    const existingPlan = currentUserWithShipmentPlans.shipmentPlans.find(
-      (plan) => {
-        const existingAsins = plan.products.map((product) => product.asin);
-        return (
-          products.length === existingAsins.length &&
-          products.every((product) => existingAsins.includes(product.asin))
-        );
-      }
-    );
+    const existingPlan = currentUserWithShipmentPlans.shipmentPlans.find((plan) => {
+      const existingAsins = plan.products.map((product) => product.asin);
+      return (
+        products.length === existingAsins.length && products.every((product) => existingAsins.includes(product.asin))
+      );
+    });
 
     if (existingPlan) {
       return {
@@ -85,15 +82,11 @@ const deleteShipmentPlanFromSpecificUser =
     if (!userWithShipmentPlans) {
       return {
         status: "error",
-        message:
-          "The email and _id provided are not matching with a user with shipment plans!",
+        message: "The email and _id provided are not matching with a user with shipment plans!",
       };
     }
 
-    const updateShipmentPlansWithDeletedOne = helpers.removeObjectWithId(
-      userWithShipmentPlans.shipmentPlans,
-      _id
-    );
+    const updateShipmentPlansWithDeletedOne = helpers.removeObjectWithId(userWithShipmentPlans.shipmentPlans, _id);
 
     if (updateShipmentPlansWithDeletedOne === "no_object_with_id") {
       return {
@@ -118,11 +111,9 @@ const getShipmentPlanByIdFromDb =
   async ({ email, _id }) => {
     const userWithShipmentPlans = await ShipmentPlan.findOne({ email });
 
-    return (shipmentPlan = userWithShipmentPlans?.shipmentPlans?.filter(
-      (shipmentPlan) => {
-        return JSON.stringify(shipmentPlan._id) === JSON.stringify(_id);
-      }
-    ));
+    return (shipmentPlan = userWithShipmentPlans?.shipmentPlans?.filter((shipmentPlan) => {
+      return JSON.stringify(shipmentPlan._id) === JSON.stringify(_id);
+    }));
   };
 
 const updateShipmentPlanBasedOnId =
@@ -141,11 +132,9 @@ const updateShipmentPlanBasedOnId =
     const currentUserWithShipmentPlans = await ShipmentPlan.findOne({ email });
 
     let shipmentPlanExistsForThisUser = false;
-    const updatedShipmentPlansWithProductsForSpecificShipmentPlan =
-      currentUserWithShipmentPlans.shipmentPlans.map((shipmentPlan) => {
-        if (
-          JSON.stringify(shipmentPlan._id) === JSON.stringify(shipmentPlanId)
-        ) {
+    const updatedShipmentPlansWithProductsForSpecificShipmentPlan = currentUserWithShipmentPlans?.shipmentPlans?.map(
+      (shipmentPlan) => {
+        if (JSON.stringify(shipmentPlan._id) === JSON.stringify(shipmentPlanId)) {
           shipmentPlanExistsForThisUser = true;
 
           if (shipmentTitle) shipmentPlan.shipmentTitle = shipmentTitle;
@@ -154,12 +143,12 @@ const updateShipmentPlanBasedOnId =
           if (receiptNo) shipmentPlan.receiptNo = receiptNo;
           if (orderDate) shipmentPlan.orderDate = orderDate;
           if (warehouseOwner) shipmentPlan.warehouseOwner = warehouseOwner;
-          if (amazonData && amazonData?.length !== 0)
-            shipmentPlan.amazonData = amazonData;
+          if (amazonData && amazonData?.length !== 0) shipmentPlan.amazonData = amazonData;
           shipmentPlan.dateUpdated = dayjs().format();
         }
         return shipmentPlan;
-      });
+      }
+    );
 
     if (!shipmentPlanExistsForThisUser) {
       return {
@@ -180,9 +169,7 @@ const updateShipmentPlanBasedOnId =
     const userWithShipmentPlans = await ShipmentPlan.findOne({ email });
 
     return userWithShipmentPlans?.shipmentPlans?.filter((shipmentPlan) => {
-      return (
-        JSON.stringify(shipmentPlan._id) === JSON.stringify(shipmentPlanId)
-      );
+      return JSON.stringify(shipmentPlan._id) === JSON.stringify(shipmentPlanId);
     });
   };
 
@@ -194,8 +181,7 @@ const deleteProductFromShipmentPlanFromSpecificUser =
     if (!userWithShipmentPlans) {
       return {
         status: "error",
-        message:
-          "The email and shipmentPlanId provided are not matching with a user with shipment plans!",
+        message: "The email and shipmentPlanId provided are not matching with a user with shipment plans!",
       };
     }
 
@@ -203,46 +189,35 @@ const deleteProductFromShipmentPlanFromSpecificUser =
     let deleteShipmentPlan = false;
     let shipmentPlanFound = false;
 
-    const updatedShipmentPlansWithProductsForSpecificShipmentPlan =
-      userWithShipmentPlans.shipmentPlans.map((shipmentPlan) => {
-        if (
-          JSON.stringify(shipmentPlan._id) === JSON.stringify(shipmentPlanId)
-        ) {
+    const updatedShipmentPlansWithProductsForSpecificShipmentPlan = userWithShipmentPlans.shipmentPlans.map(
+      (shipmentPlan) => {
+        if (JSON.stringify(shipmentPlan._id) === JSON.stringify(shipmentPlanId)) {
           shipmentPlanFound = true;
-          const updateShipmentPlansWithDeletedOne = helpers.removeObjectWithId(
-            shipmentPlan.products,
-            productId
-          );
-          if (
-            Array.isArray(updateShipmentPlansWithDeletedOne) &&
-            updateShipmentPlansWithDeletedOne.length === 0
-          ) {
+          const updateShipmentPlansWithDeletedOne = helpers.removeObjectWithId(shipmentPlan.products, productId);
+          if (Array.isArray(updateShipmentPlansWithDeletedOne) && updateShipmentPlansWithDeletedOne.length === 0) {
             // Set the flag to indicate that the shipment plan should be deleted
             deleteShipmentPlan = true;
-          } else if (
-            updateShipmentPlansWithDeletedOne === "no_object_with_id"
-          ) {
+          } else if (updateShipmentPlansWithDeletedOne === "no_object_with_id") {
             noProductWithId = true;
           } else {
             shipmentPlan.products = updateShipmentPlansWithDeletedOne;
           }
         }
         return shipmentPlan;
-      });
+      }
+    );
 
     if (!shipmentPlanFound) {
       return {
         status: "error",
-        message:
-          "There is no Shipment Plan mathing the id and user combination.",
+        message: "There is no Shipment Plan mathing the id and user combination.",
       };
     }
 
     if (noProductWithId) {
       return {
         status: "error",
-        message:
-          "There is no product with this id in the provided shipment plan.",
+        message: "There is no product with this id in the provided shipment plan.",
       };
     }
 
@@ -260,8 +235,7 @@ const deleteProductFromShipmentPlanFromSpecificUser =
 
     if (!deleteShipmentPlan) {
       // Update shipment plans with the modified products
-      updateObj.shipmentPlans =
-        updatedShipmentPlansWithProductsForSpecificShipmentPlan;
+      updateObj.shipmentPlans = updatedShipmentPlansWithProductsForSpecificShipmentPlan;
     }
 
     await ShipmentPlan.findOneAndUpdate({ email }, updateObj);
@@ -276,13 +250,9 @@ const deleteProductFromShipmentPlanFromSpecificUser =
       email,
     });
 
-    return userWithShipmentPlansAfterDelete?.shipmentPlans?.filter(
-      (shipmentPlan) => {
-        return (
-          JSON.stringify(shipmentPlan._id) === JSON.stringify(shipmentPlanId)
-        );
-      }
-    );
+    return userWithShipmentPlansAfterDelete?.shipmentPlans?.filter((shipmentPlan) => {
+      return JSON.stringify(shipmentPlan._id) === JSON.stringify(shipmentPlanId);
+    });
   };
 
 const uploadFilesToDB =
@@ -292,10 +262,7 @@ const uploadFilesToDB =
 
     let shipmentPlanExistsForThisUser = false;
 
-    if (
-      !currentUserWithShipmentPlans ||
-      !currentUserWithShipmentPlans?.shipmentPlans
-    ) {
+    if (!currentUserWithShipmentPlans || !currentUserWithShipmentPlans?.shipmentPlans) {
       return {
         status: "error",
         message: `There is no shipment plan matching with id: ${shipmentPlanId} for user ${email}`,
@@ -303,31 +270,21 @@ const uploadFilesToDB =
       };
     }
 
-    const updatedShipmentPlansWithProductsForSpecificShipmentPlan =
-      currentUserWithShipmentPlans.shipmentPlans.map(async (shipmentPlan) => {
-        if (
-          JSON.stringify(shipmentPlan._id) === JSON.stringify(shipmentPlanId)
-        ) {
+    const updatedShipmentPlansWithProductsForSpecificShipmentPlan = currentUserWithShipmentPlans.shipmentPlans.map(
+      async (shipmentPlan) => {
+        if (JSON.stringify(shipmentPlan._id) === JSON.stringify(shipmentPlanId)) {
           shipmentPlanExistsForThisUser = true;
 
           // Filter files in are equal with files sent from files
           const filesToDelete = shipmentPlan.files[fileType].filter((dbFile) =>
-            files.some(
-              (file) =>
-                file.filename.split("_")[1] === dbFile.filename.split("_")[1]
-            )
+            files.some((file) => file.filename.split("_")[1] === dbFile.filename.split("_")[1])
           );
           console.log("FILES TO DELETE");
           console.log(filesToDelete);
 
           // Delete files that already exist
           for (const fileToDelete of filesToDelete) {
-            const filePathToDelete = path.join(
-              __dirname,
-              "../..",
-              "uploads",
-              fileToDelete.filename
-            );
+            const filePathToDelete = path.join(__dirname, "../..", "uploads", fileToDelete.filename);
             try {
               await fs.unlink(filePathToDelete);
               console.log(`Deleted file: ${filePathToDelete}`);
@@ -341,17 +298,10 @@ const uploadFilesToDB =
           }
 
           // Update the existing object in the array with the new filenames
-          shipmentPlan.files[fileType] = shipmentPlan.files[fileType].map(
-            (dbFile) => {
-              const matchingFile = files.find(
-                (file) =>
-                  file.filename.split("_")[1] === dbFile.filename.split("_")[1]
-              );
-              return matchingFile
-                ? { filename: matchingFile.filename }
-                : dbFile;
-            }
-          );
+          shipmentPlan.files[fileType] = shipmentPlan.files[fileType].map((dbFile) => {
+            const matchingFile = files.find((file) => file.filename.split("_")[1] === dbFile.filename.split("_")[1]);
+            return matchingFile ? { filename: matchingFile.filename } : dbFile;
+          });
 
           // Append new files to the existing array
           shipmentPlan.files[fileType] = [
@@ -360,9 +310,7 @@ const uploadFilesToDB =
               .filter(
                 (file) =>
                   !shipmentPlan.files[fileType].some(
-                    (dbFile) =>
-                      file.filename.split("_")[1] ===
-                      dbFile.filename.split("_")[1]
+                    (dbFile) => file.filename.split("_")[1] === dbFile.filename.split("_")[1]
                   )
               )
               .map((file) => ({
@@ -371,7 +319,8 @@ const uploadFilesToDB =
           ];
         }
         return shipmentPlan;
-      });
+      }
+    );
 
     if (!shipmentPlanExistsForThisUser) {
       return {
@@ -383,9 +332,7 @@ const uploadFilesToDB =
 
     const updateObj = {
       ...currentUserWithShipmentPlans,
-      shipmentPlans: await Promise.all(
-        updatedShipmentPlansWithProductsForSpecificShipmentPlan
-      ),
+      shipmentPlans: await Promise.all(updatedShipmentPlansWithProductsForSpecificShipmentPlan),
     };
 
     await ShipmentPlan.findOneAndUpdate({ email }, updateObj);
@@ -393,9 +340,7 @@ const uploadFilesToDB =
     const userWithShipmentPlans = await ShipmentPlan.findOne({ email });
 
     return userWithShipmentPlans?.shipmentPlans?.filter((shipmentPlan) => {
-      return (
-        JSON.stringify(shipmentPlan._id) === JSON.stringify(shipmentPlanId)
-      );
+      return JSON.stringify(shipmentPlan._id) === JSON.stringify(shipmentPlanId);
     });
   };
 
@@ -407,10 +352,7 @@ const deleteFileFromShipmentPlan =
         email,
       });
 
-      if (
-        !currentUserWithShipmentPlans ||
-        !currentUserWithShipmentPlans.shipmentPlans
-      ) {
+      if (!currentUserWithShipmentPlans || !currentUserWithShipmentPlans.shipmentPlans) {
         return {
           status: "error",
           message: `There is no shipment plan matching with id: ${shipmentPlanId} for user ${email}`,
@@ -422,26 +364,17 @@ const deleteFileFromShipmentPlan =
       let shipmentPlanWithIdNotFound = false;
       const updatedShipmentPlans = await Promise.all(
         currentUserWithShipmentPlans.shipmentPlans.map(async (shipmentPlan) => {
-          if (
-            JSON.stringify(shipmentPlan._id) === JSON.stringify(shipmentPlanId)
-          ) {
+          if (JSON.stringify(shipmentPlan._id) === JSON.stringify(shipmentPlanId)) {
             shipmentPlanWithIdNotFound = true;
             const filesInType = shipmentPlan.files[fileType];
 
             // Find the file to delete
-            const fileIndex = filesInType.findIndex(
-              (file) => file._id.toString() === fileToDelete.toString()
-            );
+            const fileIndex = filesInType.findIndex((file) => file._id.toString() === fileToDelete.toString());
 
             if (fileIndex !== -1) {
               // Delete the file from the disk
               const filenameToDelete = filesInType[fileIndex].filename;
-              const filePathToDelete = path.join(
-                __dirname,
-                "../..",
-                "uploads",
-                filenameToDelete
-              );
+              const filePathToDelete = path.join(__dirname, "../..", "uploads", filenameToDelete);
 
               filesInType.splice(fileIndex, 1);
               shipmentPlan.files[fileType] = filesInType;
@@ -452,10 +385,7 @@ const deleteFileFromShipmentPlan =
                 if (err.code === "ENOENT") {
                   console.log(`File not found: ${filePathToDelete}`);
                 } else {
-                  console.error(
-                    `Error deleting file: ${filePathToDelete}`,
-                    err
-                  );
+                  console.error(`Error deleting file: ${filePathToDelete}`, err);
                 }
               }
             } else {
@@ -467,18 +397,14 @@ const deleteFileFromShipmentPlan =
       );
 
       // Update the database with the modified shipment plans
-      await ShipmentPlan.findOneAndUpdate(
-        { email },
-        { shipmentPlans: updatedShipmentPlans }
-      );
+      await ShipmentPlan.findOneAndUpdate({ email }, { shipmentPlans: updatedShipmentPlans });
 
       const userWithShipmentPlans = await ShipmentPlan.findOne({ email });
 
       if (!shipmentPlanWithIdNotFound) {
         return {
           status: "error",
-          message:
-            "We were not able to find any shipment plan with provided id",
+          message: "We were not able to find any shipment plan with provided id",
         };
       }
 
@@ -490,9 +416,7 @@ const deleteFileFromShipmentPlan =
       }
 
       return userWithShipmentPlans?.shipmentPlans?.filter((shipmentPlan) => {
-        return (
-          JSON.stringify(shipmentPlan._id) === JSON.stringify(shipmentPlanId)
-        );
+        return JSON.stringify(shipmentPlan._id) === JSON.stringify(shipmentPlanId);
       });
     } catch (error) {
       console.error("An error occurred:", error);
@@ -510,14 +434,11 @@ module.exports = (ShipmentPlan) => {
   return {
     addShipmentPlanToDB: addShipmentPlanToDB(ShipmentPlan),
     getAllShipmentPlansFromDB: getAllShipmentPlansFromDB(ShipmentPlan),
-    updateShipmentPlansForExistingEmailInDB:
-      updateShipmentPlansForExistingEmailInDB(ShipmentPlan),
-    deleteShipmentPlanFromSpecificUser:
-      deleteShipmentPlanFromSpecificUser(ShipmentPlan),
+    updateShipmentPlansForExistingEmailInDB: updateShipmentPlansForExistingEmailInDB(ShipmentPlan),
+    deleteShipmentPlanFromSpecificUser: deleteShipmentPlanFromSpecificUser(ShipmentPlan),
     getShipmentPlanByIdFromDb: getShipmentPlanByIdFromDb(ShipmentPlan),
     updateShipmentPlanBasedOnId: updateShipmentPlanBasedOnId(ShipmentPlan),
-    deleteProductFromShipmentPlanFromSpecificUser:
-      deleteProductFromShipmentPlanFromSpecificUser(ShipmentPlan),
+    deleteProductFromShipmentPlanFromSpecificUser: deleteProductFromShipmentPlanFromSpecificUser(ShipmentPlan),
     uploadFilesToDB: uploadFilesToDB(ShipmentPlan),
     deleteFileFromShipmentPlan: deleteFileFromShipmentPlan(ShipmentPlan),
   };
