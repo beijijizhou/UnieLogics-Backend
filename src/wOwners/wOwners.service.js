@@ -215,6 +215,16 @@ const editWarehousesInDBForExistingOwner =
         };
       }
 
+      const geoLocationObject = await helpers.getLatLongFromZipCode(wOwner.businessAddress.zipCode);
+
+      if (geoLocationObject.latitude === undefined || geoLocationObject.longitude === undefined) {
+        return {
+          status: "error",
+          message:
+            "There was an error finding the latitude and longitude for your zipCode. Please contact us if the problem persists.",
+        };
+      }
+
       const existingWarehouse = currentUserWithWarehouses.warehouses[warehouseIndex];
       console.log(wOwner);
 
@@ -241,6 +251,8 @@ const editWarehousesInDBForExistingOwner =
           zipCode: wOwner?.businessAddress?.zipCode
             ? wOwner?.businessAddress?.zipCode
             : existingWarehouse.businessAddress.zipCode,
+          lat: geoLocationObject.latitude.toString(),
+          long: geoLocationObject.longitude.toString(),
         },
         businessPhoneNumber: wOwner?.businessPhoneNumber
           ? wOwner?.businessPhoneNumber
