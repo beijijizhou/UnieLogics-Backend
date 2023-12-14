@@ -14,8 +14,7 @@ const add = async (req, res) => {
   if (loggedInEmail !== "franco@peri-mail.com") {
     res.status(403).json({
       status: "error",
-      message:
-        "You cannot access this section with this email address. Only the admin can access it!",
+      message: "You cannot access this section with this email address. Only the admin can access it!",
     });
   }
   const missingFields = [];
@@ -48,8 +47,7 @@ const add = async (req, res) => {
     }
   }
   if (!wOwner?.businessPhoneNumber) missingFields.push("businessPhoneNumber");
-  if (!wOwner?.customerServiceEmailAddress)
-    missingFields.push("customerServiceEmailAddress");
+  if (!wOwner?.customerServiceEmailAddress) missingFields.push("customerServiceEmailAddress");
   if (!wOwner?.costPerItemLabeling) missingFields.push("costPerItemLabeling");
   if (!wOwner?.costPerBoxClosing) missingFields.push("costPerBoxClosing");
   if (!wOwner?.costPerBox?.length) missingFields.push("costPerBox");
@@ -125,11 +123,7 @@ const add = async (req, res) => {
     });
   }
 
-  if (
-    wOwner?.password?.length < 6 ||
-    !/[A-Z]/.test(wOwner.password) ||
-    !/[!@#$%^&*]/.test(wOwner.password)
-  ) {
+  if (wOwner?.password?.length < 6 || !/[A-Z]/.test(wOwner.password) || !/[!@#$%^&*]/.test(wOwner.password)) {
     return res.status(400).json({
       status: "error",
       message:
@@ -157,20 +151,14 @@ const add = async (req, res) => {
         createUserResponse
       )}`
     );
-    const currentUserWarehouses = await WOwnersService.getWarehousesForThisUser(
-      {
-        email: wOwner.email.toLowerCase(),
-      }
-    );
+    const currentUserWarehouses = await WOwnersService.getWarehousesForThisUser({
+      email: wOwner.email.toLowerCase(),
+    });
 
-    if (
-      createUserResponse?.status === "error" &&
-      currentUserWarehouses?.warehouses
-    ) {
-      const updateWarehousesForExistingOwnerResponse =
-        await WOwnersService.updateWarehousesInDBForExistingOwner({
-          wOwner,
-        });
+    if (createUserResponse?.status === "error" && currentUserWarehouses?.warehouses) {
+      const updateWarehousesForExistingOwnerResponse = await WOwnersService.updateWarehousesInDBForExistingOwner({
+        wOwner,
+      });
 
       if (updateWarehousesForExistingOwnerResponse?.status === "error") {
         return res.status(400).json({
@@ -239,27 +227,107 @@ const getAll = async (req, res) => {
   }
 };
 
-const deleteWOwner = async (req, res) => {
-  const { email, _id } = req.body;
+const edit = async (req, res) => {
+  const { loggedInEmail, wOwner, warehouseId, wOwnerEmail } = req.body;
 
-  if (!_id || !email) {
-    console.log(
-      "No ID or EMAIL has been provided, so we don't know which Warehouse Owner to delete!"
-    );
+  if (loggedInEmail !== "franco@peri-mail.com") {
+    res.status(403).json({
+      status: "error",
+      message: "You cannot access this section with this email address. Only the admin can access it!",
+    });
+  }
+  const missingFields = [];
 
+  if (!loggedInEmail) missingFields.push("loggedInEmail");
+  if (!warehouseId) missingFields.push("warehouseId");
+  if (!wOwner) missingFields.push("wOwner");
+  if (!wOwnerEmail) missingFields.push("wOwnerEmail");
+  if (wOwner?.businessAddress) {
+    if (!wOwner?.businessAddress.zipCode) {
+      missingFields.push("businessAddress.zipCode");
+    } else {
+      // Add a rule to check if the ZIP code is from the U.S.
+      if (!helpers.isUSZipCode(wOwner.businessAddress.zipCode)) {
+        return res.status(400).json({
+          status: "error",
+          message: "ZIP code needs to be from the U.S.",
+        });
+      }
+    }
+  }
+
+  if (missingFields.length > 0) {
     return res.status(400).json({
-      status: "errror",
-      message:
-        "No ID or EMAIL has been provided, so we don't know which Warehouse Owner to delete!",
+      status: "error",
+      message: `You have mandatory fields missing: ${missingFields.join(", ")}`,
+    });
+  }
+
+  if (wOwner.email || wOwner.password) {
+    return res.status(400).json({
+      status: "error",
+      message: `You cannot update: email and password`,
     });
   }
 
   try {
-    const deleteWOwnerResponse =
-      await WOwnersService.deleteWOwnerFromSpecificUser({
-        email: email.toLowerCase(),
-        _id,
+    const currentUserWarehouses = await WOwnersService.getWarehousesForThisUser({
+      email: wOwnerEmail.toLowerCase(),
+    });
+
+    if (currentUserWarehouses?.status === "error") {
+      return res.status(400).json({
+        status: "error",
+        message: currentUserWarehouses.message,
       });
+    }
+    if (!currentUserWarehouses) {
+      return res.status(400).json({
+        status: "error",
+        message: `There are no Warehouses for this Warehouse Owner email: ${wOwnerEmail}`,
+      });
+    }
+    if (currentUserWarehouses?.warehouses) {
+      const updateWarehousesForExistingOwnerResponse = await WOwnersService.editWarehousesInDBForExistingOwner({
+        wOwner,
+        warehouseId,
+        wOwnerEmail,
+      });
+
+      if (updateWarehousesForExistingOwnerResponse?.status === "error") {
+        return res.status(400).json({
+          ...updateWarehousesForExistingOwnerResponse,
+        });
+      }
+
+      return res.status(200).json({
+        status: "success",
+        message: `Successfully updated Warehouses for existing Warehouse Owner!`,
+      });
+    }
+  } catch (e) {
+    console.log(e);
+    res.status(500).json({ status: "error", message: JSON.stringify(e) });
+  }
+};
+
+const deleteWOwner = async (req, res) => {
+  const { email, _id } = req.body;
+
+  if (!_id || !email) {
+    console.log("No ID or EMAIL has been provided, so we don't know which Warehouse Owner to delete!");
+
+    return res.status(400).json({
+      status: "errror",
+      message: "No ID or EMAIL has been provided, so we don't know which Warehouse Owner to delete!",
+    });
+  }
+
+  try {
+    const deleteWOwnerResponse = await WOwnersService.deleteWOwnerFromSpecificUser({
+      email: email.toLowerCase(),
+      _id,
+    });
 
     if (deleteWOwnerResponse?.status === "error") {
       console.log(deleteWOwnerResponse);
@@ -285,4 +353,5 @@ module.exports = {
   getAll,
   add,
   deleteWOwner,
+  edit,
 };
