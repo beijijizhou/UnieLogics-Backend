@@ -49,9 +49,18 @@ const shipmentPlanSchema = new Schema({
           boxes: { type: String, required: false, default: "" },
           weightPerBox: { type: String, required: false, default: "" },
           upc: { type: String, required: false, default: "" },
-          isHazmat: { type: Boolean, required: false, default: false },
-          shrinkWrap: { type: Boolean, required: false, default: false },
-          specialPackaging: { type: Boolean, required: false, default: false },
+          isHazmat: {
+            answer: { type: Boolean, required: false, default: false },
+            amount: { type: String, required: false, default: "" },
+          },
+          shrinkWrap: {
+            answer: { type: Boolean, required: false, default: false },
+            amount: { type: String, required: false, default: "" },
+          },
+          specialPackaging: {
+            answer: { type: Boolean, required: false, default: false },
+            amount: { type: String, required: false, default: "" },
+          },
           comments: { type: String, required: false, default: "" },
           supplier: {
             _id: { type: String, required: true },
