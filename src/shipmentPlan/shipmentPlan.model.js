@@ -6,6 +6,7 @@ const shipmentPlanSchema = new Schema({
   shipmentPlans: [
     {
       _id: { type: String, required: true },
+      paymentDone: { type: Boolean, required: false, default: false },
       shipmentTitle: { type: String, required: true },
       dateAdded: { type: Date, required: false, default: null },
       dateUpdated: { type: Date, required: false, default: null },
@@ -49,10 +50,7 @@ const shipmentPlanSchema = new Schema({
           boxes: { type: String, required: false, default: "" },
           weightPerBox: { type: String, required: false, default: "" },
           upc: { type: String, required: false, default: "" },
-          isHazmat: {
-            answer: { type: Boolean, required: false, default: false },
-            amount: { type: String, required: false, default: "" },
-          },
+          isHazmat: { type: Boolean, required: false, default: false },
           shrinkWrap: {
             answer: { type: Boolean, required: false, default: false },
             amount: { type: String, required: false, default: "" },
