@@ -87,21 +87,6 @@ const createPaymentIntent = async (req, res) => {
       });
     }
 
-    // If there are missing fields, return an error response
-    if (missingFields.length > 0) {
-      console.log(
-        `wPayment.controller - Missing or empty fields (${missingFields.join(
-          ", "
-        )}) in Shipment Plan with id: ${shipmentPlanId} for user: ${email}`
-      );
-      return res.status(403).json({
-        status: "error",
-        message: `Missing or empty fields (${missingFields.join(
-          ", "
-        )}) in Shipment Plan with id: ${shipmentPlanId} for user: ${email}`,
-      });
-    }
-
     const paymentIntentSession = await Stripe.checkout.sessions.create({
       mode: "payment",
       payment_method_types: ["card"],
