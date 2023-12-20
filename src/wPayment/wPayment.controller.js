@@ -112,7 +112,7 @@ const createPaymentIntent = async (req, res) => {
       ],
       allow_promotion_codes: true,
       success_url: `${process.env.DOMAIN}/w-payment-thank-you?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${process.env.DOMAIN}/checkout-error`,
+      cancel_url: `${process.env.DOMAIN}/w-payment-checkout-error`,
     });
 
     res.status(200).json({
