@@ -1,7 +1,6 @@
 const { randomUUID } = require("crypto");
 const helpers = require("../_helpers/utils");
 const dayjs = require("dayjs");
-const FileType = require("./fileTypesEnum");
 const fs = require("fs").promises;
 const path = require("path");
 
