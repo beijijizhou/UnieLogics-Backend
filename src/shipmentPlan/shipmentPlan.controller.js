@@ -239,7 +239,7 @@ const updateShipmentPlan = async (req, res) => {
 
     if (warehouseOwner) {
       fullWarehouseOwnerDetails = await WOwnersService.getSpecificWarehousesForThisUserById({
-        email: warehouseOwner.wOwnerEmail,
+        email: warehouseOwner.wOwnerEmail.toLowerCase(),
         _id: warehouseOwner._id,
       });
 
