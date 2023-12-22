@@ -28,7 +28,7 @@ const addWOwnerToDatabase =
             lobId: wOwner.lobId,
             warehouseId: wOwner.warehouseId,
             vendorId: wOwner.vendorId,
-            email: wOwner.email,
+            email: wOwner.email.toLowerCase(),
             phoneNumber: wOwner.phoneNumber,
             llcName: wOwner.llcName,
             businessName: wOwner.businessName,
@@ -93,7 +93,7 @@ const updateWarehousesInDBForExistingOwner =
   async ({ wOwner }) => {
     let updateObj = {};
     const existingWarehouse = await WOwners.findOne({
-      email: wOwner.email,
+      email: wOwner.email.toLowerCase(),
       "warehouses.name": wOwner.name.toString().toLowerCase(),
       "warehouses.businessAddress.zipCode": wOwner.businessAddress.zipCode,
     });
@@ -106,7 +106,7 @@ const updateWarehousesInDBForExistingOwner =
     }
 
     const currentUserWithWarehouses = await WOwners.findOne({
-      email: wOwner.email,
+      email: wOwner.email.toLowerCase(),
     });
     console.log("Warehouses for this email are:");
     console.log(currentUserWithWarehouses.warehouses);
@@ -133,7 +133,7 @@ const updateWarehousesInDBForExistingOwner =
             lobId: wOwner.lobId,
             warehouseId: wOwner.warehouseId,
             vendorId: wOwner.vendorId,
-            email: wOwner.email,
+            email: wOwner.email.toLowerCase(),
             phoneNumber: wOwner.phoneNumber,
             llcName: wOwner.llcName,
             businessName: wOwner.businessName,
@@ -185,7 +185,7 @@ const updateWarehousesInDBForExistingOwner =
         ],
       };
 
-      return await WOwners.findOneAndUpdate({ email: wOwner.email }, updateObj);
+      return await WOwners.findOneAndUpdate({ email: wOwner.email.toLowerCase() }, updateObj);
     } catch (error) {
       return {
         status: "error",
