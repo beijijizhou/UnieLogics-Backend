@@ -18,7 +18,7 @@ const addWOwnerToDatabase =
       }
 
       new WOwners({
-        email: wOwner.email,
+        email: wOwner.email.toLowerCase(),
         warehouses: [
           {
             _id: randomUUID(),
@@ -122,7 +122,7 @@ const updateWarehousesInDBForExistingOwner =
       }
 
       updateObj = {
-        email: wOwner.email,
+        email: wOwner.email.toLowerCase(),
         warehouses: [
           ...currentUserWithWarehouses.warehouses,
           {
@@ -397,7 +397,7 @@ const getWarehousesForThisUser =
 const getSpecificWarehousesForThisUserById =
   (WOwners) =>
   async ({ email, _id }) => {
-    const userWithWarehouses = await WOwners.findOne({ email });
+    const userWithWarehouses = await WOwners.findOne({ email: email.toLowerCase() });
     let warehouse;
 
     if (userWithWarehouses) {
