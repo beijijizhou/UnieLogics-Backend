@@ -394,6 +394,26 @@ const getWarehousesForThisUser =
     return await WOwners.findOne({ email });
   };
 
+const getSpecificWarehousesForThisUserById =
+  (WOwners) =>
+  async ({ email, _id }) => {
+    const userWithWarehouses = await WOwners.findOne({ email });
+    let warehouse;
+
+    if (userWithWarehouses) {
+      warehouse = userWithWarehouses.warehouses.find((w) => JSON.stringify(w._id) === JSON.stringify(_id));
+    }
+
+    if (warehouse) {
+      return warehouse;
+    } else {
+      return {
+        status: "error",
+        message: `There is no wharehouse with id: ${_id} for warehouseOwner with email: ${email}`,
+      }; // If userWithwarehouses not found or warehouse not found
+    }
+  };
+
 module.exports = (WOwners) => {
   return {
     addWOwnerToDatabase: addWOwnerToDatabase(WOwners),
@@ -402,5 +422,6 @@ module.exports = (WOwners) => {
     deleteWOwnerFromSpecificUser: deleteWOwnerFromSpecificUser(WOwners),
     getWarehousesForThisUser: getWarehousesForThisUser(WOwners),
     editWarehousesInDBForExistingOwner: editWarehousesInDBForExistingOwner(WOwners),
+    getSpecificWarehousesForThisUserById: getSpecificWarehousesForThisUserById(WOwners),
   };
 };

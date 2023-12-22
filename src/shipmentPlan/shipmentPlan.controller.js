@@ -1,4 +1,5 @@
 const ShipmentPlanService = require(".");
+const WOwnersService = require("../wOwners");
 const FileType = require("./fileTypesEnum");
 const multer = require("multer");
 const fs = require("fs");
@@ -23,8 +24,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 const add = async (req, res) => {
-  const { email, shipmentTitle, products, orderNo, receiptNo, orderDate } =
-    req.body;
+  const { email, shipmentTitle, products, orderNo, receiptNo, orderDate } = req.body;
   const missingFields = [];
 
   if (!email) missingFields.push("email");
@@ -35,18 +35,14 @@ const add = async (req, res) => {
     products.forEach((product, index) => {
       if (!product.asin) missingFields.push(`products[${index}].asin`);
       if (!product.title) missingFields.push(`products[${index}].title`);
-      if (!product.dateAdded)
-        missingFields.push(`products[${index}].dateAdded`);
-      if (!product.amazonPrice)
-        missingFields.push(`products[${index}].amazonPrice`);
+      if (!product.dateAdded) missingFields.push(`products[${index}].dateAdded`);
+      if (!product.amazonPrice) missingFields.push(`products[${index}].amazonPrice`);
       if (!product.supplier) missingFields.push(`products[${index}].supplier`);
       if (product.supplier) {
         if (!product.supplier.supplierAddress.lat)
           missingFields.push(`products[${index}].supplier.supplierAddress.lat`);
         if (!product.supplier.supplierAddress.long)
-          missingFields.push(
-            `products[${index}].supplier.supplierAddress.long`
-          );
+          missingFields.push(`products[${index}].supplier.supplierAddress.long`);
       }
       if (!product.imageUrl) missingFields.push(`products[${index}].imageUrl`);
     });
@@ -60,19 +56,17 @@ const add = async (req, res) => {
   }
 
   try {
-    const existingShipmentPlansResponse =
-      await ShipmentPlanService.getAllShipmentPlansFromDB({ email });
+    const existingShipmentPlansResponse = await ShipmentPlanService.getAllShipmentPlansFromDB({ email });
 
     if (!existingShipmentPlansResponse) {
-      const addShipmentPlanToDBResponse =
-        await ShipmentPlanService.addShipmentPlanToDB({
-          email,
-          shipmentTitle,
-          products,
-          orderNo,
-          receiptNo,
-          orderDate,
-        });
+      const addShipmentPlanToDBResponse = await ShipmentPlanService.addShipmentPlanToDB({
+        email,
+        shipmentTitle,
+        products,
+        orderNo,
+        receiptNo,
+        orderDate,
+      });
 
       if (addShipmentPlanToDBResponse?.status === "error") {
         return res.status(400).json({
@@ -88,15 +82,14 @@ const add = async (req, res) => {
         },
       });
     } else {
-      const updateShipmentPlanResponse =
-        await ShipmentPlanService.updateShipmentPlansForExistingEmailInDB({
-          email,
-          shipmentTitle,
-          products,
-          orderNo,
-          receiptNo,
-          orderDate,
-        });
+      const updateShipmentPlanResponse = await ShipmentPlanService.updateShipmentPlansForExistingEmailInDB({
+        email,
+        shipmentTitle,
+        products,
+        orderNo,
+        receiptNo,
+        orderDate,
+      });
 
       console.log(updateShipmentPlanResponse);
 
@@ -129,15 +122,12 @@ const getAll = async (req, res) => {
     });
   }
   try {
-    const existingShipmentPlansResponse =
-      await ShipmentPlanService.getAllShipmentPlansFromDB({ email });
+    const existingShipmentPlansResponse = await ShipmentPlanService.getAllShipmentPlansFromDB({ email });
 
     res.status(200).json({
       status: "success",
       message: "Successfully retrieved your Shipment Plans",
-      response: !existingShipmentPlansResponse
-        ? []
-        : existingShipmentPlansResponse,
+      response: !existingShipmentPlansResponse ? [] : existingShipmentPlansResponse,
     });
   } catch (e) {
     console.log(e);
@@ -152,23 +142,19 @@ const deleteShipmentPlan = async (req, res) => {
   const { email, _id } = req.body;
 
   if (!_id || !email) {
-    console.log(
-      "No ID or EMAIL has been provided, so we don't know which shipment plan to delete!"
-    );
+    console.log("No ID or EMAIL has been provided, so we don't know which shipment plan to delete!");
 
     return res.status(400).json({
       status: "errror",
-      message:
-        "No ID or EMAIL has been provided, so we don't know which shipment plan to delete!",
+      message: "No ID or EMAIL has been provided, so we don't know which shipment plan to delete!",
     });
   }
 
   try {
-    const deleteShipmentPlanResponse =
-      await ShipmentPlanService.deleteShipmentPlanFromSpecificUser({
-        email: email.toLowerCase(),
-        _id,
-      });
+    const deleteShipmentPlanResponse = await ShipmentPlanService.deleteShipmentPlanFromSpecificUser({
+      email: email.toLowerCase(),
+      _id,
+    });
 
     if (deleteShipmentPlanResponse?.status === "error") {
       console.log(deleteShipmentPlanResponse);
@@ -206,8 +192,7 @@ const getById = async (req, res) => {
   }
 
   try {
-    const retrieveShipmentPlanById =
-      await ShipmentPlanService.getShipmentPlanByIdFromDb({ email, _id });
+    const retrieveShipmentPlanById = await ShipmentPlanService.getShipmentPlanByIdFromDb({ email, _id });
 
     if (retrieveShipmentPlanById?.length === 0 || !retrieveShipmentPlanById) {
       return res.status(403).json({
@@ -229,17 +214,8 @@ const getById = async (req, res) => {
 };
 
 const updateShipmentPlan = async (req, res) => {
-  const {
-    email,
-    shipmentPlanId,
-    products,
-    shipmentTitle,
-    orderNo,
-    receiptNo,
-    orderDate,
-    warehouseOwner,
-    amazonData,
-  } = req.body;
+  const { email, shipmentPlanId, products, shipmentTitle, orderNo, receiptNo, orderDate, warehouseOwner, amazonData } =
+    req.body;
 
   const missingFields = [];
 
@@ -247,13 +223,8 @@ const updateShipmentPlan = async (req, res) => {
   if (!shipmentPlanId) missingFields.push("shipmentPlanId");
 
   if (warehouseOwner) {
-    if (!warehouseOwner.city) missingFields.push("warehouseOwner.city");
-    if (!warehouseOwner.address) missingFields.push("warehouseOwner.address");
-    if (!warehouseOwner.state) missingFields.push("warehouseOwner.state");
-    if (!warehouseOwner.zipCode) missingFields.push("warehouseOwner.zipCode");
-    if (!warehouseOwner.lat) missingFields.push("warehouseOwner.lat");
-    if (!warehouseOwner.long) missingFields.push("warehouseOwner.long");
-    if (!warehouseOwner._id) missingFields.push("warehouseOwner.long");
+    if (!warehouseOwner._id) missingFields.push("warehouseOwner._id");
+    if (!warehouseOwner.wOwnerEmail) missingFields.push("warehouseOwner.wOwnerEmail");
   }
 
   if (missingFields.length > 0) {
@@ -264,18 +235,32 @@ const updateShipmentPlan = async (req, res) => {
   }
 
   try {
-    const updateShipmentPlanResponse =
-      await ShipmentPlanService.updateShipmentPlanBasedOnId({
-        email,
-        shipmentPlanId,
-        shipmentTitle,
-        products,
-        orderNo,
-        receiptNo,
-        orderDate,
-        warehouseOwner,
-        amazonData,
+    let fullWarehouseOwnerDetails = null;
+
+    if (warehouseOwner) {
+      fullWarehouseOwnerDetails = await WOwnersService.getSpecificWarehousesForThisUserById({
+        email: warehouseOwner.wOwnerEmail,
+        _id: warehouseOwner._id,
       });
+
+      if (fullWarehouseOwnerDetails?.status === "error") {
+        return res.status(403).json({
+          ...fullWarehouseOwnerDetails,
+        });
+      }
+    }
+
+    const updateShipmentPlanResponse = await ShipmentPlanService.updateShipmentPlanBasedOnId({
+      email,
+      shipmentPlanId,
+      shipmentTitle,
+      products,
+      orderNo,
+      receiptNo,
+      orderDate,
+      warehouseOwner: fullWarehouseOwnerDetails,
+      amazonData,
+    });
 
     console.log("updateShipmentPlanResponse", updateShipmentPlanResponse);
 
@@ -359,9 +344,7 @@ const uploadShipmentPlanFiles = async (req, res, next) => {
     if (missingFields.length > 0) {
       return res.status(400).json({
         status: "error",
-        message: `You have mandatory fields missing: ${missingFields.join(
-          ", "
-        )}`,
+        message: `You have mandatory fields missing: ${missingFields.join(", ")}`,
       });
     }
 
@@ -371,20 +354,18 @@ const uploadShipmentPlanFiles = async (req, res, next) => {
       if (!filename.toLowerCase().endsWith(".pdf") || size > 10 * 1024 * 1024) {
         return res.status(400).json({
           status: "error",
-          message:
-            "Invalid file type or size. Only PDF files up to 10 MB are allowed.",
+          message: "Invalid file type or size. Only PDF files up to 10 MB are allowed.",
         });
       }
     }
 
     try {
-      const uploadShipmentPlanFileToDBResponse =
-        await ShipmentPlanService.uploadFilesToDB({
-          email,
-          shipmentPlanId,
-          fileType,
-          files,
-        });
+      const uploadShipmentPlanFileToDBResponse = await ShipmentPlanService.uploadFilesToDB({
+        email,
+        shipmentPlanId,
+        fileType,
+        files,
+      });
 
       if (uploadShipmentPlanFileToDBResponse?.status === "error") {
         return res.status(400).json({
@@ -429,13 +410,12 @@ const deleteFileFromShipmentPlan = async (req, res) => {
   }
 
   try {
-    const deleteFileFromSpecificShipmentPlanResponse =
-      await ShipmentPlanService.deleteFileFromShipmentPlan({
-        email,
-        shipmentPlanId,
-        fileToDelete,
-        fileType,
-      });
+    const deleteFileFromSpecificShipmentPlanResponse = await ShipmentPlanService.deleteFileFromShipmentPlan({
+      email,
+      shipmentPlanId,
+      fileToDelete,
+      fileType,
+    });
 
     if (deleteFileFromSpecificShipmentPlanResponse?.status === "error") {
       return res.status(400).json({
