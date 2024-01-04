@@ -7,7 +7,7 @@ const Stripe = require("../connect/stripe");
 
 const UserService = require("../users");
 const emailTemplates = require("../_helpers/emailTemplates");
-const from_who = "donotreply@asinmice.com";
+const from_who = "donotreply@unielogics.com";
 
 const productToPriceMap = {
   plan17: process.env.PLAN_17,

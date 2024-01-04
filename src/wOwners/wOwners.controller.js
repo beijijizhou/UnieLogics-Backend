@@ -5,7 +5,7 @@ const mailgun = require("mailgun-js")({
   apiKey: process.env.MAILGUN_API_KEY,
   domain: process.env.MAILGUN_DOMAIN,
 });
-const from_who = "donotreply@asinmice.com";
+const from_who = "donotreply@unielogics.com";
 const helpers = require("../_helpers/utils");
 
 const add = async (req, res) => {
@@ -14,7 +14,8 @@ const add = async (req, res) => {
   if (loggedInEmail !== "franco@peri-mail.com") {
     res.status(403).json({
       status: "error",
-      message: "You cannot access this section with this email address. Only the admin can access it!",
+      message:
+        "You cannot access this section with this email address. Only the admin can access it!",
     });
   }
   const missingFields = [];
@@ -47,7 +48,8 @@ const add = async (req, res) => {
     }
   }
   if (!wOwner?.businessPhoneNumber) missingFields.push("businessPhoneNumber");
-  if (!wOwner?.customerServiceEmailAddress) missingFields.push("customerServiceEmailAddress");
+  if (!wOwner?.customerServiceEmailAddress)
+    missingFields.push("customerServiceEmailAddress");
   if (!wOwner?.costPerItemLabeling) missingFields.push("costPerItemLabeling");
   if (!wOwner?.costPerBoxClosing) missingFields.push("costPerBoxClosing");
   if (!wOwner?.costPerBox?.length) missingFields.push("costPerBox");
@@ -123,7 +125,11 @@ const add = async (req, res) => {
     });
   }
 
-  if (wOwner?.password?.length < 6 || !/[A-Z]/.test(wOwner.password) || !/[!@#$%^&*]/.test(wOwner.password)) {
+  if (
+    wOwner?.password?.length < 6 ||
+    !/[A-Z]/.test(wOwner.password) ||
+    !/[!@#$%^&*]/.test(wOwner.password)
+  ) {
     return res.status(400).json({
       status: "error",
       message:
@@ -151,14 +157,20 @@ const add = async (req, res) => {
         createUserResponse
       )}`
     );
-    const currentUserWarehouses = await WOwnersService.getWarehousesForThisUser({
-      email: wOwner.email.toLowerCase(),
-    });
+    const currentUserWarehouses = await WOwnersService.getWarehousesForThisUser(
+      {
+        email: wOwner.email.toLowerCase(),
+      }
+    );
 
-    if (createUserResponse?.status === "error" && currentUserWarehouses?.warehouses) {
-      const updateWarehousesForExistingOwnerResponse = await WOwnersService.updateWarehousesInDBForExistingOwner({
-        wOwner,
-      });
+    if (
+      createUserResponse?.status === "error" &&
+      currentUserWarehouses?.warehouses
+    ) {
+      const updateWarehousesForExistingOwnerResponse =
+        await WOwnersService.updateWarehousesInDBForExistingOwner({
+          wOwner,
+        });
 
       if (updateWarehousesForExistingOwnerResponse?.status === "error") {
         return res.status(400).json({
@@ -233,7 +245,8 @@ const edit = async (req, res) => {
   if (loggedInEmail !== "franco@peri-mail.com") {
     res.status(403).json({
       status: "error",
-      message: "You cannot access this section with this email address. Only the admin can access it!",
+      message:
+        "You cannot access this section with this email address. Only the admin can access it!",
     });
   }
   const missingFields = [];
@@ -271,9 +284,11 @@ const edit = async (req, res) => {
   }
 
   try {
-    const currentUserWarehouses = await WOwnersService.getWarehousesForThisUser({
-      email: wOwnerEmail.toLowerCase(),
-    });
+    const currentUserWarehouses = await WOwnersService.getWarehousesForThisUser(
+      {
+        email: wOwnerEmail.toLowerCase(),
+      }
+    );
 
     if (currentUserWarehouses?.status === "error") {
       return res.status(400).json({
@@ -288,11 +303,12 @@ const edit = async (req, res) => {
       });
     }
     if (currentUserWarehouses?.warehouses) {
-      const updateWarehousesForExistingOwnerResponse = await WOwnersService.editWarehousesInDBForExistingOwner({
-        wOwner,
-        warehouseId,
-        wOwnerEmail,
-      });
+      const updateWarehousesForExistingOwnerResponse =
+        await WOwnersService.editWarehousesInDBForExistingOwner({
+          wOwner,
+          warehouseId,
+          wOwnerEmail,
+        });
 
       if (updateWarehousesForExistingOwnerResponse?.status === "error") {
         return res.status(400).json({
@@ -315,19 +331,23 @@ const deleteWOwner = async (req, res) => {
   const { email, _id } = req.body;
 
   if (!_id || !email) {
-    console.log("No ID or EMAIL has been provided, so we don't know which Warehouse Owner to delete!");
+    console.log(
+      "No ID or EMAIL has been provided, so we don't know which Warehouse Owner to delete!"
+    );
 
     return res.status(400).json({
       status: "errror",
-      message: "No ID or EMAIL has been provided, so we don't know which Warehouse Owner to delete!",
+      message:
+        "No ID or EMAIL has been provided, so we don't know which Warehouse Owner to delete!",
     });
   }
 
   try {
-    const deleteWOwnerResponse = await WOwnersService.deleteWOwnerFromSpecificUser({
-      email: email.toLowerCase(),
-      _id,
-    });
+    const deleteWOwnerResponse =
+      await WOwnersService.deleteWOwnerFromSpecificUser({
+        email: email.toLowerCase(),
+        _id,
+      });
 
     if (deleteWOwnerResponse?.status === "error") {
       console.log(deleteWOwnerResponse);
