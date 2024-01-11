@@ -6,7 +6,10 @@ const shipmentPlanSchema = new Schema({
   shipmentPlans: [
     {
       _id: { type: String, required: true },
-      paymentDone: { type: Boolean, required: false, default: false },
+      payment: {
+        id: { type: String, required: false, default: "none" },
+        paid: { type: Boolean, required: false, default: false },
+      },
       shipmentTitle: { type: String, required: true },
       dateAdded: { type: Date, required: false, default: null },
       dateUpdated: { type: Date, required: false, default: null },
@@ -26,7 +29,11 @@ const shipmentPlanSchema = new Schema({
       orderNo: { type: String, required: false, default: "" },
       receiptNo: { type: String, required: false, default: "" },
       orderDate: { type: Date, required: false, default: null },
-      warehouseOwner: { type: Schema.Types.Mixed, required: false, default: null },
+      warehouseOwner: {
+        type: Schema.Types.Mixed,
+        required: false,
+        default: null,
+      },
       products: [
         {
           asin: { type: String, required: true },
@@ -99,7 +106,9 @@ const shipmentPlanSchema = new Schema({
             shipmentName: { type: String, required: false, default: "" },
             skus: { type: String, required: false, default: "" },
             units: { type: String, required: false, default: "" },
-            thumbnailUrls: [{ url: { type: String, required: false, default: "" } }],
+            thumbnailUrls: [
+              { url: { type: String, required: false, default: "" } },
+            ],
           },
         ],
       },
@@ -107,6 +116,10 @@ const shipmentPlanSchema = new Schema({
   ],
 });
 
-const shipmentPlanModel = mongoose.model("shipmentPlans", shipmentPlanSchema, "shipmentPlans");
+const shipmentPlanModel = mongoose.model(
+  "shipmentPlans",
+  shipmentPlanSchema,
+  "shipmentPlans"
+);
 
 module.exports = shipmentPlanModel;

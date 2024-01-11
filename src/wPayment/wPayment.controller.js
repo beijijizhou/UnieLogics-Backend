@@ -10,10 +10,11 @@ const createPaymentIntent = async (req, res) => {
 
   try {
     let missingFields = [];
-    const retrieveShipmentPlanById = await ShipmentPlanService.getShipmentPlanByIdFromDb({
-      email,
-      _id: shipmentPlanId,
-    });
+    const retrieveShipmentPlanById =
+      await ShipmentPlanService.getShipmentPlanByIdFromDb({
+        email,
+        _id: shipmentPlanId,
+      });
     console.log(retrieveShipmentPlanById);
     console.log(retrieveShipmentPlanById[0].products);
 
@@ -28,7 +29,10 @@ const createPaymentIntent = async (req, res) => {
     }
 
     for (const key in retrieveShipmentPlanById[0]) {
-      if (key === "products" && Array.isArray(retrieveShipmentPlanById[0][key])) {
+      if (
+        key === "products" &&
+        Array.isArray(retrieveShipmentPlanById[0][key])
+      ) {
         // For the 'products' array, iterate over each product and check for empty values
         retrieveShipmentPlanById[0][key].forEach((product, index) => {
           for (const productKey in product) {
@@ -36,12 +40,19 @@ const createPaymentIntent = async (req, res) => {
               // For nested objects in products, iterate over their properties
               for (const nestedKey in product[productKey]) {
                 if (
-                  (productKey === "shrinkWrap" && product[productKey]?.answer) ||
-                  (productKey === "specialPackaging" && product[productKey]?.answer)
+                  (productKey === "shrinkWrap" &&
+                    product[productKey]?.answer) ||
+                  (productKey === "specialPackaging" &&
+                    product[productKey]?.answer)
                 ) {
                   // Check if the corresponding 'amount' is empty
-                  if (nestedKey === "amount" && product[productKey][nestedKey] === "") {
-                    missingFields.push(`products[${index}].${productKey}.${nestedKey}`);
+                  if (
+                    nestedKey === "amount" &&
+                    product[productKey][nestedKey] === ""
+                  ) {
+                    missingFields.push(
+                      `products[${index}].${productKey}.${nestedKey}`
+                    );
                   }
                 } else if (
                   product[productKey]?.answer !== false &&
@@ -49,10 +60,16 @@ const createPaymentIntent = async (req, res) => {
                   nestedKey !== "answer"
                 ) {
                   // Exclude 'answer' field and other fields from being pushed when 'answer' is false
-                  missingFields.push(`products[${index}].${productKey}.${nestedKey}`);
+                  missingFields.push(
+                    `products[${index}].${productKey}.${nestedKey}`
+                  );
                 }
               }
-            } else if (product[productKey]?.answer !== false && product[productKey] === "" && productKey !== "answer") {
+            } else if (
+              product[productKey]?.answer !== false &&
+              product[productKey] === "" &&
+              productKey !== "answer"
+            ) {
               // Exclude 'answer' field and other fields from being pushed when 'answer' is false
               missingFields.push(`products[${index}].${productKey}`);
             }
@@ -70,7 +87,9 @@ const createPaymentIntent = async (req, res) => {
       }
     }
     //remove comments from checkinng
-    missingFields = missingFields.filter((field) => !field.includes(".comments"));
+    missingFields = missingFields.filter(
+      (field) => !field.includes(".comments")
+    );
 
     // If there are missing fields, return an error response
     if (missingFields.length > 0) {
@@ -113,6 +132,12 @@ const createPaymentIntent = async (req, res) => {
       allow_promotion_codes: true,
       success_url: `${process.env.DOMAIN}/w-payment-thank-you?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${process.env.DOMAIN}/w-payment-checkout-error`,
+    });
+
+    await ShipmentPlanService.updateShipmentPlanBasedOnId({
+      email,
+      shipmentPlanId,
+      paymentId: paymentIntentSession.id,
     });
 
     res.status(200).json({
