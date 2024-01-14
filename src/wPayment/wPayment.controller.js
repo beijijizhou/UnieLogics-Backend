@@ -1,4 +1,5 @@
 const ShipmentPlanService = require("../shipmentPlan");
+const WPaymentService = require(".");
 const stripe = require("stripe");
 
 const Stripe = stripe(process.env.STRIPE_SECRET_KEY, {
@@ -154,6 +155,37 @@ const createPaymentIntent = async (req, res) => {
   }
 };
 
+const confirmPayment = async (req, res) => {
+  const { sessionId, email } = req.body;
+
+  try {
+    const confirmPaymentResponse = await WPaymentService.confirmPaymentInDb({
+      sessionId,
+      email,
+    });
+
+    console.log(confirmPaymentResponse);
+    if (confirmPaymentResponse?.status === "error") {
+      return res.status(400).json({
+        ...confirmPaymentResponse,
+      });
+    }
+
+    res.status(200).json({
+      status: "success",
+      message: `Successfully confirmed payment for sessionID: ${sessionId} for user: ${email}`,
+      response: confirmPaymentResponse,
+    });
+  } catch (e) {
+    console.log(e);
+    res.status(500).json({
+      status: "error",
+      message: "There was an error processing your request.",
+    });
+  }
+};
+
 module.exports = {
   createPaymentIntent,
+  confirmPayment,
 };

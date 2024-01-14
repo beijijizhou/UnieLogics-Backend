@@ -1,4 +1,4 @@
-const WhOwners = require("./wOwners.model");
-const WOwnersService = require("./wOwners.service");
+const WPayment = require("./wPayment.model");
+const WPaymentService = require("./wPayment.service");
 
-module.exports = WOwnersService(WhOwners);
+module.exports = WPaymentService(WPayment);
