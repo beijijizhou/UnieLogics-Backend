@@ -138,7 +138,7 @@ const createPaymentIntent = async (req, res) => {
     await ShipmentPlanService.updateShipmentPlanBasedOnId({
       email,
       shipmentPlanId,
-      paymentId: paymentIntentSession.id,
+      paymentId: paymentIntentSession.payment_intent,
     });
 
     res.status(200).json({
@@ -156,26 +156,39 @@ const createPaymentIntent = async (req, res) => {
 };
 
 const confirmPayment = async (req, res) => {
-  const { sessionId, email } = req.body;
+  const { paymentIntentId, email } = req.body;
 
   try {
-    const confirmPaymentResponse = await WPaymentService.confirmPaymentInDb({
-      sessionId,
-      email,
-    });
+    const retrievedPaymentIntent = await Stripe.paymentIntents.retrieve(
+      paymentIntentId
+    );
+    if (retrievedPaymentIntent.status === "succeeded") {
+      console.log(retrievedPaymentIntent.status);
 
-    console.log(confirmPaymentResponse);
-    if (confirmPaymentResponse?.status === "error") {
-      return res.status(400).json({
-        ...confirmPaymentResponse,
+      const confirmPaymentResponse = await WPaymentService.confirmPaymentInDb({
+        paymentIntentId,
+        email,
+      });
+
+      console.log(confirmPaymentResponse);
+      if (confirmPaymentResponse?.status === "error") {
+        return res.status(400).json({
+          ...confirmPaymentResponse,
+        });
+      }
+
+      res.status(200).json({
+        status: "success",
+        message: `Successfully confirmed payment for Payment Intent ID: ${paymentIntentId} for user: ${email}`,
+        response: confirmPaymentResponse,
+      });
+    } else {
+      res.status(200).json({
+        status: "success",
+        message: `There is an error for Payment Intent ID: ${paymentIntentId}. Error: ${retrievedPaymentIntent.status}`,
+        response: null,
       });
     }
-
-    res.status(200).json({
-      status: "success",
-      message: `Successfully confirmed payment for sessionID: ${sessionId} for user: ${email}`,
-      response: confirmPaymentResponse,
-    });
   } catch (e) {
     console.log(e);
     res.status(500).json({
