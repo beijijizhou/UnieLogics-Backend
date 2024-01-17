@@ -183,8 +183,8 @@ const confirmPayment = async (req, res) => {
         response: confirmPaymentResponse,
       });
     } else {
-      res.status(200).json({
-        status: "success",
+      res.status(403).json({
+        status: "error",
         message: `There is an error for Payment Intent ID: ${paymentIntentId}. Error: ${retrievedPaymentIntent.status}`,
         response: null,
       });
