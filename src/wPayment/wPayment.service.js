@@ -2,7 +2,7 @@ const ShipmentPlanService = require("../shipmentPlan");
 
 const confirmPaymentInDb =
   (WPayment) =>
-  async ({ sessionId, email }) => {
+  async ({ paymentIntentId, email }) => {
     try {
       const currentUserWithShipmentPlans =
         await ShipmentPlanService.getAllShipmentPlansFromDB({ email });
@@ -12,7 +12,8 @@ const confirmPaymentInDb =
 
       currentUserWithShipmentPlans?.shipmentPlans?.forEach((shipmentPlan) => {
         if (
-          JSON.stringify(shipmentPlan.payment.id) === JSON.stringify(sessionId)
+          JSON.stringify(shipmentPlan.payment.id) ===
+          JSON.stringify(paymentIntentId)
         ) {
           shipmentPlanIdToUpdate = shipmentPlan._id;
           shipmentPlanExistsForThisUser = true;
@@ -22,7 +23,7 @@ const confirmPaymentInDb =
       if (!shipmentPlanExistsForThisUser) {
         return {
           status: "error",
-          message: `There is no shipment plan initiating payment with id: ${sessionId} for user ${email}`,
+          message: `There is no shipment plan initiating payment with id: ${paymentIntentId} for user ${email}`,
           response: null,
         };
       }

@@ -162,6 +162,7 @@ const confirmPayment = async (req, res) => {
     const retrievedPaymentIntent = await Stripe.paymentIntents.retrieve(
       paymentIntentId
     );
+
     if (retrievedPaymentIntent.status === "succeeded") {
       console.log(retrievedPaymentIntent.status);
 
@@ -171,6 +172,7 @@ const confirmPayment = async (req, res) => {
       });
 
       console.log(confirmPaymentResponse);
+
       if (confirmPaymentResponse?.status === "error") {
         return res.status(400).json({
           ...confirmPaymentResponse,
