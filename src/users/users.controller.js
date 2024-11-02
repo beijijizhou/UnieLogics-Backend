@@ -782,6 +782,126 @@ const postSurvey = async (req, res) => {
   }
 };
 
+const updateUserCustomerId = async (req, res) => {
+	try {
+		const { id } = req.params;
+		const { customerId } = req.body;
+
+		if (!customerId || Object.keys(req.body).length > 1) {
+			return res.status(400).json({ message: "Invalid request body. Please provide only customerId." });
+		}
+
+		const updatedUser =
+			await UserService.updateUserCustomerId(
+				id,
+				customerId
+			);
+
+		if (!updatedUser) {
+			return res
+				.status(404)
+				.json({ message: "User not found" });
+		}
+		res.status(200).json({
+			status: 200,
+			message: "User customerId Successful Updated",
+		});
+	} catch (err) {
+		res.status(500).json({
+			message: "Error Updating CustomerId",
+		});
+	}
+};
+
+const updateUserVendorId = async (req, res) => {
+	try {
+		const { id } = req.params;
+		const { vendorId } = req.body;
+
+		if (!vendorId || Object.keys(req.body).length > 1) {
+			return res.status(400).json({ message: "Invalid request body. Please provide only vendorId." });
+		}
+
+		const updatedUser =
+			await UserService.updateUserVendorId(id, vendorId);
+
+		if (!updatedUser) {
+			return res
+				.status(404)
+				.json({ message: "User not found" });
+		}
+		res.status(200).json({
+			status: 200,
+			message: "User VendorId Successful Updated",
+		});
+	} catch (err) {
+		res.status(500).json({
+			message: "Error Updating vendorId",
+		});
+	}
+};
+
+const updateUserWarehouseId = async (req, res) => {
+	try {
+		const { id } = req.params;
+		const { warehouseId } = req.body;
+
+		if (!warehouseId || Object.keys(req.body).length > 1) {
+			return res.status(400).json({ message: "Invalid request body. Please provide only warehouseId." });
+		}
+
+		const updatedUser =
+			await UserService.updateUserWarehouseId(
+				id,
+				warehouseId
+			);
+
+		if (!updatedUser) {
+			return res
+				.status(404)
+				.json({ message: "User not found" });
+		}
+		res.status(200).json({
+			status: 200,
+			message: "User warehouseId Successful Updated",
+		});
+	} catch (err) {
+		res.status(500).json({
+			message: "Error Updating WarehouseId",
+		});
+	}
+};
+
+const updateUserRecords = async (req, res) => {
+	try {
+		const { id } = req.params;
+		const { records } = req.body;
+
+		if (!records || Object.keys(req.body).length > 1) {
+            return res.status(400).json({ message: "Invalid request body. Please provide only records." });
+        }
+
+		const updatedUser = await UserService.updateUserRecords(
+			id,
+			records
+		);
+
+		if (!updatedUser) {
+			return res
+				.status(404)
+				.json({ message: "User not found" });
+		}
+		res.status(200).json({
+			status: 200,
+			message: "User records Successful Updated",
+		});
+	} catch (err) {
+		res.status(500).json({
+			message: "Error Updating User Records",
+		});
+	}
+};
+
 module.exports = {
   getAllUsers,
   forgotPassword,
@@ -796,4 +916,8 @@ module.exports = {
   updateSalesPerMonth,
   postSurvey,
   simpleProfile,
+  updateUserVendorId,
+  updateUserWarehouseId,
+  updateUserCustomerId,
+  updateUserRecords,
 };

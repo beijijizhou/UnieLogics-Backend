@@ -15,5 +15,9 @@ router.get("/salesPerMonth", userControllers.getSalesPerMonth);
 router.post("/updateSalesPerMonth", userControllers.updateSalesPerMonth);
 router.post("/survey", userControllers.postSurvey);
 router.get("/profileBasedOnEmail", userControllers.simpleProfile);
+router.patch('/:id/customerId', userControllers.updateUserCustomerId);
+router.patch('/:id/vendorId', userControllers.updateUserVendorId);
+router.patch('/:id/warehouseId', userControllers.updateUserWarehouseId);
+router.patch('/:id/records', userControllers.updateUserRecords);
 
 module.exports = router;
