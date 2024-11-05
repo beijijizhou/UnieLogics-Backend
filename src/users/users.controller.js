@@ -533,7 +533,7 @@ const profile = async (req, res) => {
           lastName: user.lastName,
           email: user.email.toLowerCase(),
           billingID: user.billingID,
-          customerID: user.billingID,
+          customerID: user.customerID,
           notifications: user.notifications,
           salesPerMonthCheck: user.salesPerMonthCheck,
           phoneNumber: user.phoneNumber,
