@@ -1,8 +1,8 @@
 const mongoose = require('mongoose');
 
 const userInfoDetailsSchema = new mongoose.Schema({
-  vendorId: { type: String, default: null },
-  warehouseId: { type: String, default: null },
+  vendorId: { type: [String], default: [] },
+  warehouseId: { type: [String], default: [] },
   records: { type: Array, default: [] }
 });
 
