@@ -131,34 +131,6 @@ const getAll = (User) => async () => {
 const _delete = (User) => async (id) => {
 	await User.findByIdAndRemove(id);
 };
-
-const updateUserVendorId =
-	(User) => async (id, vendorId) => {
-		return await User.findByIdAndUpdate(id, {
-			vendorId: vendorId,
-		});
-	};
-
-const updateUserWarehouseId =
-	(User) => async (id, warehouseId) => {
-		return await User.findByIdAndUpdate(id, {
-			warehouseId: warehouseId,
-		});
-	};
-
-const updateUserCustomerId =
-	(User) => async (id, customerId) => {
-		return await User.findByIdAndUpdate(id, {
-			customerId: customerId,
-		});
-	};
-
-const updateUserRecords = (User) => async (id, records) => {
-	return await User.findByIdAndUpdate(id, {
-		records: records,
-	});
-};
-
 module.exports = (User) => {
 	return {
 		addUser: addUser(User),
@@ -170,10 +142,6 @@ module.exports = (User) => {
 		getById: getById(User),
 		getAll: getAll(User),
 		updateProfile: updateProfile(User),
-		_delete: _delete(User),
-		updateUserVendorId: updateUserVendorId(User),
-		updateUserWarehouseId: updateUserWarehouseId(User),
-		updateUserCustomerId: updateUserCustomerId(User),
-		updateUserRecords: updateUserRecords(User),
+		_delete: _delete(User)
 	};
 };
