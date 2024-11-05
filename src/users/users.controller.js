@@ -456,7 +456,7 @@ const simpleProfile = async (req, res) => {
       return res.status(200).send({
         status: "success",
         user: {
-          customerID: user.billingID,
+          customerID: user.customerID,
           email: user.email,
           firstName: user.firstName,
           lastName: user.lastName,
@@ -607,7 +607,7 @@ const profile = async (req, res) => {
         lastName: user.lastName,
         email: user.email.toLowerCase(),
         billingID: user.billingID,
-        customerID: user.billingID,
+        customerID: user.customerID,
         notifications: user.notifications,
         salesPerMonthCheck: user.salesPerMonthCheck,
         phoneNumber: user.phoneNumber,

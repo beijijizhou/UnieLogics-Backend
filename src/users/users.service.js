@@ -116,7 +116,7 @@ const authenticate = (User) => async (email, password) => {
 			email: user.email,
 			hasTrial: user.hasTrial,
 			plan: user.plan,
-			customerID: user.billingID,
+			customerID: user.customerID,
 			token,
 			role: user.role,
 			survey: user.survey,
