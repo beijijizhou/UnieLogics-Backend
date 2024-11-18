@@ -1,8 +1,9 @@
 const mongoose = require("mongoose");
 mongoose.Promise = global.Promise;
 
-const db = process.env.MONGODB;
 
+const db = "mongodb+srv://userCompass:user12345@cluster0.tkxsn.mongodb.net/myFirstDatabase";
+// const db = process.env.MONGODB;
 mongoose.connect(db, {
   useUnifiedTopology: true,
   useNewUrlParser: true,
