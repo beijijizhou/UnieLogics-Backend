@@ -23,7 +23,7 @@ const isUSZipCode = (zipCode) => {
 //https://opencagedata.com/ with my gmai login and we have the free plan
 const getLatLongFromZipCode = (zipCode) => {
   return new Promise((resolve, reject) => {
-    const apiKey = "af76e3cbdbc945548a7c47c3ebf5e7e9";
+    const apiKey = "7284dad5bc0348a2ae43bb69fe33c936";
     const apiUrl = `https://api.opencagedata.com/geocode/v1/json?key=${apiKey}&q=${zipCode}&countrycode=US`;
 
     request.get(apiUrl, { json: true }, (error, response, body) => {
@@ -39,7 +39,8 @@ const getLatLongFromZipCode = (zipCode) => {
         const latitude = location.lat;
         const longitude = location.lng;
         resolve({ latitude, longitude });
-      } else {
+      } 
+      else {
         reject("Geocoding failed. No results found.");
       }
     });
