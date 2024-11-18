@@ -26,7 +26,6 @@ const add = async (req, res) => {
   if (!wOwner) missingFields.push("wOwner");
   if (!wOwner?.name) missingFields.push("name");
   if (!wOwner?.lobId) missingFields.push("lobId");
-  if (!wOwner?.warehouseId) missingFields.push("warehouseId");
   if (!wOwner?.vendorId) missingFields.push("vendorId");
   if (!wOwner?.password) missingFields.push("password");
   if (!wOwner?.email) missingFields.push("email");

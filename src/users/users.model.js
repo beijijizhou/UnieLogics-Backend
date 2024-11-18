@@ -5,6 +5,12 @@ const userSchema = new Schema({
   email: { type: String, required: true },
   firstName: { type: String, required: true },
   lastName: { type: String, required: false, default: "" },
+  unieLogicsCustomerId: {
+    type: String,
+    required: true,
+    unique: true,
+    default: () => Math.floor(1000000 + Math.random() * 9000000).toString(),
+  },
   hash: { type: String, required: true },
   billingID: String,
   plan: {
