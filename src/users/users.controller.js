@@ -8,7 +8,6 @@ const Stripe = require("../connect/stripe");
 const UserService = require("../users");
 const emailTemplates = require("../_helpers/emailTemplates");
 const from_who = "donotreply@unielogics.com";
-const userInfoDetails = require("../users/userInfo.model")
 
 const productToPriceMap = {
   plan17: process.env.PLAN_17,
@@ -206,10 +205,6 @@ const register = async (req, res) => {
     });
   }
 
-  if(!customer) {
-    await userInfoDetails.create(req.body); 
-  }
-
   if (customer) {
     return res.status(409).json({
       status: "error",
@@ -326,15 +321,15 @@ const login = async (req, res) => {
 
       user
         ? res.status(200).json({
-            ...user,
-            hasActiveSubscription,
-            hasTrial,
-            salesPerMonthCheck: customer.salesPerMonthCheck,
-          })
+          ...user,
+          hasActiveSubscription,
+          hasTrial,
+          salesPerMonthCheck: customer.salesPerMonthCheck,
+        })
         : res.status(403).json({
-            status: "error",
-            message: "Email or password is incorrect",
-          });
+          status: "error",
+          message: "Email or password is incorrect",
+        });
     } catch (e) {
       console.log(e);
       res.status(500).json({ status: "error", message: JSON.stringify(e) });
@@ -456,7 +451,7 @@ const simpleProfile = async (req, res) => {
       return res.status(200).send({
         status: "success",
         user: {
-          customerID: user.customerID,
+          customerID: user.billingID,
           email: user.email,
           firstName: user.firstName,
           lastName: user.lastName,
@@ -533,7 +528,7 @@ const profile = async (req, res) => {
           lastName: user.lastName,
           email: user.email.toLowerCase(),
           billingID: user.billingID,
-          customerID: user.customerID,
+          customerID: user.billingID,
           notifications: user.notifications,
           salesPerMonthCheck: user.salesPerMonthCheck,
           phoneNumber: user.phoneNumber,
@@ -607,7 +602,7 @@ const profile = async (req, res) => {
         lastName: user.lastName,
         email: user.email.toLowerCase(),
         billingID: user.billingID,
-        customerID: user.customerID,
+        customerID: user.billingID,
         notifications: user.notifications,
         salesPerMonthCheck: user.salesPerMonthCheck,
         phoneNumber: user.phoneNumber,
@@ -800,5 +795,5 @@ module.exports = {
   getSalesPerMonth,
   updateSalesPerMonth,
   postSurvey,
-  simpleProfile
+  simpleProfile,
 };
