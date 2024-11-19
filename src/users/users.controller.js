@@ -8,6 +8,7 @@ const Stripe = require("../connect/stripe");
 const UserService = require("../users");
 const emailTemplates = require("../_helpers/emailTemplates");
 const from_who = "donotreply@unielogics.com";
+const userInfoDetails = require("../users/userInfo.model")
 
 const productToPriceMap = {
   plan17: process.env.PLAN_17,
@@ -203,6 +204,10 @@ const register = async (req, res) => {
       message:
         "Email, Username and Password are mandatory! One of them is missing!",
     });
+  }
+
+  if(!customer) {
+    await userInfoDetails.create(req.body); 
   }
 
   if (customer) {
@@ -451,7 +456,7 @@ const simpleProfile = async (req, res) => {
       return res.status(200).send({
         status: "success",
         user: {
-          customerID: user.billingID,
+          customerID: user.customerID,
           email: user.email,
           firstName: user.firstName,
           lastName: user.lastName,
@@ -528,7 +533,7 @@ const profile = async (req, res) => {
           lastName: user.lastName,
           email: user.email.toLowerCase(),
           billingID: user.billingID,
-          customerID: user.billingID,
+          customerID: user.customerID,
           notifications: user.notifications,
           salesPerMonthCheck: user.salesPerMonthCheck,
           phoneNumber: user.phoneNumber,
@@ -602,7 +607,7 @@ const profile = async (req, res) => {
         lastName: user.lastName,
         email: user.email.toLowerCase(),
         billingID: user.billingID,
-        customerID: user.billingID,
+        customerID: user.customerID,
         notifications: user.notifications,
         salesPerMonthCheck: user.salesPerMonthCheck,
         phoneNumber: user.phoneNumber,
@@ -795,5 +800,5 @@ module.exports = {
   getSalesPerMonth,
   updateSalesPerMonth,
   postSurvey,
-  simpleProfile,
+  simpleProfile
 };

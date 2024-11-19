@@ -19,6 +19,7 @@ const shipmentPlanRouter = require("./src/shipmentPlan/shipmentPlan.routes");
 const suppliersRouter = require("./src/suppliers/suppliers.routes");
 const wareHousePaymentRouter = require("./src/wPayment/wPayment.routes");
 const stripeWebhook = require("./src/webhook/stripe.webhook.routes");
+const infoplusRecordsRouter = require("./src/infoplusRecords/records.routes");
 
 const app = express();
 const path = require("path");
@@ -57,6 +58,7 @@ app.use("/shipmentPlan", shipmentPlanRouter);
 app.use("/suppliers", suppliersRouter);
 app.use("/wPayment", wareHousePaymentRouter);
 app.use("/webhook", stripeWebhook);
+app.use("/infolplusRecords", infoplusRecordsRouter);
 
 const port = process.env.PORT || 4242;
 
