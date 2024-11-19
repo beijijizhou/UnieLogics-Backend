@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
+const { v4: uuidv4 } = require('uuid');
 
 const userSchema = new Schema({
   email: { type: String, required: true },
@@ -12,6 +13,11 @@ const userSchema = new Schema({
     default: () => Math.floor(1000000 + Math.random() * 9000000).toString(),
   },
   hash: { type: String, required: true },
+  customerId: {
+    type: String,
+    default: uuidv4,
+    immutable: true 
+  },
   billingID: String,
   plan: {
     type: String,
