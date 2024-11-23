@@ -118,7 +118,7 @@ async function createInfoPlusApiRecords(apiUrl, recordData) {
     } catch (error) {
         // Handle errors
         // console.error('Error creating record:', error.message);
-        return { error: error.message }; // Return the error message
+        return { error: error }; // Return the error message
     }
 }
 

@@ -155,81 +155,94 @@ async function searchInfoPlusRecordsByFilters(req, res) {
 async function createInfoPlusRecords(req, res) {
 
     // Define the vendor data to send in the request body
-    const recordData = {
-        vendorNo: 43544,
-        lobId: 22107,
-        name: "Raj new vendor",
-        street: "1234 vbn St",
-        city: "Vcvnbr City",
-        state: "VS",
-        zipCode: "12345",
-        inactive: 'Yes'
+    /*const recordData = {
+        "vendorNo": 43544,
+        "lobId": 22107,
+        "name": "Raj new vendor",
+        "street": "1234 vbn St",
+        "city": "Vcvnbr City",
+        "state": "VS",
+        "zipCode": "12345",
+        "inactive": 'Yes'
     };
-    const recordModule = 'vendor';
+    const recordModule = 'vendor';*/
+
+    const recordData = {
+            "lobId": 22107,
+            "customerNo": "ASN987",
+            "warehouseId": 3105,
+            "orderDate": "2024-11-25",
+            "carrierId": "111",
+            "lineItems": [
+               {
+                  "sku": "B00006IECI",
+                  "orderedQty": 2
+               }
+            ]  
+    };
+    const recordModule = 'order';
+
+
+    /*const recordData = {
+        "lobId": 22107,
+        "poNo": "ASN52864",
+        "vendorId": 6,
+        "warehouseId": 3105,
+        "orderDate": "2024-11-25T00:00:00.000Z",
+        "type": "Normal",
+        "lineItems":[
+            {
+                "lobId": 22107,
+                "sku": "B00006IECI",
+                "orderQuantity":2
+            }
+        ]
+    };
+    const recordModule = 'asn';*/
     
 
     // Define the customer data to send in the request body
     /*const recordData = {
-        lobId: 22107,                  // Line of Business ID
-        customerNo: "CUST12345",           // Unique customer number
-        name: "Raju Dev",                  // Customer's name
-        street: "1234 Customer St",        // Customer's street address
-        city: "Customer City",             // Customer's city
-        zipCode: "54321",                  // Customer's zip code
-        country: "US",                     // Customer's country
-        packageCarrierId: 10000,        // Package carrier ID (e.g., UPS, FedEx)
-        truckCarrierId: 2100,          // Truck carrier ID
-        weightBreak: 100,                  // Weight break for shipping (e.g., 100 kg)
-        residential: 'No'                  // Whether it's a residential address
+        "lobId": 22107,                 // Line of Business ID
+        "customerNo": "ASN987",         // Unique customer number
+        "name": "Raju Dev",             // Customer's name
+        "street": "1234 Customer St",   // Customer's street address
+        "city": "Clifton",              // Customer's city
+        "zipCode": "07011",             // Customer's zip code
+        "state":"New Jersey",           // Customer's state
+        "country": "United States",     // Customer's country
+        "packageCarrierId": 111,        // Package carrier ID (e.g., UPS, FedEx) All users will have static data in this field
+        "truckCarrierId": 111,          // Truck carrier ID All users will have static data in this field
+        "weightBreak": 1,               // Weight break for shipping (e.g., 100 kg) All users will have static data in this field
+        "residential": 'No'             // Whether it's a residential address
     };
     const recordModule = 'customer';*/
 
-    // Define the warehouse data to send in the request body
-    /*const recordData = {
-        client: "CLIENT001",                               // Client ID
-        name: "Main Warehouse",                            // Name of the warehouse
-        company: "Warehouse Co.",                          // Company name
-        street1: "1234 Warehouse Blvd",                    // Street address
-        city: "Warehouse City",                            // City
-        zip: "98765",                                      // Zip code
-        country: "US",                                     // Country
-        phone: "+1234567890",                              // Phone number
-        packStationAllowPackingBeforePickWorkIsComplete: true,  // Allow packing before picking is complete
-        packStationSkipCartonLPN: false,                   // Skip carton LPN
-        packStationRequireConfirmOnError: true,            // Require confirmation on error
-        packStationAllowScanningSKUToIdentifyOrders: true, // Allow SKU scanning to identify orders
-        packStationAllowEntryOfItemQuantities: true,       // Allow entry of item quantities
-        shipStationWeightCheckPackedOrders: true,          // Weight check on packed orders
-        shipStationShowUserWeightCheckExceptions: false,   // Show weight check exceptions
-        shipStationAutoPrintPreGeneratedLabels: true,      // Auto print pre-generated labels
-        shipStationAllowScanningSKUToIdentifyOrders: true, // Allow SKU scanning to identify orders
-        shipStationAllowRateShopping: false                // Allow rate shopping
-    };
-
-    const recordModule = 'warehouse';*/
-
     // Define the item data to send in the request body
     /*const recordData = {
-        majorGroupId: 1,                        // Major group ID
-        subGroupId: 46,                            // Subgroup ID
-        lobId: 22107,                                 // Line of Business ID
-        sku: "ITEM12345",                                // SKU (Stock Keeping Unit)
-        itemDescription: "Raju Example Item Description",     // Description of the item
-        backorder: 'No',                                // Whether the item is on backorder
-        chargeCode: "CHARGE123",                         // Charge code for the item
-        maxCycle: 100,                                   // Maximum cycle for the item
-        maxInterim: 50,                                  // Maximum interim for the item
-        status: "Active",                                // Status of the item (e.g., active, inactive)
-        seasonalItem: 'No',                             // Whether the item is seasonal
-        secure: 'No',                                    // Whether the item is secure
-        unitCode: "UNIT001",                             // Unit code for the item
-        forwardLotMixingRule: "RULE1",                   // Forward lot mixing rule
-        storageLotMixingRule: "RULE2",                   // Storage lot mixing rule
-        forwardItemMixingRule: "ITEMRULE1",              // Forward item mixing rule
-        storageItemMixingRule: "ITEMRULE2",              // Storage item mixing rule
-        allocationRule: "ALLOCATIONRULE1",               // Allocation rule for the item
-        receivingCriteriaSchemeId: 1,            // Receiving criteria scheme ID
-        hazmat: 'No'                                    // Whether the item is hazardous material (hazmat)
+        "majorGroupId": 8,                                  // Item Category ID
+        "subGroupId": 46,                                   // Item Sub Category ID
+        "lobId": 22107,                                     // Line of Business ID
+        "sku": "DEMO-12345",                                // SKU (Stock Keeping Unit)
+        "itemDescription": "Raju Example Item Description", // Description of the item
+        "backorder": "No",                                  // Whether the item is on backorder
+        "chargeCode": "Not Chargeable",                     // Charge code for the item
+        "maxCycle": 999999,                                 // Maximum cycle for the item
+        "maxInterim": 999999,                               // Maximum interim for the item
+        "status": "Active",                                 // Status of the item (e.g., active, inactive)
+        "seasonalItem": "No",                               // Whether the item is seasonal
+        "secure": "No",                                     // Whether the item is secure
+        "unitCode": "EACH",                                 // Unit code for the item
+        "forwardLotMixingRule": "SKU",                      // Forward lot mixing rule
+        "storageLotMixingRule": "SKU",                      // Storage lot mixing rule
+        "forwardItemMixingRule": "Multi",                   // Forward item mixing rule
+        "storageItemMixingRule": "Multi",                   // Storage item mixing rule
+        "allocationRule": "Labor Optimized",                // Allocation rule for the item
+        "hazmat": "No",                                     // Whether the item is hazardous material (hazmat)
+        "unitsPerWrap": 1,
+        "serialCode": "None",                                 
+        "wrapCode": "EACH",
+        "criticalAmount": 0
     };
 
     const recordModule = 'item';*/
@@ -278,8 +291,8 @@ async function updateInfoPlusRecords(req, res) {
 async function getInfoPlusRecords(req, res) {
 
     // Define the vendor data to send in the request body
-    const recordId = 4;
-    const recordModule = 'vendor';
+    const recordId = 3101;
+    const recordModule = 'warehouse';
 
     const response = await recordService.getInfoPlusApiRecord(recordModule, recordId);
 
