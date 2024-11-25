@@ -1,31 +1,44 @@
-const expressJwt = require("express-jwt");
+const { expressjwt } = require("express-jwt");
 const UserService = require("../users");
 
 module.exports = jwt;
 
 function jwt() {
   const secret = process.env.JWT_SECRET;
-  return expressJwt({ secret, algorithms: ["HS256"], isRevoked }).unless({
-    path: [
-      // public routes that don't require authentication
-      "/users/login",
-      "/users/register",
-      "/users/forgotPassword",
-      "/users/checkout",
-      // /^\/keepa\//, //whatever is in keepa doesn't need authorization
-      "/keepa/getChartData",
-      /^\/uploads\/.*/,
-    ],
+  if (!secret) {
+    throw new Error("JWT_SECRET is not defined. Check your environment variables.");
+  }
+
+  const publicPaths = [
+    "/users/login",
+    "/users/register",
+    "/users/forgotPassword",
+    "/users/checkout",
+    "/keepa/getChartData",
+    /^\/uploads\/.*/,
+  ];
+
+  return expressjwt({
+    secret,
+    algorithms: ["HS256"],
+    isRevoked,
+  }).unless({
+    path: publicPaths,
   });
 }
 
-async function isRevoked(req, payload, done) {
-  const user = await UserService.getById(payload.sub);
+async function isRevoked(req, token) {
+  try {
+    const user = await UserService.getById(token.payload.sub);
 
-  // revoke token if user no longer exists
-  if (!user) {
-    return done(null, true);
+    // Revoke token if user no longer exists
+    if (!user) {
+      return true; // Token is revoked
+    }
+
+    return false; // Token is valid
+  } catch (error) {
+    console.error("Error in isRevoked:", error);
+    throw new Error("Error checking token revocation");
   }
-
-  done();
 }
