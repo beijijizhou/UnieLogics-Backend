@@ -40,7 +40,7 @@ const getCustomerByID = async (id) => {
 };
 
 const getSubscription = async (id) => {
-  console.log(await Stripe.subscriptions.list({ customer: id }));
+  // console.log(await Stripe.subscriptions.list({ customer: id }));
   const subscription = await Stripe.subscriptions.list({ customer: id });
   return subscription;
 };
