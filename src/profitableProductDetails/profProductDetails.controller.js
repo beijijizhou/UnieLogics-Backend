@@ -4,6 +4,7 @@ const addProfProductDetails = async (req, res) => {
   const {
     email,
     asin,
+    fnsku,
     title,
     price,
     imageUrl,
@@ -46,6 +47,7 @@ const addProfProductDetails = async (req, res) => {
           folderId,
           date: new Date(),
           asin,
+          fnsku,
           title,
           price,
           imageUrl,

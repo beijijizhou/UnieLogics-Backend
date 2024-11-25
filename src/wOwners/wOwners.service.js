@@ -205,7 +205,7 @@ const editWarehousesInDBForExistingOwner =
       });
 
       const warehouseIndex = currentUserWithWarehouses.warehouses.findIndex(
-        (warehouse) => warehouse._id === warehouseId
+        (warehouse) => warehouse.warehouseId === warehouseId
       );
 
       if (warehouseIndex === -1) {
@@ -233,9 +233,11 @@ const editWarehousesInDBForExistingOwner =
         _id: existingWarehouse.id,
         dateAdded: existingWarehouse.dateAdded,
         dateModified: dayjs().format(),
-        name: wOwner?.name ? wOwner?.name.toString().toLowerCase() : existingWarehouse.name,
+        name: wOwner?.name ? wOwner?.name.toString() : existingWarehouse.name,
         lobId: wOwner?.lobId ? wOwner?.lobId : existingWarehouse.lobId,
-        warehouseId: wOwner?.warehouseId ? wOwner?.warehouseId : existingWarehouse.warehouseId,
+        //warehouseID is auto-generated, shouldn't be manually editable
+        //warehouseId: wOwner?.warehouseId ? wOwner?.warehouseId : existingWarehouse.warehouseId,
+        warehouseId: existingWarehouse.warehouseId,
         vendorId: wOwner?.vendorId ? wOwner?.vendorId : existingWarehouse.vendorId,
         phoneNumber: wOwner?.phoneNumber ? wOwner?.phoneNumber : existingWarehouse.phoneNumber,
         llcName: wOwner?.llcName ? wOwner?.llcName : existingWarehouse.llcName,
