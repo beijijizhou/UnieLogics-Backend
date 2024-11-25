@@ -39,7 +39,8 @@ const getCustomerByID = async (id) => {
   return customer;
 };
 
-const getSubsription = async (id) => {
+const getSubscription = async (id) => {
+  console.log(await Stripe.subscriptions.list({ customer: id }));
   const subscription = await Stripe.subscriptions.list({ customer: id });
   return subscription;
 };
@@ -80,5 +81,5 @@ module.exports = {
   createCheckoutSession,
   createBillingSession,
   createWebhook,
-  getSubsription,
+  getSubscription,
 };

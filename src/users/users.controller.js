@@ -90,7 +90,7 @@ const checkAuthentication = async (req, res) => {
   }
 
   try {
-    const existingSubscription = await Stripe.getSubsription(customerID);
+    const existingSubscription = await Stripe.getSubscription(customerID);
     let user = await UserService.getUserByEmail(email);
     let hasActiveSubscription = false;
 
@@ -283,7 +283,7 @@ const login = async (req, res) => {
 
       if (customer.role !== "warehouseOwner") {
         customerInfo = await Stripe.getCustomerByID(customer.billingID);
-        const existingSubscription = await Stripe.getSubsription(
+        const existingSubscription = await Stripe.getSubscription(
           customerInfo.id
         );
 
@@ -351,7 +351,7 @@ const checkout = async (req, res) => {
       customerInfo.email.toLowerCase()
     );
     const price = productToPriceMap[product];
-    const existingSubscription = await Stripe.getSubsription(customerInfo.id);
+    const existingSubscription = await Stripe.getSubscription(customerInfo.id);
 
     existingSubscription.data.forEach(function (item) {
       if (item.status === "active" || item.status === "trialing") {
@@ -491,7 +491,7 @@ const profile = async (req, res) => {
   }
 
   try {
-    const existingSubscription = await Stripe.getSubsription(customerID);
+    const existingSubscription = await Stripe.getSubscription(customerID);
     let user = await UserService.getUserByEmail(email.toLowerCase());
     let hasActiveSubscription = false;
 
