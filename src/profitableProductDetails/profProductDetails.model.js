@@ -11,6 +11,7 @@ const profProductDeatailsSchema = new Schema({
         {
           date: { type: String, required: false, default: "" },
           asin: { type: String, required: true },
+          fnsku: { type: String, required: false, default: "" },
           title: { type: String, required: false, default: "" },
           price: { type: String, required: false, default: "" },
           imageUrl: { type: String, required: false, default: "" },

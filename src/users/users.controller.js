@@ -321,15 +321,15 @@ const login = async (req, res) => {
 
       user
         ? res.status(200).json({
-            ...user,
-            hasActiveSubscription,
-            hasTrial,
-            salesPerMonthCheck: customer.salesPerMonthCheck,
-          })
+          ...user,
+          hasActiveSubscription,
+          hasTrial,
+          salesPerMonthCheck: customer.salesPerMonthCheck,
+        })
         : res.status(403).json({
-            status: "error",
-            message: "Email or password is incorrect",
-          });
+          status: "error",
+          message: "Email or password is incorrect",
+        });
     } catch (e) {
       console.log(e);
       res.status(500).json({ status: "error", message: JSON.stringify(e) });
