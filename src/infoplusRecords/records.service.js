@@ -83,7 +83,12 @@ async function searchInfoPlusApiRecords(searchModule, query) {
 
   // Function to search records by Filters
 async function searchInfoPlusApiRecordsByFilters(searchModule, filterData) {
+    const allowedModules = ['module1', 'module2', 'module3']; // Define your allowed modules here
     
+    if (!allowedModules.includes(searchModule)) {
+        throw new Error('Invalid search module');
+    }
+
     try {
 
       let apiUrl = `${BASE_URL}/${searchModule}/search`;

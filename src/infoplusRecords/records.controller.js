@@ -134,10 +134,19 @@ async function searchInfoPlusRecordsByFilters(req, res) {
     const { searchModule } = req.params;
     const filterData = req.body;
 
+    const allowedModules = ['module1', 'module2', 'module3']; // Define your allowed modules here
+
     if (!searchModule) {
         return res.status(403).json({
             status: 'error',
             message: 'API module is required to retrieve records.',
+        });
+    }
+
+    if (!allowedModules.includes(searchModule)) {
+        return res.status(403).json({
+            status: 'error',
+            message: 'Invalid search module.',
         });
     }
 
