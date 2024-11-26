@@ -3,9 +3,9 @@ const Schema = mongoose.Schema;
 
 const recordSchema = new Schema({
 
-    userEmail: { type: String, required: true },
+    //userEmail: { type: String, required: true },
     //vendorIDs: { type: [String], default: [] },
-    customerNo: { type: [String], default: [] },
+    //customerNo: { type: [String], default: [] },
 
     records: [
         {
