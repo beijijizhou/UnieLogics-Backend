@@ -32,6 +32,8 @@ const addWOwnerToDatabase =
             phoneNumber: wOwner.phoneNumber,
             llcName: wOwner.llcName,
             businessName: wOwner.businessName,
+            itemCategories: wOwner.itemCategories,
+            itemSubCategories: wOwner.itemSubCategories,
             businessAddress: {
               address: wOwner.businessAddress.address,
               state: wOwner.businessAddress.state,
@@ -137,6 +139,8 @@ const updateWarehousesInDBForExistingOwner =
             phoneNumber: wOwner.phoneNumber,
             llcName: wOwner.llcName,
             businessName: wOwner.businessName,
+            itemCategories: wOwner.itemCategories,
+            itemSubCategories: wOwner.itemSubCategories,
             businessAddress: {
               address: wOwner.businessAddress.address,
               state: wOwner.businessAddress.state,
@@ -242,6 +246,8 @@ const editWarehousesInDBForExistingOwner =
         phoneNumber: wOwner?.phoneNumber ? wOwner?.phoneNumber : existingWarehouse.phoneNumber,
         llcName: wOwner?.llcName ? wOwner?.llcName : existingWarehouse.llcName,
         businessName: wOwner?.businessName ? wOwner?.businessName : existingWarehouse.businessName,
+        itemCategories: wOwner.itemCategories,
+        itemSubCategories: wOwner.itemSubCategories,
         businessAddress: {
           address: wOwner?.businessAddress?.address
             ? wOwner?.businessAddress?.address

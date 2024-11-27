@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
-const stateAbbreviations = require("./stateAbrieviation")
+const stateAbbreviations = require("./stateAbrieviation");
 
 const wOwnersSchema = new Schema({
 	email: { type: String, required: true },
@@ -16,8 +16,11 @@ const wOwnersSchema = new Schema({
 				unique: true,
 				default: function () {
 					const stateName = this.businessAddress?.state;
-					const abbreviation = stateAbbreviations(stateName);
-					const randomDigits = Math.floor(100 + Math.random() * 900);
+					const abbreviation =
+						stateAbbreviations(stateName);
+					const randomDigits = Math.floor(
+						100 + Math.random() * 900
+					);
 					return `${abbreviation}${randomDigits}`;
 				},
 			},
@@ -37,9 +40,28 @@ const wOwnersSchema = new Schema({
 					long: "",
 				},
 			},
+			itemCategories: [
+				{
+					id: { type: String, required: true },
+					internalId: { type: Number, required: false },
+					lobId: { type: String, required: true },
+					name: { type: String, required: true },
+				},
+			],
+			itemSubCategories: [
+				{
+					id: { type: String, required: true },
+					internalId: { type: Number, required: false },
+					lobId: { type: String, required: true },
+					name: { type: String, required: true },
+				},
+			],
 			businessPhoneNumber: { type: String, required: true },
 			password: { type: String, required: false },
-      customerServiceEmailAddress: { type: String, required: true },
+			customerServiceEmailAddress: {
+				type: String,
+				required: true,
+			},
 			costPerItemLabeling: { type: String, required: true },
 			costPerBoxClosing: { type: String, required: true },
 			costPerBox: {
