@@ -1,9 +1,7 @@
 const axios = require("axios");
  
-const INFOPLUS_API_KEY =
-    "1920DB4EFEEBD7FBA852392DB8A691D36167AF072E4DD1D241E6867A9F21DD6D";
-const INFOPLUS_DOMAIN =
-    "https://unielogics-test.infopluswms.com/infoplus-wms";
+const INFOPLUS_API_KEY = process.env.INFOPLUS_API_KEY;
+const INFOPLUS_DOMAIN = process.env.INFOPLUS_DOMAIN;
  
 const fetchFromInfoplus = async (endpoint) => {
     try {
