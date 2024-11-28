@@ -20,9 +20,12 @@ const suppliersRouter = require("./src/suppliers/suppliers.routes");
 const wareHousePaymentRouter = require("./src/wPayment/wPayment.routes");
 const stripeWebhook = require("./src/webhook/stripe.webhook.routes");
 const infoplusRecordsRouter = require("./src/infoplusRecords/records.routes");
-
+const { warehouseTimer } = require("./src/wOwners/wOwnerCategoriesTimer")
+ 
 const app = express();
 const path = require("path");
+
+warehouseTimer.start(); // Start the timer for warehouse owners' categories
 
 app
   .use(cors())
