@@ -134,19 +134,10 @@ async function searchInfoPlusRecordsByFilters(req, res) {
     const { searchModule } = req.params;
     const filterData = req.body;
 
-    const allowedModules = ['module1', 'module2', 'module3']; // Define your allowed modules here
-
     if (!searchModule) {
         return res.status(403).json({
             status: 'error',
             message: 'API module is required to retrieve records.',
-        });
-    }
-
-    if (!allowedModules.includes(searchModule)) {
-        return res.status(403).json({
-            status: 'error',
-            message: 'Invalid search module.',
         });
     }
 
@@ -164,19 +155,19 @@ async function searchInfoPlusRecordsByFilters(req, res) {
 async function createInfoPlusRecords(req, res) {
 
     // Define the vendor data to send in the request body
-    /*const recordData = {
-        "vendorNo": 43544,
+    const recordData = {
+        "vendorNo": 435445,
         "lobId": 22107,
-        "name": "Raj new vendor",
+        "name": "Raj new vendor 5",
         "street": "1234 vbn St",
         "city": "Vcvnbr City",
         "state": "VS",
         "zipCode": "12345",
         "inactive": 'Yes'
     };
-    const recordModule = 'vendor';*/
+    const recordModule = 'vendor';
 
-    const recordData = {
+    /*const recordData = {
             "lobId": 22107,
             "customerNo": "ASN987",
             "warehouseId": 3105,
@@ -189,7 +180,7 @@ async function createInfoPlusRecords(req, res) {
                }
             ]  
     };
-    const recordModule = 'order';
+    const recordModule = 'order';*/
 
 
     /*const recordData = {

@@ -83,19 +83,21 @@ async function searchInfoPlusApiRecords(searchModule, query) {
 
   // Function to search records by Filters
 async function searchInfoPlusApiRecordsByFilters(searchModule, filterData) {
-    const allowedModules = ['module1', 'module2', 'module3']; // Define your allowed modules here
-    
-    if (!allowedModules.includes(searchModule)) {
-        throw new Error('Invalid search module');
-    }
-
     try {
 
       let apiUrl = `${BASE_URL}/${searchModule}/search`;
-      console.log(filter);
+      console.log(filterData);
 
-      // Fetch data from the API using axios
-      const response = await axios.get(apiUrl, filterData);
+       // Convert filterData object to query string
+        const queryParams = new URLSearchParams(filterData).toString();
+
+        // Construct the full URL with the query string
+        const fullUrl = `${apiUrl}?${queryParams}`;
+
+        console.log('Request URL:', fullUrl);  // Optional: for debugging purposes
+
+        // Fetch data from the API using axios
+        const response = await axios.get(fullUrl, { headers: { 'accept': 'application/json' } });
   
       // Log the response data
       //console.log('Data:', response.data);

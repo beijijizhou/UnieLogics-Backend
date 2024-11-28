@@ -23,6 +23,7 @@ const suppliersSchema = new Schema({
         phoneNumber: { type: String, required: true },
         extensionCode: { type: String, required: true },
       },
+      infoPlusId:{type: String, required: false},
     },
   ],
 });
