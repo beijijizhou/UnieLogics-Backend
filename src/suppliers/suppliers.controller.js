@@ -95,8 +95,10 @@ const add = async (req, res) => {
       };
       
       const apiResponse = await recordService.createInfoPlusApiRecords(recordModule, recordData);
-      if(apiResponse){ 
-        const infoplusvendorid = apiResponse.response.id;
+      if(apiResponse){
+        recordData.id = apiResponse.response.id;
+        const updateVendor = await recordService.updateInfoPlusApiRecord(recordModule, recordData);
+        const infoplusvendorid = updateVendor.response.id;
         supplierToBeSentToDB.infoPlusId=infoplusvendorid;
       }     
     }else{

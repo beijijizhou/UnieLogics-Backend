@@ -305,6 +305,7 @@ const updateSupplierForItem =
     supplierAddress,
     supplierLink,
     contactPerson,
+    infoPlusId,
   }) => {
     const filter = { "folders._id": folderId };
     const update = {
@@ -314,6 +315,7 @@ const updateSupplierForItem =
           supplierAddress,
           supplierLink,
           contactPerson,
+          infoPlusId,
           _id,
         },
       },

@@ -155,7 +155,7 @@ async function searchInfoPlusRecordsByFilters(req, res) {
 async function createInfoPlusRecords(req, res) {
 
     // Define the vendor data to send in the request body
-    const recordData = {
+    /*const recordData = {
         "vendorNo": 435445,
         "lobId": 22107,
         "name": "Raj new vendor 5",
@@ -165,7 +165,7 @@ async function createInfoPlusRecords(req, res) {
         "zipCode": "12345",
         "inactive": 'Yes'
     };
-    const recordModule = 'vendor';
+    const recordModule = 'vendor';*/
 
     /*const recordData = {
             "lobId": 22107,
@@ -219,7 +219,7 @@ async function createInfoPlusRecords(req, res) {
     const recordModule = 'customer';*/
 
     // Define the item data to send in the request body
-    /*const recordData = {
+    const recordData = {
         "majorGroupId": 8,                                  // Item Category ID
         "subGroupId": 46,                                   // Item Sub Category ID
         "lobId": 22107,                                     // Line of Business ID
@@ -245,12 +245,10 @@ async function createInfoPlusRecords(req, res) {
         "criticalAmount": 0
     };
 
-    const recordModule = 'item';*/
+    const recordModule = 'item';
 
 
     const response = await recordService.createInfoPlusApiRecords(recordModule, recordData);
-
-    console.log(response);
 
     res.status(200).json({
         status: 'success',

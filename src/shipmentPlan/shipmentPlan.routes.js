@@ -16,5 +16,6 @@ router.delete(
   "/deleteProduct",
   shipmentPlanControllers.deleteProductFromShipmentPlan
 );
+router.get("/test-data-mapping", shipmentPlanControllers.testDataMapping);
 
 module.exports = router;
