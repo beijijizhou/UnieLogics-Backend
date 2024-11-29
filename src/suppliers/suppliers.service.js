@@ -94,7 +94,7 @@ const updateSuppliersForExistingEmailInDB =
       return {
         status: "error",
         message:
-          "There was an error finding the latitude and longitude for your zipCode. Please contact us if the problem persists.",
+        error,
       };
     }
   };

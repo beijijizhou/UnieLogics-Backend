@@ -134,19 +134,10 @@ async function searchInfoPlusRecordsByFilters(req, res) {
     const { searchModule } = req.params;
     const filterData = req.body;
 
-    const allowedModules = ['module1', 'module2', 'module3']; // Define your allowed modules here
-
     if (!searchModule) {
         return res.status(403).json({
             status: 'error',
             message: 'API module is required to retrieve records.',
-        });
-    }
-
-    if (!allowedModules.includes(searchModule)) {
-        return res.status(403).json({
-            status: 'error',
-            message: 'Invalid search module.',
         });
     }
 
@@ -165,9 +156,9 @@ async function createInfoPlusRecords(req, res) {
 
     // Define the vendor data to send in the request body
     /*const recordData = {
-        "vendorNo": 43544,
+        "vendorNo": 435445,
         "lobId": 22107,
-        "name": "Raj new vendor",
+        "name": "Raj new vendor 5",
         "street": "1234 vbn St",
         "city": "Vcvnbr City",
         "state": "VS",
@@ -176,7 +167,7 @@ async function createInfoPlusRecords(req, res) {
     };
     const recordModule = 'vendor';*/
 
-    const recordData = {
+    /*const recordData = {
             "lobId": 22107,
             "customerNo": "ASN987",
             "warehouseId": 3105,
@@ -189,7 +180,7 @@ async function createInfoPlusRecords(req, res) {
                }
             ]  
     };
-    const recordModule = 'order';
+    const recordModule = 'order';*/
 
 
     /*const recordData = {
@@ -228,7 +219,7 @@ async function createInfoPlusRecords(req, res) {
     const recordModule = 'customer';*/
 
     // Define the item data to send in the request body
-    /*const recordData = {
+    const recordData = {
         "majorGroupId": 8,                                  // Item Category ID
         "subGroupId": 46,                                   // Item Sub Category ID
         "lobId": 22107,                                     // Line of Business ID
@@ -254,12 +245,10 @@ async function createInfoPlusRecords(req, res) {
         "criticalAmount": 0
     };
 
-    const recordModule = 'item';*/
+    const recordModule = 'item';
 
 
     const response = await recordService.createInfoPlusApiRecords(recordModule, recordData);
-
-    console.log(response);
 
     res.status(200).json({
         status: 'success',

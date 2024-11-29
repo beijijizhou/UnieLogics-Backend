@@ -1,5 +1,6 @@
 const SuppliersService = require(".");
 const helpers = require("../_helpers/utils");
+const recordService = require('../infoplusRecords/records.service');
 
 const add = async (req, res) => {
   const { email, supplier } = req.body;
@@ -70,12 +71,50 @@ const add = async (req, res) => {
     };
   }
 
+  // Infoplus API code start 
+  const recordModule = 'vendor';
+  const filters = {
+    "filter":"name eq '" + supplierToBeSentToDB.supplierName + "'"
+  };
+
+  const responseData = await recordService.searchInfoPlusApiRecordsByFilters(recordModule, filters);
+    if(!responseData){
+
+    // Define the vendor data to send in the request body
+      const recordData = {
+          "vendorNo": 43544,
+          "lobId": 22107,
+          "name": supplierToBeSentToDB.supplierName,
+          "street": supplierToBeSentToDB.supplierAddress.street,
+          "city": supplierToBeSentToDB.supplierAddress.city,
+          "state": supplierToBeSentToDB.supplierAddress.state,
+          "zipCode": supplierToBeSentToDB.supplierAddress.zipCode,
+          "contact": supplierToBeSentToDB.contactPerson.name,
+          "phone": supplierToBeSentToDB.contactPerson.phoneNumber,
+          "inactive": 'Yes'
+      };
+      
+      const apiResponse = await recordService.createInfoPlusApiRecords(recordModule, recordData);
+      if(apiResponse){
+        recordData.id = apiResponse.response.id;
+        const updateVendor = await recordService.updateInfoPlusApiRecord(recordModule, recordData);
+        const infoplusvendorid = updateVendor.response.id;
+        supplierToBeSentToDB.infoPlusVendorId=infoplusvendorid;
+      }     
+    }else{
+      const infoplusvendorid = responseData[0].id;
+      supplierToBeSentToDB.infoPlusVendorId=infoplusvendorid;
+    }
+    // Infoplus API code end 
+
   try {
     const existingSuppliersForEmail =
       await SuppliersService.getAllSuppliersFromDB({
         email,
       });
+      
     if (existingSuppliersForEmail) {
+
       const updateSuppliersExistingOwnerResponse =
         await SuppliersService.updateSuppliersForExistingEmailInDB({
           email,
@@ -92,7 +131,9 @@ const add = async (req, res) => {
         status: "success",
         message: `Successfully updated Supplier for existing Suppliers.`,
       });
+
     } else {
+
       const addSupplierResponse = await SuppliersService.addSuppliersToDB({
         email,
         supplier: supplierToBeSentToDB,
@@ -109,6 +150,7 @@ const add = async (req, res) => {
         message: `Successfully added Supplier to the database!`,
       });
     }
+
   } catch (e) {
     console.log(e);
     res.status(500).json({ status: "error", message: JSON.stringify(e) });

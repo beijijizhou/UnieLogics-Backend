@@ -333,6 +333,7 @@ const updateSupplierForItemInFolder = async (req, res) => {
     supplierAddress,
     supplierLink,
     contactPerson,
+    infoPlusVendorId,
   } = req.body;
   const missingFields = [];
 
@@ -378,6 +379,7 @@ const updateSupplierForItemInFolder = async (req, res) => {
         supplierAddress,
         supplierLink,
         contactPerson,
+        infoPlusVendorId,
       });
 
     if (updateSupplierForItemResponse?.status === "error") {
