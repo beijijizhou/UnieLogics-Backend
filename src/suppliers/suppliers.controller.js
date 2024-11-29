@@ -99,11 +99,11 @@ const add = async (req, res) => {
         recordData.id = apiResponse.response.id;
         const updateVendor = await recordService.updateInfoPlusApiRecord(recordModule, recordData);
         const infoplusvendorid = updateVendor.response.id;
-        supplierToBeSentToDB.infoPlusId=infoplusvendorid;
+        supplierToBeSentToDB.infoPlusVendorId=infoplusvendorid;
       }     
     }else{
       const infoplusvendorid = responseData[0].id;
-      supplierToBeSentToDB.infoPlusId=infoplusvendorid;
+      supplierToBeSentToDB.infoPlusVendorId=infoplusvendorid;
     }
     // Infoplus API code end 
 
