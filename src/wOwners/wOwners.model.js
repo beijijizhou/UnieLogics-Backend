@@ -11,7 +11,7 @@ const wOwnersSchema = new Schema({
 			dateModified: { type: Date, default: null },
 			name: { type: String, required: true },
 			lobId: { type: String, required: true },
-			warehouseId: {
+			unielogicsId: {
 				type: String,
 				unique: true,
 				default: function () {
@@ -24,7 +24,7 @@ const wOwnersSchema = new Schema({
 					return `${abbreviation}${randomDigits}`;
 				},
 			},
-			vendorId: { type: String, required: true },
+			warehouseId: { type: String, required: true },
 			phoneNumber: { type: String, required: true },
 			llcName: { type: String, required: true },
 			businessName: { type: String, required: true },
