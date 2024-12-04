@@ -112,6 +112,7 @@ const shipmentPlanSchema = new Schema({
           },
         ],
       },
+      cronResponse: { type: String, required: false, default: "" },
     },
   ],
 });

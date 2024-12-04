@@ -559,7 +559,7 @@ const testDataMapping = async (req, res) => {
       poNo: existingShipmentPlansResponse.orderNo,
       vendorId,
       warehouseId,
-      orderDate: "2024-11-25T00:00:00.000Z",
+      orderDate: existingShipmentPlansResponse.dateAdded,
       type: "Normal",
       lineItems,
     };
@@ -567,6 +567,13 @@ const testDataMapping = async (req, res) => {
     // Create ASN in Infoplus API
     const infoplusAsn = await recordService.createInfoPlusApiRecords('asn', asnData);
     if (infoplusAsn) {
+
+      const updateShipmentPlanResponse = await ShipmentPlanService.updateShipmentPlanBasedOnId({
+        email,
+        shipmentPlanId: existingShipmentPlansResponse._id,
+        status: 'Synced',
+      });
+      
       return res.status(200).json({
         status: "success",
         message: "Records successfully created on Infoplus",

@@ -3,6 +3,7 @@ const helpers = require("../_helpers/utils");
 const dayjs = require("dayjs");
 const fs = require("fs").promises;
 const path = require("path");
+const shipmentPlanModel = require('./shipmentPlan.model');
 
 const addShipmentPlanToDB =
   (ShipmentPlan) =>
@@ -138,6 +139,8 @@ const updateShipmentPlanBasedOnId =
     amazonData,
     paymentId,
     paymentStatus,
+    status,
+    cronResponse,
   }) => {
     const currentUserWithShipmentPlans = await ShipmentPlan.findOne({ email });
 
@@ -160,6 +163,8 @@ const updateShipmentPlanBasedOnId =
           shipmentPlan.dateUpdated = dayjs().format();
           if (paymentId) shipmentPlan.payment.id = paymentId;
           if (paymentStatus) shipmentPlan.payment.paid = paymentStatus;
+          if (status) shipmentPlan.status = status;
+          if (cronResponse) shipmentPlan.cronResponse = cronResponse;
         }
         return shipmentPlan;
       });
@@ -507,10 +512,38 @@ const deleteFileFromShipmentPlan =
     }
   };
 
-module.exports = deleteFileFromShipmentPlan;
+async function getAllShipmentPlans(){
+
+  // Fetch shipment plan from the database
+  return await shipmentPlanModel.aggregate([
+    {
+      $match: {
+        "shipmentPlans.status": "Added",  // Filter for shipmentPlans with status 'Added'
+      }
+    },
+    { $unwind: "$shipmentPlans" },  // Unwind the shipmentPlans array
+    {
+      $match: {
+        "shipmentPlans.status": "Added"  // Ensure only 'Added' plans are included
+      }
+    },
+    {
+      $project: {
+        email: 1,  // Include email field
+        shipmentPlans: 1 // Include shipmentPlan field
+      }
+    }
+  ]);
+
+};
+
+module.exports = {
+  deleteFileFromShipmentPlan
+};
 
 module.exports = (ShipmentPlan) => {
   return {
+    getAllShipmentPlans:getAllShipmentPlans,
     addShipmentPlanToDB: addShipmentPlanToDB(ShipmentPlan),
     getAllShipmentPlansFromDB: getAllShipmentPlansFromDB(ShipmentPlan),
     updateShipmentPlansForExistingEmailInDB:
