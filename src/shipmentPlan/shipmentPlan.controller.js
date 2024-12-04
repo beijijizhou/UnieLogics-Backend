@@ -1,4 +1,4 @@
-const ShipmentPlanService = require(".");
+const shipmentPlanService = require(".");
 const WOwnersService = require("../wOwners");
 const FileType = require("./fileTypesEnum");
 const multer = require("multer");
@@ -58,10 +58,10 @@ const add = async (req, res) => {
   }
 
   try {
-    const existingShipmentPlansResponse = await ShipmentPlanService.getAllShipmentPlansFromDB({ email });
+    const existingShipmentPlansResponse = await shipmentPlanService.getAllShipmentPlansFromDB({ email });
 
     if (!existingShipmentPlansResponse) {
-      const addShipmentPlanToDBResponse = await ShipmentPlanService.addShipmentPlanToDB({
+      const addShipmentPlanToDBResponse = await shipmentPlanService.addShipmentPlanToDB({
         email,
         shipmentTitle,
         products,
@@ -84,7 +84,7 @@ const add = async (req, res) => {
         },
       });
     } else {
-      const updateShipmentPlanResponse = await ShipmentPlanService.updateShipmentPlansForExistingEmailInDB({
+      const updateShipmentPlanResponse = await shipmentPlanService.updateShipmentPlansForExistingEmailInDB({
         email,
         shipmentTitle,
         products,
@@ -124,7 +124,7 @@ const getAll = async (req, res) => {
     });
   }
   try {
-    const existingShipmentPlansResponse = await ShipmentPlanService.getAllShipmentPlansFromDB({ email });
+    const existingShipmentPlansResponse = await shipmentPlanService.getAllShipmentPlansFromDB({ email });
 
     res.status(200).json({
       status: "success",
@@ -153,7 +153,7 @@ const deleteShipmentPlan = async (req, res) => {
   }
 
   try {
-    const deleteShipmentPlanResponse = await ShipmentPlanService.deleteShipmentPlanFromSpecificUser({
+    const deleteShipmentPlanResponse = await shipmentPlanService.deleteShipmentPlanFromSpecificUser({
       email: email.toLowerCase(),
       _id,
     });
@@ -194,7 +194,7 @@ const getById = async (req, res) => {
   }
 
   try {
-    const retrieveShipmentPlanById = await ShipmentPlanService.getShipmentPlanByIdFromDb({ email, _id });
+    const retrieveShipmentPlanById = await shipmentPlanService.getShipmentPlanByIdFromDb({ email, _id });
 
     if (retrieveShipmentPlanById?.length === 0 || !retrieveShipmentPlanById) {
       return res.status(403).json({
@@ -252,7 +252,7 @@ const updateShipmentPlan = async (req, res) => {
       }
     }
 
-    const updateShipmentPlanResponse = await ShipmentPlanService.updateShipmentPlanBasedOnId({
+    const updateShipmentPlanResponse = await shipmentPlanService.updateShipmentPlanBasedOnId({
       email,
       shipmentPlanId,
       shipmentTitle,
@@ -288,7 +288,7 @@ const deleteProductFromShipmentPlan = async (req, res) => {
 
   try {
     const deleteProductFromShipmentPlanResponse =
-      await ShipmentPlanService.deleteProductFromShipmentPlanFromSpecificUser({
+      await shipmentPlanService.deleteProductFromShipmentPlanFromSpecificUser({
         email: email.toLowerCase(),
         shipmentPlanId,
         productId,
@@ -362,7 +362,7 @@ const uploadShipmentPlanFiles = async (req, res, next) => {
     }
 
     try {
-      const uploadShipmentPlanFileToDBResponse = await ShipmentPlanService.uploadFilesToDB({
+      const uploadShipmentPlanFileToDBResponse = await shipmentPlanService.uploadFilesToDB({
         email,
         shipmentPlanId,
         fileType,
@@ -412,7 +412,7 @@ const deleteFileFromShipmentPlan = async (req, res) => {
   }
 
   try {
-    const deleteFileFromSpecificShipmentPlanResponse = await ShipmentPlanService.deleteFileFromShipmentPlan({
+    const deleteFileFromSpecificShipmentPlanResponse = await shipmentPlanService.deleteFileFromShipmentPlan({
       email,
       shipmentPlanId,
       fileToDelete,
@@ -439,13 +439,6 @@ const deleteFileFromShipmentPlan = async (req, res) => {
 const testDataMapping = async (req, res) => {
   const { email, _id } = req.query;
 
-
-  // Fetch shipment plan from the database
-  const existingShipmentPlansResponseArray = await ShipmentPlanService.getAllShipmentPlans();
-
-console.log(existingShipmentPlansResponseArray);
-  return false;
-
   if (!email || !_id) {
     return res.status(403).json({
       status: "error",
@@ -455,7 +448,7 @@ console.log(existingShipmentPlansResponseArray);
 
   try {
     // Fetch shipment plan from the database
-    const existingShipmentPlansResponseArray = await ShipmentPlanService.getShipmentPlanByIdFromDb({ email, _id });
+    const existingShipmentPlansResponseArray = await shipmentPlanService.getShipmentPlanByIdFromDb({ email, _id });
 
     if (!existingShipmentPlansResponseArray?.length) {
       return res.status(403).json({
@@ -575,7 +568,7 @@ console.log(existingShipmentPlansResponseArray);
     const infoplusAsn = await recordService.createInfoPlusApiRecords('asn', asnData);
     if (infoplusAsn) {
 
-      const updateShipmentPlanResponse = await ShipmentPlanService.updateShipmentPlanBasedOnId({
+      const updateShipmentPlanResponse = await shipmentPlanService.updateShipmentPlanBasedOnId({
         email,
         shipmentPlanId: existingShipmentPlansResponse._id,
         status: 'Synced',

@@ -1,13 +1,13 @@
 const cron = require("node-cron");
 const recordService = require('../infoplusRecords/records.service');
-const ShipmentPlanService = require('../shipmentPlan/shipmentPlan.service');
+const shipmentPlanService = require('../shipmentPlan/shipmentPlan.service');
 
 const processInfoplusSyncing = cron.schedule(
 	'*/1 * * * *',
 	async () => {
 		try {
 			// Fetch shipment plan from the database
-			const existingShipmentPlansResponseArray = await ShipmentPlanService.getAllShipmentPlans();
+			const existingShipmentPlansResponseArray = await shipmentPlanService.getAllShipmentPlansForCron();
 
 			if (existingShipmentPlansResponseArray && existingShipmentPlansResponseArray.length > 0) {
 			// Iterate over each shipment plan
@@ -19,7 +19,7 @@ const processInfoplusSyncing = cron.schedule(
 			const lineItems = [];
 			
 			if (!existingShipmentPlansResponse.warehouseOwner) {
-				return await ShipmentPlanService.updateShipmentPlanBasedOnId({
+				return await shipmentPlanService.updateShipmentPlanBasedOnId({
 					email,
 					shipmentPlanId: existingShipmentPlansResponse._id,
 					status: 'Failed',
@@ -44,7 +44,7 @@ const processInfoplusSyncing = cron.schedule(
 			// Check if products exist
 			if (!existingShipmentPlansResponse.products || existingShipmentPlansResponse.products.length === 0) {
 
-				return await ShipmentPlanService.updateShipmentPlanBasedOnId({
+				return await shipmentPlanService.updateShipmentPlanBasedOnId({
 					email,
 					shipmentPlanId: existingShipmentPlansResponse._id,
 					status: 'Failed',
@@ -127,7 +127,7 @@ const processInfoplusSyncing = cron.schedule(
 			const infoplusAsn = await recordService.createInfoPlusApiRecords('asn', asnData);
 			if (infoplusAsn) {
 		
-			  return await ShipmentPlanService.updateShipmentPlanBasedOnId({
+			  return await shipmentPlanService.updateShipmentPlanBasedOnId({
 				email,
 				shipmentPlanId: existingShipmentPlansResponse._id,
 				status: 'Synced',
@@ -136,7 +136,7 @@ const processInfoplusSyncing = cron.schedule(
 
 			}
 		
-			return await ShipmentPlanService.updateShipmentPlanBasedOnId({
+			return await shipmentPlanService.updateShipmentPlanBasedOnId({
 				email,
 				shipmentPlanId: existingShipmentPlansResponse._id,
 				status: 'Failed',
@@ -147,7 +147,7 @@ const processInfoplusSyncing = cron.schedule(
 			
 		  } catch (e) {
 			console.log(e);
-			return await ShipmentPlanService.updateShipmentPlanBasedOnId({
+			return await shipmentPlanService.updateShipmentPlanBasedOnId({
 				email,
 				shipmentPlanId: existingShipmentPlansResponse._id,
 				status: 'Failed',

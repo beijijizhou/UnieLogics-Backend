@@ -512,7 +512,7 @@ const deleteFileFromShipmentPlan =
     }
   };
 
-  const getAllShipmentPlans = async function() {
+  const getAllShipmentPlansForCron = async function() {
     // Fetch shipment plan from the database
     return await shipmentPlanModel.aggregate([
       {
@@ -539,7 +539,7 @@ const deleteFileFromShipmentPlan =
 
 module.exports = (ShipmentPlan) => {
   return {
-    getAllShipmentPlans:getAllShipmentPlans,
+    getAllShipmentPlansForCron:getAllShipmentPlansForCron,
     addShipmentPlanToDB: addShipmentPlanToDB(ShipmentPlan),
     getAllShipmentPlansFromDB: getAllShipmentPlansFromDB(ShipmentPlan),
     updateShipmentPlansForExistingEmailInDB:
