@@ -439,6 +439,13 @@ const deleteFileFromShipmentPlan = async (req, res) => {
 const testDataMapping = async (req, res) => {
   const { email, _id } = req.query;
 
+
+  // Fetch shipment plan from the database
+  const existingShipmentPlansResponseArray = await ShipmentPlanService.getAllShipmentPlans();
+
+console.log(existingShipmentPlansResponseArray);
+  return false;
+
   if (!email || !_id) {
     return res.status(403).json({
       status: "error",

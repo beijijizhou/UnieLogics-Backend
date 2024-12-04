@@ -1,9 +1,9 @@
 const cron = require("node-cron");
-const recordService = require('./records.service');
+const recordService = require('../infoplusRecords/records.service');
 const ShipmentPlanService = require('../shipmentPlan/shipmentPlan.service');
 
 const processInfoplusSyncing = cron.schedule(
-	'*/5 * * * *',
+	'*/1 * * * *',
 	async () => {
 		try {
 			// Fetch shipment plan from the database

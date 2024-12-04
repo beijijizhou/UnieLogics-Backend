@@ -512,34 +512,30 @@ const deleteFileFromShipmentPlan =
     }
   };
 
-async function getAllShipmentPlans(){
-
-  // Fetch shipment plan from the database
-  return await shipmentPlanModel.aggregate([
-    {
-      $match: {
-        "shipmentPlans.status": "Added",  // Filter for shipmentPlans with status 'Added'
+  const getAllShipmentPlans = async function() {
+    // Fetch shipment plan from the database
+    return await shipmentPlanModel.aggregate([
+      {
+        $match: {
+          "shipmentPlans.status": "Added",  // Filter for shipmentPlans with status 'Added'
+        }
+      },
+      { 
+        $unwind: "$shipmentPlans"  // Unwind the shipmentPlans array
+      },
+      {
+        $match: {
+          "shipmentPlans.status": "Added"  // Ensure only 'Added' plans are included
+        }
+      },
+      {
+        $project: {
+          email: 1,  // Include email field
+          shipmentPlans: 1  // Include shipmentPlan field
+        }
       }
-    },
-    { $unwind: "$shipmentPlans" },  // Unwind the shipmentPlans array
-    {
-      $match: {
-        "shipmentPlans.status": "Added"  // Ensure only 'Added' plans are included
-      }
-    },
-    {
-      $project: {
-        email: 1,  // Include email field
-        shipmentPlans: 1 // Include shipmentPlan field
-      }
-    }
-  ]);
-
-};
-
-module.exports = {
-  deleteFileFromShipmentPlan
-};
+    ]);
+  };
 
 module.exports = (ShipmentPlan) => {
   return {
