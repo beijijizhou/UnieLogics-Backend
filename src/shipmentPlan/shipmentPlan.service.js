@@ -3,6 +3,7 @@ const helpers = require("../_helpers/utils");
 const dayjs = require("dayjs");
 const fs = require("fs").promises;
 const path = require("path");
+const shipmentPlanModel = require('./shipmentPlan.model');
 
 const addShipmentPlanToDB =
   (ShipmentPlan) =>
@@ -138,6 +139,8 @@ const updateShipmentPlanBasedOnId =
     amazonData,
     paymentId,
     paymentStatus,
+    status,
+    cronResponse,
   }) => {
     const currentUserWithShipmentPlans = await ShipmentPlan.findOne({ email });
 
@@ -160,6 +163,8 @@ const updateShipmentPlanBasedOnId =
           shipmentPlan.dateUpdated = dayjs().format();
           if (paymentId) shipmentPlan.payment.id = paymentId;
           if (paymentStatus) shipmentPlan.payment.paid = paymentStatus;
+          if (status) shipmentPlan.status = status;
+          if (cronResponse) shipmentPlan.cronResponse = cronResponse;
         }
         return shipmentPlan;
       });
@@ -505,7 +510,7 @@ const deleteFileFromShipmentPlan =
         response: [],
       };
     }
-  };
+};
 
 module.exports = deleteFileFromShipmentPlan;
 
