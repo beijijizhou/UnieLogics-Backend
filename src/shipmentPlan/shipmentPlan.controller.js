@@ -1,4 +1,4 @@
-const shipmentPlanService = require(".");
+const ShipmentPlanService = require(".");
 const WOwnersService = require("../wOwners");
 const FileType = require("./fileTypesEnum");
 const multer = require("multer");
@@ -58,10 +58,10 @@ const add = async (req, res) => {
   }
 
   try {
-    const existingShipmentPlansResponse = await shipmentPlanService.getAllShipmentPlansFromDB({ email });
+    const existingShipmentPlansResponse = await ShipmentPlanService.getAllShipmentPlansFromDB({ email });
 
     if (!existingShipmentPlansResponse) {
-      const addShipmentPlanToDBResponse = await shipmentPlanService.addShipmentPlanToDB({
+      const addShipmentPlanToDBResponse = await ShipmentPlanService.addShipmentPlanToDB({
         email,
         shipmentTitle,
         products,
@@ -84,7 +84,7 @@ const add = async (req, res) => {
         },
       });
     } else {
-      const updateShipmentPlanResponse = await shipmentPlanService.updateShipmentPlansForExistingEmailInDB({
+      const updateShipmentPlanResponse = await ShipmentPlanService.updateShipmentPlansForExistingEmailInDB({
         email,
         shipmentTitle,
         products,
@@ -124,7 +124,7 @@ const getAll = async (req, res) => {
     });
   }
   try {
-    const existingShipmentPlansResponse = await shipmentPlanService.getAllShipmentPlansFromDB({ email });
+    const existingShipmentPlansResponse = await ShipmentPlanService.getAllShipmentPlansFromDB({ email });
 
     res.status(200).json({
       status: "success",
@@ -153,7 +153,7 @@ const deleteShipmentPlan = async (req, res) => {
   }
 
   try {
-    const deleteShipmentPlanResponse = await shipmentPlanService.deleteShipmentPlanFromSpecificUser({
+    const deleteShipmentPlanResponse = await ShipmentPlanService.deleteShipmentPlanFromSpecificUser({
       email: email.toLowerCase(),
       _id,
     });
@@ -194,7 +194,7 @@ const getById = async (req, res) => {
   }
 
   try {
-    const retrieveShipmentPlanById = await shipmentPlanService.getShipmentPlanByIdFromDb({ email, _id });
+    const retrieveShipmentPlanById = await ShipmentPlanService.getShipmentPlanByIdFromDb({ email, _id });
 
     if (retrieveShipmentPlanById?.length === 0 || !retrieveShipmentPlanById) {
       return res.status(403).json({
@@ -252,7 +252,7 @@ const updateShipmentPlan = async (req, res) => {
       }
     }
 
-    const updateShipmentPlanResponse = await shipmentPlanService.updateShipmentPlanBasedOnId({
+    const updateShipmentPlanResponse = await ShipmentPlanService.updateShipmentPlanBasedOnId({
       email,
       shipmentPlanId,
       shipmentTitle,
@@ -288,7 +288,7 @@ const deleteProductFromShipmentPlan = async (req, res) => {
 
   try {
     const deleteProductFromShipmentPlanResponse =
-      await shipmentPlanService.deleteProductFromShipmentPlanFromSpecificUser({
+      await ShipmentPlanService.deleteProductFromShipmentPlanFromSpecificUser({
         email: email.toLowerCase(),
         shipmentPlanId,
         productId,
@@ -362,7 +362,7 @@ const uploadShipmentPlanFiles = async (req, res, next) => {
     }
 
     try {
-      const uploadShipmentPlanFileToDBResponse = await shipmentPlanService.uploadFilesToDB({
+      const uploadShipmentPlanFileToDBResponse = await ShipmentPlanService.uploadFilesToDB({
         email,
         shipmentPlanId,
         fileType,
@@ -412,7 +412,7 @@ const deleteFileFromShipmentPlan = async (req, res) => {
   }
 
   try {
-    const deleteFileFromSpecificShipmentPlanResponse = await shipmentPlanService.deleteFileFromShipmentPlan({
+    const deleteFileFromSpecificShipmentPlanResponse = await ShipmentPlanService.deleteFileFromShipmentPlan({
       email,
       shipmentPlanId,
       fileToDelete,
@@ -447,8 +447,14 @@ const testDataMapping = async (req, res) => {
   }
 
   try {
+
     // Fetch shipment plan from the database
-    const existingShipmentPlansResponseArray = await shipmentPlanService.getShipmentPlanByIdFromDb({ email, _id });
+			const existingShipmentPlansResponseArray = await ShipmentPlanService.getAllShipmentPlansForCron();
+
+    // Fetch shipment plan from the database
+    
+    console.log(existingShipmentPlansResponseArray);
+    return false;
 
     if (!existingShipmentPlansResponseArray?.length) {
       return res.status(403).json({
@@ -568,7 +574,7 @@ const testDataMapping = async (req, res) => {
     const infoplusAsn = await recordService.createInfoPlusApiRecords('asn', asnData);
     if (infoplusAsn) {
 
-      const updateShipmentPlanResponse = await shipmentPlanService.updateShipmentPlanBasedOnId({
+      const updateShipmentPlanResponse = await ShipmentPlanService.updateShipmentPlanBasedOnId({
         email,
         shipmentPlanId: existingShipmentPlansResponse._id,
         status: 'Synced',
