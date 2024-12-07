@@ -81,6 +81,13 @@ const shipmentPlanSchema = new Schema({
         },
       ],
       amazonData: {
+        customerNumber: { type: String, required: false, default: "" },
+        customerName: { type: String, required: false, default: "" },
+        customerStreet: { type: String, required: false, default: "" },
+        customerCity: { type: String, required: false, default: "" },
+        customerState: { type: String, required: false, default: "" },
+        customerZipcode: { type: String, required: false, default: "" },
+        customerCountry: { type: String, required: false, default: "" },
         shipFrom: { type: String, required: false, default: "" },
         shipDate: { type: String, required: false, default: "" },
         workFlowId: { type: String, required: false, default: "" },
@@ -112,6 +119,7 @@ const shipmentPlanSchema = new Schema({
           },
         ],
       },
+      cronResponse: { type: String, required: false, default: "" },
     },
   ],
 });
