@@ -140,6 +140,10 @@ const updateShipmentPlanBasedOnId =
     paymentId,
     paymentStatus,
     status,
+    infoPlusVendorId,
+    infoPlusCustomerId,
+    infoPlusAsnId,
+    infoPlusOrderId,
     cronResponse,
   }) => {
     const currentUserWithShipmentPlans = await ShipmentPlan.findOne({ email });
@@ -164,6 +168,10 @@ const updateShipmentPlanBasedOnId =
           if (paymentId) shipmentPlan.payment.id = paymentId;
           if (paymentStatus) shipmentPlan.payment.paid = paymentStatus;
           if (status) shipmentPlan.status = status;
+          if (infoPlusVendorId) shipmentPlan.infoPlusVendorId = infoPlusVendorId;
+          if (infoPlusCustomerId) shipmentPlan.infoPlusCustomerId = infoPlusCustomerId;
+          if (infoPlusAsnId) shipmentPlan.infoPlusAsnId = infoPlusAsnId;
+          if (infoPlusOrderId) shipmentPlan.infoPlusOrderId = infoPlusOrderId;
           if (cronResponse) shipmentPlan.cronResponse = cronResponse;
         }
         return shipmentPlan;
