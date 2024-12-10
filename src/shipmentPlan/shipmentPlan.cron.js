@@ -110,7 +110,7 @@ const processInfoplusSyncing = cron.schedule(
 							if(newVendorData){
 								vendorId = newVendorData.id;
 							}else{
-								message += "Unable to create customer"+ "\n";
+								message += "Unable to create vendor"+ "\n";
 							}
 								message += "Vendor not found on infoplus"+ "\n";
 						}
@@ -273,13 +273,13 @@ const processInfoplusSyncing = cron.schedule(
 				
 					// Prepare ASN data for Infoplus API
 					const asnData = {
-					lobId: lobId,
-					poNo: existingShipmentPlansResponse.shipmentPlans.orderNo,
-					vendorId,
-					warehouseId,
-					orderDate: existingShipmentPlansResponse.shipmentPlans.dateAdded,
-					type: "Normal",
-					lineItems,
+						lobId: lobId,
+						poNo: existingShipmentPlansResponse.shipmentPlans.orderNo,
+						vendorId,
+						warehouseId,
+						orderDate: existingShipmentPlansResponse.shipmentPlans.dateAdded,
+						type: "Normal",
+						lineItems,
 					};
 				
 					// Create ASN in Infoplus API
