@@ -3,6 +3,8 @@ const Schema = mongoose.Schema;
 
 const shipmentPlanSchema = new Schema({
   email: { type: String, required: true },
+  vendorNo: { type: String, required: true, unique: true },
+  customerNo: { type: String, required: true, unique: true },
   shipmentPlans: [
     {
       _id: { type: String, required: true },
