@@ -15,5 +15,6 @@ router.get("/salesPerMonth", userControllers.getSalesPerMonth);
 router.post("/updateSalesPerMonth", userControllers.updateSalesPerMonth);
 router.post("/survey", userControllers.postSurvey);
 router.get("/profileBasedOnEmail", userControllers.simpleProfile);
+router.delete("/delete", userControllers.deleteUser);
 
 module.exports = router;
