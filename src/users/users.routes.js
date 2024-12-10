@@ -1,13 +1,19 @@
 const express = require("express");
 const userControllers = require("./users.controller");
 const router = express.Router();
+const rateLimit = require("express-rate-limit");
+
+const googleLoginLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // limit each IP to 100 requests per windowMs
+});
 
 router.get("/getAll", userControllers.getAllUsers);
 router.get("/forgotPassword", userControllers.forgotPassword);
 router.get("/checkAuthentication", userControllers.checkAuthentication);
 router.post("/register", userControllers.register);
 router.post("/login", userControllers.login);
-router.post("/googleLogin", userControllers.googleLogin);
+router.post("/googleLogin", googleLoginLimiter, userControllers.googleLogin);
 router.post("/checkout", userControllers.checkout);
 router.post("/profileUpdate", userControllers.profileUpdate);
 router.get("/profile", userControllers.profile);
