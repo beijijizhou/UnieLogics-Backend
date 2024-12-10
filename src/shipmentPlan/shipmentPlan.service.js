@@ -8,8 +8,12 @@ const shipmentPlanModel = require('./shipmentPlan.model');
 const addShipmentPlanToDB =
   (ShipmentPlan) =>
   async ({ email, shipmentTitle, products, orderNo, receiptNo, orderDate }) => {
+    const generateNineDigitNumber = () => Math.floor(100000000 + Math.random() * 900000000);
+
     const newShipmentPlan = new ShipmentPlan({
       email,
+      vendorNo: generateNineDigitNumber(),
+      customerNo: `UC-${generateNineDigitNumber()}`,
       shipmentPlans: [
         {
           _id: randomUUID(),
@@ -18,7 +22,7 @@ const addShipmentPlanToDB =
           dateAdded: dayjs().format(),
           orderNo,
           receiptNo,
-          orderDate,
+          orderDate
         },
       ],
     });
