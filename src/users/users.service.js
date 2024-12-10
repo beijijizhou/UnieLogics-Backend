@@ -20,12 +20,10 @@ const registerUser =
 			firstName,
 			lastName,
 			email,
-			username,
 			password,
 			billingID,
 			plan,
 			endDate,
-			phoneNumber,
 			role,
 		}) => {
 			const userAlreadyExists = await User.findOne({ email });
@@ -41,12 +39,10 @@ const registerUser =
 				firstName,
 				lastName,
 				email,
-				username,
 				password,
 				billingID,
 				plan,
 				endDate,
-				phoneNumber,
 				role: role ? role : "user",
 			});
 			user.hash = bcrypt.hashSync(password, 10);
