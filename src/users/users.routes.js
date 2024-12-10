@@ -7,6 +7,7 @@ router.get("/forgotPassword", userControllers.forgotPassword);
 router.get("/checkAuthentication", userControllers.checkAuthentication);
 router.post("/register", userControllers.register);
 router.post("/login", userControllers.login);
+router.post("/googleLogin", userControllers.googleLogin);
 router.post("/checkout", userControllers.checkout);
 router.post("/profileUpdate", userControllers.profileUpdate);
 router.get("/profile", userControllers.profile);
