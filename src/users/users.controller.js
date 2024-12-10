@@ -16,6 +16,8 @@ const productToPriceMap = {
   plan287: process.env.PLAN_287,
 };
 
+const { OAuth2Client } = require('google-auth-library');
+
 const getAllUsers = async (req, res) => {
   const users = await UserService.getAll();
   if (users) {
@@ -338,6 +340,172 @@ const login = async (req, res) => {
     res.status(403).json({
       status: "error",
       message: "This username does not exist! Please register first!",
+    });
+  }
+};
+
+const googleLogin = async(req, res) => {
+  console.log("Google login in backend");
+  const { client_id, credential } = req.body;
+  if (!client_id || !credential) {
+    return res.status(400).json({
+      status: "error",
+      message: "client id and credentials are mandatory!",
+    });
+  }
+  
+  try {
+    // Verify and decode credential JWT token
+    const client = new OAuth2Client(client_id);
+    const ticket = await client.verifyIdToken({
+      idToken: credential,
+      audience: client_id,
+    });
+  
+    // Payload contains basic user info (name, email, subject)
+    const payload = ticket.getPayload();
+    if (!payload?.sub || !payload.email || !payload.given_name || !payload.family_name) {
+      return res.status(400).json({
+        status: "error",
+        message: "Missing google user information. Bad authentication request",
+      });
+    }
+    console.log("got the payload", payload);
+  
+    // Create new oauth entry
+    const googleOauth = {
+      providerName: "google",
+      providerId: payload.sub,
+      token: credential,
+    };
+    
+    // Get user
+    let customer = await UserService.getUserByEmail(payload.email.toLowerCase());
+    let customerInfo = {};
+    console.log("customer?: ", customer);
+    // Create user if they don't exist
+    if (!customer) {
+      console.log("user doent exist");
+      try {
+        const username = payload.email;
+        const referral = "";
+        customerInfo = await Stripe.addNewCustomer(payload.email.toLowerCase(), referral);
+
+        let newUser = {
+          firstName: payload.given_name,
+          lastName: payload.family_name,
+          email: payload.email,
+          username: username,
+          password: "oauth_password",
+          billingID: customerInfo.id,
+          plan: "none",
+          endDate: null,
+          role: "user",
+          phoneNumber: null,
+        };
+        const user = await UserService.registerUser(newUser);
+        const customer = await UserService.setOauth(payload.email, googleOauth);
+  
+        if (customer?.status === "error") {
+          return res.status(403).json({
+            ...customer,
+          });
+        }
+  
+        console.log(
+          `A new user signed up and addded to DB. The ID for ${payload.email.toLowerCase()} is ${JSON.stringify(
+            customerInfo
+          )}`
+        );
+  
+        console.log(`User also added to DB. Information from DB: ${customer}`);
+  
+        const mailBody = emailTemplates.welcomeMailBody(from_who, payload.email);
+  
+        mailgun.messages().send(mailBody, (sendError, body) => {
+          if (sendError) {
+            console.log(sendError);
+            return;
+          }
+          console.log(body);
+        });
+      } catch (e) {
+        console.log(e);
+        res.status(500).json({ status: "error", e });
+      }
+    }
+    // UserService._delete("674e9fbe6f08d24c04a88616");
+    // console.log("User deleted");
+    // Skip password check and log them in
+    console.log("user exists");
+    try {
+      const user = await UserService.authenticate(
+        payload.email.toLowerCase(),
+        null,
+        googleOauth,
+      );
+      console.log(customer);
+      let hasActiveSubscription = false;
+      let hasTrial = false;
+
+      if (customer.role !== "warehouseOwner") {
+        customerInfo = await Stripe.getCustomerByID(customer.billingID);
+        const existingSubscription = await Stripe.getSubsription(
+          customerInfo.id
+        );
+
+        existingSubscription.data.forEach(function (item) {
+          if (item.status === "active" || item.status === "trialing") {
+            hasActiveSubscription = true;
+          }
+          if (item.status === "trialing") {
+            hasTrial = true;
+          }
+        });
+      } else {
+        hasActiveSubscription = true;
+      }
+
+      if (hasActiveSubscription) {
+        console.log("hasActiveSubscription value is", hasActiveSubscription);
+        customer.hasTrial = hasTrial;
+        customer.hasActiveSubscription = hasActiveSubscription;
+        customer.save();
+      } else {
+        console.log(
+          "no trial information",
+          customer.hasTrial,
+          customer.plan != "none",
+          customer.endDate < new Date().getTime()
+        );
+      }
+
+      console.log(
+        `The existing ID for ${payload.email.toLowerCase()} is ${JSON.stringify(
+          customerInfo
+        )}`
+      );
+
+      user
+        ? res.status(200).json({
+          ...user,
+          hasActiveSubscription,
+          hasTrial,
+          salesPerMonthCheck: customer.salesPerMonthCheck,
+        })
+        : res.status(403).json({
+          status: "error",
+          message: "Email or password is incorrect",
+        });
+    } catch (e) {
+      console.log(e);
+      res.status(500).json({ status: "error", message: JSON.stringify(e) });
+    }
+  } catch (e) {
+    console.log(e);
+    return res.status(400).json({ 
+      status: "error", 
+      message: "Invalid token or authentication failed." 
     });
   }
 };
@@ -788,6 +956,7 @@ module.exports = {
   checkAuthentication,
   register,
   login,
+  googleLogin,
   checkout,
   profileUpdate,
   profile,
