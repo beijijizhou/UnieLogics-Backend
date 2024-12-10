@@ -110,7 +110,7 @@ const shipmentPlanSchema = new Schema({
               weight: { type: String, required: false, default: "" },
             },
             shipFrom: { type: String, required: false, default: "" },
-            shipTo: { type: Object, required: false, default: {} },
+            shipTo: { type: String, required: false, default: "" },
             shipmentId: { type: String, required: false, default: "" },
             shipmentName: { type: String, required: false, default: "" },
             skus: { type: String, required: false, default: "" },
