@@ -187,23 +187,20 @@ const checkAuthentication = async (req, res) => {
 
 const register = async (req, res) => {
   const {
-    firstName,
-    lastName,
+    fullName,
     email,
-    username,
     password,
     referral,
-    phoneNumber,
     plan,
   } = req.body;
   let customer = await UserService.getUserByEmail(email.toLowerCase());
   let customerInfo = {};
 
-  if (!email || !username || !password) {
+  if (!fullName || !email || !password) {
     return res.status(400).json({
       status: "error",
       message:
-        "Email, Username and Password are mandatory! One of them is missing!",
+        "Full Name, Email and Password are mandatory! One of them is missing!",
     });
   }
 
@@ -214,19 +211,19 @@ const register = async (req, res) => {
     });
   } else {
     try {
+      const [firstName, ...lastNameParts] = fullName.trim().split(" ");
+      const lastName = lastNameParts.join(" ");
       customerInfo = await Stripe.addNewCustomer(email.toLowerCase(), referral);
 
       customer = await UserService.registerUser({
-        firstName,
-        lastName,
+        firstName: firstName,
+        lastName: lastName,
         email: email.toLowerCase(),
-        username,
         password,
         billingID: customerInfo.id,
         plan: plan === "free" ? plan : "none",
         endDate: null,
         role: "user",
-        phoneNumber,
       });
 
       if (customer?.status === "error") {
@@ -255,7 +252,7 @@ const register = async (req, res) => {
 
       res.status(200).json({
         status: "success",
-        message: `Successfully created user: ${username}`,
+        message: `Successfully created user: ${email}`,
         user: {
           customerID: customerInfo.id,
         },
