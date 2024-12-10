@@ -782,6 +782,32 @@ const postSurvey = async (req, res) => {
   }
 };
 
+const deleteUser = async (req, res) => {
+	const { email, loggedInEmail } = req.body;
+	try {
+		if (loggedInEmail !== "franco@peri-mail.com") {
+			return res.status(403).json({
+				status: "error",
+				message:
+					"You cannot access this section with this email address. Only the admin can access it!",
+			});
+		}
+		const user = await UserService.deleteUserByEmail(email);
+		if (!user) {
+			return res.status(404).send({
+				status: "error",
+				message: "User not found",
+			});
+		}
+		return res.status(200).send({
+			status: "success",
+			message: "User deleted successfully",
+		});
+	} catch (e) {
+		console.log(e);
+	}
+};
+
 module.exports = {
   getAllUsers,
   forgotPassword,
@@ -796,4 +822,5 @@ module.exports = {
   updateSalesPerMonth,
   postSurvey,
   simpleProfile,
+  deleteUser
 };

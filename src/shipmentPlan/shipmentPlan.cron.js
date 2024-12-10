@@ -37,69 +37,106 @@ const processInfoplusSyncing = cron.schedule(
 				// Iterate over each shipment plan
 				for (const existingShipmentPlansResponse of existingShipmentPlansResponseArray) {
 					console.log('Found shipment plans');
+					
 					// Infoplus API integration
 					let warehouseId = null;
 					let vendorId = null;
+					let customerId = null;
 					let customerNo = null;
-					let message = null;
+					let asnId = null;
+					let orderId = null;
+					let message = '';
+					let lobId = null;
 					const lineItems = [];
 					const orderLineItems = [];
 
+					//Set shipment plan status as syncing
 					const updateShpmentPlan = await ShipmentPlanService.updateShipmentPlanBasedOnId({
 						email: existingShipmentPlansResponse.email,
-						shipmentPlanId: existingShipmentPlansResponse._id,
-						status: 'Syncing',
-						cronResponse: 'Shipment plan syncing started.',
+						shipmentPlanId: existingShipmentPlansResponse.shipmentPlans._id,
+						status: "In progress",
+						cronResponse: "Shipment plan syncing started.",
 					});
 					console.log('Shipment status updated');
-					
-					if (!existingShipmentPlansResponse.warehouseOwner) {
-						console.log('Warehouse not attached');
-						message += "Sorry, Warehouse needs to be attached with shipment plan"+ "\n";
-					}else{
+
+					if (existingShipmentPlansResponse.shipmentPlans.warehouseOwner && Object.keys(existingShipmentPlansResponse.shipmentPlans.warehouseOwner).length > 0) {
+						
 						console.log('Warehouse attached');
+						lobId = existingShipmentPlansResponse.shipmentPlans.warehouseOwner.lobId;
 						// Get warehouseId from Infoplus API
-						const warehouseFilters = { filter: `name eq '${existingShipmentPlansResponse.warehouseOwner.name}'` };
+						const warehouseFilters = { filter: `id eq '${existingShipmentPlansResponse.shipmentPlans.warehouseOwner.warehouseId}'` };
 						const warehouseData = await recordService.searchInfoPlusApiRecordsByFilters('warehouse', warehouseFilters);
 						if (warehouseData && warehouseData.length > 0) {
 							warehouseId = warehouseData[0].id;
 						}else{
-							message += "Sorry, Warehouse not found on infoplus"+ "\n";
+							message += "Warehouse not found on infoplus"+ "\n";
 						}
+
+					}else{
+
+						console.log('Warehouse not attached');
+						message += "Warehouse needs to be attached with shipment plan"+ "\n";
+						
 					}
 
-					if (existingShipmentPlansResponse.products && Object.keys(existingShipmentPlansResponse.products[0].supplier).length > 0) {
+					if (existingShipmentPlansResponse.shipmentPlans.products && Object.keys(existingShipmentPlansResponse.shipmentPlans.products[0].supplier).length > 0) {
 
 						console.log('Supplier attached');
 
 						// Get vendorId (based on the first product supplier)
-						const vendorFilters = { filter: `name eq '${existingShipmentPlansResponse.products[0].supplier.supplierName}'` };
+						const vendorFilters = { filter: `name eq '${existingShipmentPlansResponse.shipmentPlans.products[0].supplier.supplierName}'` };
 						const vendorData = await recordService.searchInfoPlusApiRecordsByFilters('vendor', vendorFilters);
+						
 						if (vendorData && vendorData.length > 0) {
 							vendorId = vendorData[0].id;
 						}else{
-							message += "Sorry, Vendor not found on infoplus"+ "\n";
+
+							//Create vendor
+							// Define the vendor data to send in the request body
+							const vendorRecord = {
+								"vendorNo": 64353322,
+								"lobId": lobId,
+								"name": existingShipmentPlansResponse.shipmentPlans.products[0].supplier.supplierName,
+								"street": existingShipmentPlansResponse.shipmentPlans.products[0].supplier.supplierAddress.street,
+								"city": existingShipmentPlansResponse.shipmentPlans.products[0].supplier.supplierAddress.city,
+								"state": existingShipmentPlansResponse.shipmentPlans.products[0].supplier.supplierAddress.state,
+								"zipCode": existingShipmentPlansResponse.shipmentPlans.products[0].supplier.supplierAddress.zipCode,
+								"contact": existingShipmentPlansResponse.shipmentPlans.products[0].supplier.contactPerson.name,
+								"phone": existingShipmentPlansResponse.shipmentPlans.products[0].supplier.contactPerson.phoneNumber,
+								"inactive": "No"
+							};
+							//Create vendor on infoplus API
+							const newVendorData = await recordService.createInfoPlusApiRecords('vendor', vendorRecord);
+							if(newVendorData){
+								vendorId = newVendorData.id;
+							}else{
+								message += "Unable to create vendor"+ "\n";
+							}
+								message += "Vendor not found on infoplus"+ "\n";
 						}
 					}else{
 						console.log('Supplier not attached');
-						message += "Sorry, Vendor needs to be attached with shipment plan"+ "\n";
+						message += "Vendor needs to be attached with shipment plan"+ "\n";
 					}
 
-					if (existingShipmentPlansResponse.amazonData && 'customerNumber' in existingShipmentPlansResponse.amazonData && existingShipmentPlansResponse.amazonData.customerNumber !== "") {
+					if (existingShipmentPlansResponse.shipmentPlans.amazonData && 'customerNumber' in existingShipmentPlansResponse.shipmentPlans.amazonData && existingShipmentPlansResponse.shipmentPlans.amazonData.customerNumber !== "") {
 						
 						console.log('Customer attached');
 
 						// Get customerNumber from Infoplus API
-						const customerFilters = { filter: `customerNo eq '${existingShipmentPlansResponse.amazonData.customerNumber}'` };
+						const customerFilters = { filter: `customerNo eq '${existingShipmentPlansResponse.shipmentPlans.amazonData.customerNumber}'` };
 						const customerData = await recordService.searchInfoPlusApiRecordsByFilters('customer', customerFilters);
 						if (customerData && customerData.length > 0) {
 							customerNo = customerData[0].customerNo;
+							customerId = customerData[0].id;
 						}else{
-							const cusNo = (existingShipmentPlansResponse.amazonData.customerNumber)?existingShipmentPlansResponse.amazonData.customerNumber:'CUS53753';
+
+							//Prepare customer data
+							const cusNo = (existingShipmentPlansResponse.shipmentPlans.amazonData.customerNumber)?existingShipmentPlansResponse.shipmentPlans.amazonData.customerNumber:'CUS537543';
 							const custData = {
-								"lobId": 22107,                 
+								"lobId": lobId,                 
 								"customerNo": cusNo,        
-								"name": "Raju Dev",             
+								"name": "Raju Dev New",             
 								"street": "1234 Customer St",   
 								"city": "Clifton",              
 								"zipCode": "07011",             
@@ -108,29 +145,46 @@ const processInfoplusSyncing = cron.schedule(
 								"packageCarrierId": 111,        // Package carrier ID (e.g., UPS, FedEx) All users will have static data in this field
 								"truckCarrierId": 111,          // Truck carrier ID All users will have static data in this field
 								"weightBreak": 1,               // Weight break for shipping (e.g., 100 kg) All users will have static data in this field
-								"residential": 'No'             
+								"residential": "No"             
 							};
-
+							//Creating customer on infoplus API
 							const newItemData = await recordService.createInfoPlusApiRecords('customer', custData);
 							if(newItemData){
 								customerNo = cusNo;
+								customerId = newItemData.id;
 							}else{
-								message += "Sorry, Unable to create customer"+ "\n";
+								message += "Unable to create customer"+ "\n";
 							}
 						}
 					}else{
 						console.log('Customer not attached');
-						message += "Sorry, Customer data needs to be attached with shipment plan"+ "\n";
+						message += "Customer data needs to be attached with shipment plan"+ "\n";
 					}
+
+					//Checking vendorId, warehouseId, lobId and customerId validations
+					if(!vendorId || !warehouseId || !lobId || !customerNo || !customerId){
+
+						message += 'Required Fields Status: vendorId:'+vendorId+'-warehouseId:'+warehouseId+'-lobId:'+lobId+'-customerNo:'+customerNo+'-customerId:'+customerId;
+
+						await ShipmentPlanService.updateShipmentPlanBasedOnId({
+							email: existingShipmentPlansResponse.email,
+							shipmentPlanId: existingShipmentPlansResponse.shipmentPlans._id,
+							status: "Failed",
+							cronResponse: message,
+						});
+						console.log('Required field condition did not match.');
+						continue;
+					}
+
 				
 					// Check if products exist
-					if (!existingShipmentPlansResponse || !existingShipmentPlansResponse.products || !Array.isArray(existingShipmentPlansResponse.products) || existingShipmentPlansResponse.products.length === 0) {
+					if (!existingShipmentPlansResponse.shipmentPlans || !existingShipmentPlansResponse.shipmentPlans.products || !Array.isArray(existingShipmentPlansResponse.shipmentPlans.products) || existingShipmentPlansResponse.shipmentPlans.products.length === 0) {
 						console.log('Products not attached');
-						message += "Sorry, Products needs to be attached with shipment plan"+ "\n";
+						message += "Products needs to be attached with shipment plan"+ "\n";
 					}else{
 
 						// Loop over products and fetch/create corresponding items
-						const productPromises = existingShipmentPlansResponse.products.map(async (product) => {
+						const productPromises = existingShipmentPlansResponse.shipmentPlans.products.map(async (product) => {
 							const itemFilters = { filter: `sku eq '${product.fnsku}'` };
 							try {
 								const itemData = await recordService.searchInfoPlusApiRecordsByFilters('item', itemFilters);
@@ -139,14 +193,14 @@ const processInfoplusSyncing = cron.schedule(
 						
 								if (itemData && itemData.length > 0) {
 									lineItems.push({
-										lobId: 22107,
-										sku: itemData[0].sku,
+										lobId: lobId,
+										sku: product.fnsku,
 										orderQuantity: orderQuantity,
 									});
 
 									orderLineItems.push({
-										sku: itemData[0].sku,
-										orderQuantity: orderQuantity,
+										sku: product.fnsku,
+										orderedQty: orderQuantity,
 									});
 								} else {
 									// If item doesn't exist, create a new item
@@ -154,39 +208,39 @@ const processInfoplusSyncing = cron.schedule(
 									const productData = {
 										majorGroupId: 8,
 										subGroupId: 46,
-										lobId: 22107,
+										lobId: lobId,
 										sku: product.fnsku,
 										itemDescription: product.title,
-										backorder: 'No',
-										chargeCode: 'Not Chargeable',
+										backorder: "No",
+										chargeCode: "Not Chargeable",
 										maxCycle: 999999,
 										maxInterim: 999999,
-										status: 'Active',
-										seasonalItem: 'No',
-										secure: 'No',
-										unitCode: 'EACH',
-										forwardLotMixingRule: 'SKU',
-										storageLotMixingRule: 'SKU',
-										forwardItemMixingRule: 'Multi',
-										storageItemMixingRule: 'Multi',
-										allocationRule: 'Labor Optimized',
+										status: "Active",
+										seasonalItem: "No",
+										secure: "No",
+										unitCode: "EACH",
+										forwardLotMixingRule: "SKU",
+										storageLotMixingRule: "SKU",
+										forwardItemMixingRule: "Multi",
+										storageItemMixingRule: "Multi",
+										allocationRule: "Labor Optimized",
 										hazmat: hazmat,
 										unitsPerWrap: 1,
-										serialCode: 'None',
-										wrapCode: 'EACH',
+										serialCode: "None",
+										wrapCode: "EACH",
 										criticalAmount: 0,
 									};
-							
+									// Create item in Infoplus API
 									const newItemData = await recordService.createInfoPlusApiRecords('item', productData);
 									if (newItemData) {
 										lineItems.push({
-											lobId: 22107,
+											lobId: lobId,
 											sku: newItemData.sku,
 											orderQuantity: orderQuantity,
 										});
 										orderLineItems.push({
-											sku: itemData[0].sku,
-											orderQuantity: orderQuantity,
+											sku: newItemData.sku,
+											orderedQty: orderQuantity,
 										});
 
 									}else{
@@ -205,16 +259,27 @@ const processInfoplusSyncing = cron.schedule(
 						console.log('Products attached');
 
 					}
+					//Checking for lineItems and orderLineItems condition
+					if(lineItems.length === 0 || orderLineItems.length === 0){
+						await ShipmentPlanService.updateShipmentPlanBasedOnId({
+							email: existingShipmentPlansResponse.email,
+							shipmentPlanId: existingShipmentPlansResponse.shipmentPlans._id,
+							status: "Failed",
+							cronResponse: message,
+						});
+						console.log('Line items is empty.');
+						continue;
+					}
 				
 					// Prepare ASN data for Infoplus API
 					const asnData = {
-					lobId: 22107,
-					poNo: existingShipmentPlansResponse.orderNo,
-					vendorId,
-					warehouseId,
-					orderDate: existingShipmentPlansResponse.dateAdded,
-					type: "Normal",
-					lineItems,
+						lobId: lobId,
+						poNo: existingShipmentPlansResponse.shipmentPlans.orderNo,
+						vendorId,
+						warehouseId,
+						orderDate: existingShipmentPlansResponse.shipmentPlans.dateAdded,
+						type: "Normal",
+						lineItems,
 					};
 				
 					// Create ASN in Infoplus API
@@ -222,10 +287,10 @@ const processInfoplusSyncing = cron.schedule(
 
 					// Prepare order data for Infoplus API
 					const ordData = {
-						lobId: 22107,
+						lobId: lobId,
 						customerNo: customerNo,
 						warehouseId,
-						orderDate: existingShipmentPlansResponse.dateAdded,
+						orderDate: existingShipmentPlansResponse.shipmentPlans.dateAdded,
 						carrierId: "111",
 						lineItems: orderLineItems,
 					};
@@ -233,33 +298,45 @@ const processInfoplusSyncing = cron.schedule(
 					// Create Order in Infoplus API
 					const infoplusOrder = await recordService.createInfoPlusApiRecords('order', ordData);
 
-					if(infoplusAsn){
+					//Checking ASN creation status to log message
+					if(!infoplusAsn){
 						console.log('ASN not created');
 						message += "Error processing ASN"+ "\n";
 					}
-					if(infoplusOrder){
+
+					//Checking order creation status to log message
+					if(!infoplusOrder){
 						console.log('Order not created');
 						message += "Error processing Order"+ "\n";
 					}
 
+					//Checking ASN and Order status
 					if (infoplusAsn && infoplusOrder) {
-						console.log('Both created');
+						console.log('ASN and order created');
+
+						asnId=infoplusAsn.id;
+						orderId=infoplusOrder.id;
+						//Update shipment plan status after process completed
 						await ShipmentPlanService.updateShipmentPlanBasedOnId({
 							email: existingShipmentPlansResponse.email,
-							shipmentPlanId: existingShipmentPlansResponse._id,
-							status: 'Processed',
-							cronResponse: 'Succusfully processed.',
+							shipmentPlanId: existingShipmentPlansResponse.shipmentPlans._id,
+							status: "Shipped",
+							infoPlusVendorId: vendorId,
+							infoPlusCustomerId: customerId,
+							infoPlusAsnId: asnId,
+							infoPlusOrderId: orderId,
+							cronResponse: "Succusfully processed.",
 						});
 
 					}else{
-
+						//Update shipment plan status after process failed
 						await ShipmentPlanService.updateShipmentPlanBasedOnId({
 							email: existingShipmentPlansResponse.email,
-							shipmentPlanId: existingShipmentPlansResponse._id,
-							status: 'Failed',
+							shipmentPlanId: existingShipmentPlansResponse.shipmentPlans._id,
+							status: "Failed",
 							cronResponse: message,
 						});
-						console.log('Both not created');
+						console.log('ASN and Order not created');
 
 					}
 

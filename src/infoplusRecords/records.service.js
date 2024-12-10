@@ -86,15 +86,12 @@ async function searchInfoPlusApiRecordsByFilters(searchModule, filterData) {
     try {
 
       let apiUrl = `${BASE_URL}/${searchModule}/search`;
-      console.log(filterData);
 
        // Convert filterData object to query string
         const queryParams = new URLSearchParams(filterData).toString();
 
         // Construct the full URL with the query string
         const fullUrl = `${apiUrl}?${queryParams}`;
-
-        console.log('Request URL:', fullUrl);  // Optional: for debugging purposes
 
         // Fetch data from the API using axios
         const response = await axios.get(fullUrl, { headers: { 'accept': 'application/json' } });
