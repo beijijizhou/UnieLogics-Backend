@@ -93,11 +93,12 @@ const authenticate = (User) => async (email, password, oauthProvider = {}) => {
 		throw new Error("Missing user");
 	}
 	// Find oauth provider
-	let provider = user.oauth;
-	let oauthFound = (
-		provider.providerName === oauthProvider.providerName && 
-		provider.providerId === oauthProvider.providerId);
-	console.log("oauthFound? ", oauthFound);
+	let oauthFound = false;
+	// let provider = user.oauth;
+	// let oauthFound = (
+	// 	provider.providerName === oauthProvider.providerName && 
+	// 	provider.providerId === oauthProvider.providerId);
+	// console.log("oauthFound? ", oauthFound);
 	if (oauthFound || bcrypt.compareSync(password, user.hash)) {
 		const token = jwt.sign({ sub: user.id }, process.env.JWT_SECRET, {
 			expiresIn: "7d",
