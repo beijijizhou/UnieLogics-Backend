@@ -125,8 +125,8 @@ const getAll = (User) => async () => {
 	return await User.find();
 };
 
-const _delete = (User) => async (id) => {
-	await User.findByIdAndRemove(id);
+const deleteUserByEmail = (User) => async (email) => {
+	return await User.findOneAndDelete({ email });
 };
 
 module.exports = (User) => {
@@ -141,6 +141,6 @@ module.exports = (User) => {
 		getById: getById(User),
 		getAll: getAll(User),
 		updateProfile: updateProfile(User),
-		_delete: _delete(User),
+		deleteUserByEmail: deleteUserByEmail(User),
 	};
 };
