@@ -3,6 +3,8 @@ const Schema = mongoose.Schema;
 
 const shipmentPlanSchema = new Schema({
   email: { type: String, required: true },
+  vendorNo: { type: String, required: true, unique: true },
+  customerNo: { type: String, required: true, unique: true },
   shipmentPlans: [
     {
       _id: { type: String, required: true },
@@ -119,10 +121,10 @@ const shipmentPlanSchema = new Schema({
           },
         ],
       },
-      infoPlusVendorId:{ type: String, required: false, default: "" },
-      infoPlusCustomerId:{ type: String, required: false, default: "" },
-      infoPlusAsnId:{ type: String, required: false, default: "" },
-      infoPlusOrderId:{ type: String, required: false, default: "" },
+      infoPlusVendorId: { type: String, required: false, default: "" },
+      infoPlusCustomerId: { type: String, required: false, default: "" },
+      infoPlusAsnId: { type: String, required: false, default: "" },
+      infoPlusOrderId: { type: String, required: false, default: "" },
       cronResponse: { type: String, required: false, default: "" },
     },
   ],

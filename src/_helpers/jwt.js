@@ -11,6 +11,7 @@ function jwt() {
 
   const publicPaths = [
     "/users/login",
+    "/users/googleLogin",
     "/users/register",
     "/users/forgotPassword",
     "/users/checkout",

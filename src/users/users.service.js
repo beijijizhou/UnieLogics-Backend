@@ -20,12 +20,10 @@ const registerUser =
 			firstName,
 			lastName,
 			email,
-			username,
 			password,
 			billingID,
 			plan,
 			endDate,
-			phoneNumber,
 			role,
 		}) => {
 			const userAlreadyExists = await User.findOne({ email });
@@ -41,12 +39,10 @@ const registerUser =
 				firstName,
 				lastName,
 				email,
-				username,
 				password,
 				billingID,
 				plan,
 				endDate,
-				phoneNumber,
 				role: role ? role : "user",
 			});
 			user.hash = bcrypt.hashSync(password, 10);
@@ -84,9 +80,26 @@ const updateProfile = (User) => async (email, update, password) => {
 	return await User.findOneAndUpdate({ email }, updateObj);
 };
 
-const authenticate = (User) => async (email, password) => {
+const setOauth = (User) => async (email, oauthProvider) => {
 	const user = await User.findOne({ email });
-	if (user && bcrypt.compareSync(password, user.hash)) {
+	user.oauth = oauthProvider;
+	return await user.save();
+}
+
+const authenticate = (User) => async (email, password, oauthProvider = {}) => {
+	// Find user
+	const user = await User.findOne({ email });
+	if (!user) {
+		throw new Error("Missing user");
+	}
+	// Find oauth provider
+	let oauthFound = false;
+	// let provider = user.oauth;
+	// let oauthFound = (
+	// 	provider.providerName === oauthProvider.providerName && 
+	// 	provider.providerId === oauthProvider.providerId);
+	// console.log("oauthFound? ", oauthFound);
+	if (oauthFound || bcrypt.compareSync(password, user.hash)) {
 		const token = jwt.sign({ sub: user.id }, process.env.JWT_SECRET, {
 			expiresIn: "7d",
 		});
@@ -109,8 +122,8 @@ const getAll = (User) => async () => {
 	return await User.find();
 };
 
-const _delete = (User) => async (id) => {
-	await User.findByIdAndRemove(id);
+const deleteUserByEmail = (User) => async (email) => {
+	return await User.findOneAndDelete({ email });
 };
 
 module.exports = (User) => {
@@ -120,10 +133,11 @@ module.exports = (User) => {
 		getUserByEmail: getUserByEmail(User),
 		getUserByBillingID: getUserByBillingID(User),
 		registerUser: registerUser(User),
+		setOauth: setOauth(User),
 		authenticate: authenticate(User),
 		getById: getById(User),
 		getAll: getAll(User),
 		updateProfile: updateProfile(User),
-		_delete: _delete(User),
+		deleteUserByEmail: deleteUserByEmail(User),
 	};
 };
