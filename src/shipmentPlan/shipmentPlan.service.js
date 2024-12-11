@@ -161,9 +161,36 @@ const updateShipmentPlanBasedOnId =
           if (orderNo) shipmentPlan.orderNo = orderNo;
           if (receiptNo) shipmentPlan.receiptNo = receiptNo;
           if (orderDate) shipmentPlan.orderDate = orderDate;
-          if (warehouseOwner) shipmentPlan.warehouseOwner = warehouseOwner;
-          if (amazonData && amazonData?.length !== 0)
-            shipmentPlan.amazonData = amazonData;
+          if (warehouseOwner && Object.keys(warehouseOwner).length !== 0) {
+            // Dynamically update or add fields in amazonData
+            Object.keys(warehouseOwner).forEach((key) => {
+              // If the key exists and the value is valid (not undefined or null), update it
+              if (warehouseOwner[key] !== undefined && warehouseOwner[key] !== null) {
+                // If the key exists in warehouseOwner, update the value
+                if (key in shipmentPlan.warehouseOwner) {
+                  shipmentPlan.warehouseOwner[key] = warehouseOwner[key];
+                } else {
+                  // If the key doesn't exist, push the key-value pair
+                  shipmentPlan.warehouseOwner[key] = warehouseOwner[key];
+                }
+              }
+            });
+          }
+          if (amazonData && Object.keys(amazonData).length !== 0) {
+            // Dynamically update or add fields in amazonData
+            Object.keys(amazonData).forEach((key) => {
+              // If the key exists and the value is valid (not undefined or null), update it
+              if (amazonData[key] !== undefined && amazonData[key] !== null) {
+                // If the key exists in amazonData, update the value
+                if (key in shipmentPlan.amazonData) {
+                  shipmentPlan.amazonData[key] = amazonData[key];
+                } else {
+                  // If the key doesn't exist, push the key-value pair
+                  shipmentPlan.amazonData[key] = amazonData[key];
+                }
+              }
+            });
+          }
           shipmentPlan.dateUpdated = dayjs().format();
           if (paymentId) shipmentPlan.payment.id = paymentId;
           if (paymentStatus) shipmentPlan.payment.paid = paymentStatus;
