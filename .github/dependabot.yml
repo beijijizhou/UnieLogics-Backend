@@ -1,0 +1,22 @@
+version: 2
+updates:
+  # Keep npm dependencies up-to-date
+  - package-ecosystem: "npm"
+    directory: "/" # Location of package.json
+    schedule:
+      interval: "daily" # Check for updates daily
+    ignore:
+      - dependency-name: "react-scripts" # Example: Ignore specific dependencies
+        versions: ["<4.0.0"] # Example: Ignore versions lower than 4.0.0
+
+  # Uncomment below to manage other ecosystems (e.g., GitHub Actions)
+  # - package-ecosystem: "github-actions"
+  #   directory: "/"
+  #   schedule:
+  #     interval: "weekly"
+
+  # Automatically label PRs created by Dependabot
+  pull-request-parameters:
+    labels:
+      - "dependencies"
+      - "automated"
