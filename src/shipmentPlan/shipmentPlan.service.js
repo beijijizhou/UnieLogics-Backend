@@ -162,7 +162,7 @@ const updateShipmentPlanBasedOnId =
           if (receiptNo) shipmentPlan.receiptNo = receiptNo;
           if (orderDate) shipmentPlan.orderDate = orderDate;
           if (warehouseOwner && Object.keys(warehouseOwner).length !== 0) {
-            // Dynamically update or add fields in amazonData
+            // Dynamically update or add fields in warehouseOwner
             Object.keys(warehouseOwner).forEach((key) => {
               // If the key exists and the value is valid (not undefined or null), update it
               if (warehouseOwner[key] !== undefined && warehouseOwner[key] !== null) {
