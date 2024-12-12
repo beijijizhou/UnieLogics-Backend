@@ -1,0 +1,11 @@
+version: 2
+updates:
+  - package-ecosystem: "npm" # Specify the ecosystem, e.g., npm, pip, maven, etc.
+    directory: "/"          # Location of your package manager's configuration file
+    schedule:
+      interval: "daily"      # Check for updates daily
+    open-pull-requests-limit: 5 # Limit the number of open PRs from Dependabot
+    ignore:
+      - dependency-name: "react-query-devtools" # Example to ignore a dependency
+        versions:
+          - "<=2.6.3" # Ignore versions below 2.6.3
