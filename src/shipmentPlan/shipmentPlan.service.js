@@ -173,9 +173,26 @@ const updateShipmentPlanBasedOnId =
             if (orderNo) shipmentPlan.orderNo = orderNo;
             if (receiptNo) shipmentPlan.receiptNo = receiptNo;
             if (orderDate) shipmentPlan.orderDate = orderDate;
-            if (warehouseOwner) shipmentPlan.warehouseOwner = warehouseOwner;
-            if (amazonData && amazonData?.length !== 0)
-              shipmentPlan.amazonData = amazonData;
+            // Handle warehouseOwner dynamically
+            if (warehouseOwner && typeof warehouseOwner === 'object' && Object.keys(warehouseOwner).length !== 0) {
+              shipmentPlan.warehouseOwner = shipmentPlan.warehouseOwner || {};
+              Object.keys(warehouseOwner).forEach((key) => {
+                if (warehouseOwner[key] !== undefined && warehouseOwner[key] !== null) {
+                  shipmentPlan.warehouseOwner[key] = warehouseOwner[key];
+                }
+              });
+            }
+
+            // Handle amazonData dynamically
+            if (amazonData && typeof amazonData === 'object' && Object.keys(amazonData).length !== 0) {
+              shipmentPlan.amazonData = shipmentPlan.amazonData || {};
+              Object.keys(amazonData).forEach((key) => {
+                if (amazonData[key] !== undefined && amazonData[key] !== null) {
+                  shipmentPlan.amazonData[key] = amazonData[key];
+                }
+              });
+            }
+
             shipmentPlan.dateUpdated = dayjs().format();
             if (paymentId) shipmentPlan.payment.id = paymentId;
             if (paymentStatus) shipmentPlan.payment.paid = paymentStatus;
@@ -188,67 +205,30 @@ const updateShipmentPlanBasedOnId =
           }
           return shipmentPlan;
         });
-      if (shipmentTitle) shipmentPlan.shipmentTitle = shipmentTitle;
-      if (products) shipmentPlan.products = products;
-      if (orderNo) shipmentPlan.orderNo = orderNo;
-      if (receiptNo) shipmentPlan.receiptNo = receiptNo;
-      if (orderDate) shipmentPlan.orderDate = orderDate;
-      // Handle warehouseOwner dynamically
-      if (warehouseOwner && typeof warehouseOwner === 'object' && Object.keys(warehouseOwner).length !== 0) {
-        shipmentPlan.warehouseOwner = shipmentPlan.warehouseOwner || {};
-        Object.keys(warehouseOwner).forEach((key) => {
-          if (warehouseOwner[key] !== undefined && warehouseOwner[key] !== null) {
-            shipmentPlan.warehouseOwner[key] = warehouseOwner[key];
-          }
-        });
-      }
 
-      // Handle amazonData dynamically
-      if (amazonData && typeof amazonData === 'object' && Object.keys(amazonData).length !== 0) {
-        shipmentPlan.amazonData = shipmentPlan.amazonData || {};
-        Object.keys(amazonData).forEach((key) => {
-          if (amazonData[key] !== undefined && amazonData[key] !== null) {
-            shipmentPlan.amazonData[key] = amazonData[key];
-          }
-        });
+      if (!shipmentPlanExistsForThisUser) {
+        return {
+          status: "error",
+          message: `There is no shipment plan matchind with id: ${shipmentPlanId} for user ${email}`,
+          response: [],
+        };
       }
+      const updateObj = {
+        ...currentUserWithShipmentPlans,
+        shipmentPlans: {
+          ...updatedShipmentPlansWithProductsForSpecificShipmentPlan,
+        },
+      };
 
-      shipmentPlan.dateUpdated = dayjs().format();
-      if (paymentId) shipmentPlan.payment.id = paymentId;
-      if (paymentStatus) shipmentPlan.payment.paid = paymentStatus;
-      if (status) shipmentPlan.status = status;
-      if (infoPlusVendorId) shipmentPlan.infoPlusVendorId = infoPlusVendorId;
-      if (infoPlusCustomerId) shipmentPlan.infoPlusCustomerId = infoPlusCustomerId;
-      if (infoPlusAsnId) shipmentPlan.infoPlusAsnId = infoPlusAsnId;
-      if (infoPlusOrderId) shipmentPlan.infoPlusOrderId = infoPlusOrderId;
-      if (cronResponse) shipmentPlan.cronResponse = cronResponse;
-    }
-return shipmentPlan;
+      await ShipmentPlan.findOneAndUpdate({ email }, updateObj);
+
+      const userWithShipmentPlans = await ShipmentPlan.findOne({ email });
+
+      return userWithShipmentPlans?.shipmentPlans?.filter((shipmentPlan) => {
+        return (
+          JSON.stringify(shipmentPlan._id) === JSON.stringify(shipmentPlanId)
+        );
       });
-
-if (!shipmentPlanExistsForThisUser) {
-  return {
-    status: "error",
-    message: `There is no shipment plan matchind with id: ${shipmentPlanId} for user ${email}`,
-    response: [],
-  };
-}
-const updateObj = {
-  ...currentUserWithShipmentPlans,
-  shipmentPlans: {
-    ...updatedShipmentPlansWithProductsForSpecificShipmentPlan,
-  },
-};
-
-await ShipmentPlan.findOneAndUpdate({ email }, updateObj);
-
-const userWithShipmentPlans = await ShipmentPlan.findOne({ email });
-
-return userWithShipmentPlans?.shipmentPlans?.filter((shipmentPlan) => {
-  return (
-    JSON.stringify(shipmentPlan._id) === JSON.stringify(shipmentPlanId)
-  );
-});
     };
 
 const deleteProductFromShipmentPlanFromSpecificUser =
