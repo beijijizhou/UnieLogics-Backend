@@ -20,7 +20,8 @@ const processInfoplusSyncing = cron.schedule(
 				},
 				{
 				  $match: {
-					"shipmentPlans.status": "Added"  // Ensure only 'Added' plans are included
+					"shipmentPlans.status": "Added",  // Ensure only 'Added' plans are included
+					"shipmentPlans.payment.paid": true  // Filter for shipmentPlans with payment.paid as true
 				  }
 				},
 				{
@@ -47,6 +48,8 @@ const processInfoplusSyncing = cron.schedule(
 					let orderId = null;
 					let message = '';
 					let lobId = null;
+					let categoryId = 65;
+					let subCategoryId = 66;
 					const lineItems = [];
 					const orderLineItems = [];
 
@@ -84,7 +87,7 @@ const processInfoplusSyncing = cron.schedule(
 						console.log('Supplier attached');
 
 						// Get vendorId (based on the first product supplier)
-						const vendorFilters = { filter: `name eq '${existingShipmentPlansResponse.shipmentPlans.products[0].supplier.supplierName}'` };
+						const vendorFilters = { filter: `vendorNo eq '${existingShipmentPlansResponse.shipmentPlans.vendorNo}'` };
 						const vendorData = await recordService.searchInfoPlusApiRecordsByFilters('vendor', vendorFilters);
 						
 						if (vendorData && vendorData.length > 0) {
@@ -94,7 +97,7 @@ const processInfoplusSyncing = cron.schedule(
 							//Create vendor
 							// Define the vendor data to send in the request body
 							const vendorRecord = {
-								"vendorNo": 64353322,
+								"vendorNo": existingShipmentPlansResponse.shipmentPlans.vendorNo,
 								"lobId": lobId,
 								"name": existingShipmentPlansResponse.shipmentPlans.products[0].supplier.supplierName,
 								"street": existingShipmentPlansResponse.shipmentPlans.products[0].supplier.supplierAddress.street,
@@ -119,12 +122,26 @@ const processInfoplusSyncing = cron.schedule(
 						message += "Vendor needs to be attached with shipment plan"+ "\n";
 					}
 
+					// Get categoryData from Infoplus API
+					/*const categoryFilters = { filter: `name eq 'Standard'` };
+					const categoryData = await recordService.searchInfoPlusApiRecordsByFilters('itemCategory', categoryFilters);
+					if (categoryData && categoryData.length > 0) {
+						categoryId = categoryData[0].internalId;
+					}*/
+
+					// Get categorySubData from Infoplus API
+					/*const categorySubFilters = { filter: `name eq 'Standard'` };
+					const categorySubData = await recordService.searchInfoPlusApiRecordsByFilters('itemSubCategory', categorySubFilters);
+					if (categorySubData && categorySubData.length > 0) {
+						subCategoryId = categorySubData[0].internalId;
+					}*/
+
 					if (existingShipmentPlansResponse.shipmentPlans.amazonData && 'customerNumber' in existingShipmentPlansResponse.shipmentPlans.amazonData && existingShipmentPlansResponse.shipmentPlans.amazonData.customerNumber !== "") {
 						
 						console.log('Customer attached');
 
 						// Get customerNumber from Infoplus API
-						const customerFilters = { filter: `customerNo eq '${existingShipmentPlansResponse.shipmentPlans.amazonData.customerNumber}'` };
+						const customerFilters = { filter: `customerNo eq '${existingShipmentPlansResponse.shipmentPlans.customerNo}'` };
 						const customerData = await recordService.searchInfoPlusApiRecordsByFilters('customer', customerFilters);
 						if (customerData && customerData.length > 0) {
 							customerNo = customerData[0].customerNo;
@@ -132,16 +149,16 @@ const processInfoplusSyncing = cron.schedule(
 						}else{
 
 							//Prepare customer data
-							const cusNo = (existingShipmentPlansResponse.shipmentPlans.amazonData.customerNumber)?existingShipmentPlansResponse.shipmentPlans.amazonData.customerNumber:'CUS537543';
+							const cusNo = (existingShipmentPlansResponse.shipmentPlans.customerNo)?existingShipmentPlansResponse.shipmentPlans.customerNo:'CUS537543';
 							const custData = {
 								"lobId": lobId,                 
 								"customerNo": cusNo,        
-								"name": "Raju Dev New",             
-								"street": "1234 Customer St",   
-								"city": "Clifton",              
-								"zipCode": "07011",             
-								"state":"New Jersey",           
-								"country": "United States",     
+								"name": existingShipmentPlansResponse.shipmentPlans.amazonData.customerName,             
+								"street": existingShipmentPlansResponse.shipmentPlans.amazonData.customerStreet,   
+								"city": existingShipmentPlansResponse.shipmentPlans.amazonData.customerCity,              
+								"zipCode": existingShipmentPlansResponse.shipmentPlans.amazonData.customerZipcode,             
+								"state":existingShipmentPlansResponse.shipmentPlans.amazonData.customerState,           
+								"country": existingShipmentPlansResponse.shipmentPlans.amazonData.customerCountry,     
 								"packageCarrierId": 111,        // Package carrier ID (e.g., UPS, FedEx) All users will have static data in this field
 								"truckCarrierId": 111,          // Truck carrier ID All users will have static data in this field
 								"weightBreak": 1,               // Weight break for shipping (e.g., 100 kg) All users will have static data in this field
@@ -206,8 +223,8 @@ const processInfoplusSyncing = cron.schedule(
 									// If item doesn't exist, create a new item
 									const hazmat = product.isHazmat ? 'Yes' : 'No';
 									const productData = {
-										majorGroupId: 8,
-										subGroupId: 46,
+										majorGroupId: categoryId,
+										subGroupId: subCategoryId,
 										lobId: lobId,
 										sku: product.fnsku,
 										itemDescription: product.title,
