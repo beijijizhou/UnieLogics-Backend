@@ -1,0 +1,37 @@
+name: Auto Update Develop from Main
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  update-develop:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Check out the repository
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Step 2: Configure Git
+      - name: Set up Git
+        run: |
+          git config user.name "GitHub Actions Bot"
+          git config user.email "<your-email@example.com>"
+
+      # Step 3: Fetch all branches
+      - name: Fetch all branches
+        run: git fetch --all
+
+      # Step 4: Check out the Develop branch
+      - name: Check out the Develop branch
+        run: git checkout develop
+
+      # Step 5: Merge Main into Develop
+      - name: Merge Main into Develop
+        run: git merge origin/main --no-edit
+
+      # Step 6: Push changes back to Develop
+      - name: Push changes to Develop
+        run: git push origin develop
