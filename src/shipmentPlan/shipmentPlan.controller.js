@@ -26,7 +26,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 const add = async (req, res) => {
-  const { email, shipmentTitle, products, orderNo, receiptNo, orderDate } = req.body;
+  const { email, shipmentTitle, products, supplier, orderNo, receiptNo, orderDate } = req.body;
   const missingFields = [];
 
   if (!email) missingFields.push("email");
@@ -39,15 +39,15 @@ const add = async (req, res) => {
       if (!product.title) missingFields.push(`products[${index}].title`);
       if (!product.dateAdded) missingFields.push(`products[${index}].dateAdded`);
       if (!product.amazonPrice) missingFields.push(`products[${index}].amazonPrice`);
-      if (!product.supplier) missingFields.push(`products[${index}].supplier`);
-      if (product.supplier) {
-        if (!product.supplier.supplierAddress.lat)
-          missingFields.push(`products[${index}].supplier.supplierAddress.lat`);
-        if (!product.supplier.supplierAddress.long)
-          missingFields.push(`products[${index}].supplier.supplierAddress.long`);
-      }
       if (!product.imageUrl) missingFields.push(`products[${index}].imageUrl`);
     });
+  }
+  if (!supplier) missingFields.push(`supplier`);
+  if (supplier) {
+    if (!supplier.supplierAddress.lat)
+      missingFields.push(`supplier.supplierAddress.lat`);
+    if (!supplier.supplierAddress.long)
+      missingFields.push(`supplier.supplierAddress.long`);
   }
 
   if (missingFields.length > 0) {
@@ -65,6 +65,7 @@ const add = async (req, res) => {
         email,
         shipmentTitle,
         products,
+        supplier,
         orderNo,
         receiptNo,
         orderDate,
@@ -88,6 +89,7 @@ const add = async (req, res) => {
         email,
         shipmentTitle,
         products,
+        supplier,
         orderNo,
         receiptNo,
         orderDate,
@@ -216,7 +218,7 @@ const getById = async (req, res) => {
 };
 
 const updateShipmentPlan = async (req, res) => {
-  const { email, shipmentPlanId, products, shipmentTitle, orderNo, receiptNo, orderDate, warehouseOwner, amazonData } =
+  const { email, shipmentPlanId, products, supplier, shipmentTitle, orderNo, receiptNo, orderDate, warehouseOwner, amazonData } =
     req.body;
 
   const missingFields = [];
@@ -257,6 +259,7 @@ const updateShipmentPlan = async (req, res) => {
       shipmentPlanId,
       shipmentTitle,
       products,
+      supplier,
       orderNo,
       receiptNo,
       orderDate,

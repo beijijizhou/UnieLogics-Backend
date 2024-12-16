@@ -1,22 +1,11 @@
 version: 2
 updates:
-  # Keep npm dependencies up-to-date
-  - package-ecosystem: "npm"
-    directory: "/" # Location of package.json
+  - package-ecosystem: "npm" # Specify the ecosystem, e.g., npm, pip, maven, etc.
+    directory: "/"          # Location of your package manager's configuration file
     schedule:
-      interval: "daily" # Check for updates daily
+      interval: "daily"      # Check for updates daily
+    open-pull-requests-limit: 5 # Limit the number of open PRs from Dependabot
     ignore:
-      - dependency-name: "react-scripts" # Example: Ignore specific dependencies
-        versions: ["<4.0.0"] # Example: Ignore versions lower than 4.0.0
-
-  # Uncomment below to manage other ecosystems (e.g., GitHub Actions)
-  # - package-ecosystem: "github-actions"
-  #   directory: "/"
-  #   schedule:
-  #     interval: "weekly"
-
-  # Automatically label PRs created by Dependabot
-  pull-request-parameters:
-    labels:
-      - "dependencies"
-      - "automated"
+      - dependency-name: "react-query-devtools" # Example to ignore a dependency
+        versions:
+          - "<=2.6.3" # Ignore versions below 2.6.3
