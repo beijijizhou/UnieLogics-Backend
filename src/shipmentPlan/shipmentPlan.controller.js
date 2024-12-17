@@ -439,6 +439,51 @@ const deleteFileFromShipmentPlan = async (req, res) => {
   }
 };
 
+const updatePaymentStatus = async (req, res) => {
+  const { email, shipmentPlanId, paymentStatus } =
+    req.body;
+
+  const missingFields = [];
+
+  if (!email) missingFields.push("email");
+  if (!shipmentPlanId) missingFields.push("shipmentPlanId");
+  if (!paymentStatus) missingFields.push("paymentStatus");
+
+
+  if (missingFields.length > 0) {
+    return res.status(400).json({
+      status: "error",
+      message: `You have mandatory fields missing: ${missingFields.join(", ")}`,
+    });
+  }
+
+  try {
+    
+    const updateShipmentPlanResponse = await ShipmentPlanService.updateShipmentPlanBasedOnId({
+      email,
+      shipmentPlanId,
+      paymentStatus
+    });
+
+    console.log("updateShipmentPlanResponse", updateShipmentPlanResponse);
+
+    if (updateShipmentPlanResponse?.status === "error") {
+      return res.status(400).json({
+        ...updateShipmentPlanResponse,
+      });
+    }
+
+    return res.status(200).json({
+      status: "success",
+      message: `Successfully updated payment status with id ${shipmentPlanId} for user: ${email}`,
+      response: updateShipmentPlanResponse,
+    });
+  } catch (e) {
+    console.log(e);
+    res.status(500).json({ status: "error", message: JSON.stringify(e) });
+  }
+};
+
 module.exports = {
   add,
   getAll,
@@ -447,5 +492,6 @@ module.exports = {
   updateShipmentPlan,
   deleteProductFromShipmentPlan,
   uploadShipmentPlanFiles,
-  deleteFileFromShipmentPlan
+  deleteFileFromShipmentPlan,
+  updatePaymentStatus
 };
