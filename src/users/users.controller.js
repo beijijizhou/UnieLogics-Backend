@@ -1,4 +1,5 @@
 const bcrypt = require("bcryptjs");
+const crypto = require("crypto");
 const mailgun = require("mailgun-js")({
   apiKey: process.env.MAILGUN_API_KEY,
   domain: process.env.MAILGUN_DOMAIN,
@@ -30,13 +31,14 @@ const getAllUsers = async (req, res) => {
 };
 
 const forgotPassword = async (req, res) => {
-  const { email } = req.query;
+  const { email, redirectUrl } = req.body;
+  console.log(email + " - wants to reset his password!");
 
   try {
-    let customer = await UserService.getUserByEmail(email);
-
-    if (!customer) {
-      return res.status(400).send({
+    // Find customer
+    let user = await UserService.getUserByEmail(email);
+    if (!user) {
+      return res.status(404).send({
         status: "error",
         error: {
           message: "User does not exist",
@@ -44,18 +46,19 @@ const forgotPassword = async (req, res) => {
       });
     }
 
-    const randomPassword = Math.random().toString(36).substring(7);
-    customer.hash = bcrypt.hashSync(randomPassword, 10);
-    await customer.save();
+    // Generate reset token & save it
+    const token = crypto.randomBytes(20).toString('hex');
+    const expires = Date.now() + 3600000  // Expires in 1 hour
+    user.resetPassword = {
+      token: token,
+      expires: expires,
+    }
+    await user.save();
+    console.log("reset password info saved: ", user);
 
-    console.log(email + " - wants to reset his password!");
-
-    const mailBody = emailTemplates.forgotPasswordMailBody(
-      from_who,
-      email,
-      randomPassword
-    );
-
+    // Create reset email
+    const resetLink = `${redirectUrl}?token=${token}`;
+    const mailBody = emailTemplates.forgotPasswordMailBody(from_who, email, resetLink);
     mailgun.messages().send(mailBody, (sendError, body) => {
       if (sendError) {
         console.log(sendError);
@@ -63,10 +66,11 @@ const forgotPassword = async (req, res) => {
       }
       console.log(body);
     });
-    return res.status(200).json({
+    console.log("rest link generated: ", resetLink);
+
+    res.status(200).json({
       status: "success",
-      message:
-        "Successfully reset your password. Please check your email for your temporary password.",
+      message: `Please check your email for a password reset link.`,
     });
   } catch (e) {
     console.log(e);
@@ -78,6 +82,46 @@ const forgotPassword = async (req, res) => {
     });
   }
 };
+
+const resetPassword = async (req, res) => {
+  const { token, password } = req.body;
+  console.log("token: ", token, "password: ", password);
+  try {
+    // Verify user exists & token isn't expired
+    const user = await UserService.getUserByResetToken(token);
+    if (!user) {
+      return res.status(404).send({
+        status: "error",
+        error: {
+          message: "Invalid user or token",
+        },
+      });
+    }
+
+    // Set new password
+    const hashedPassword = bcrypt.hashSync(password, 10);
+    user.hash = hashedPassword;
+
+    // Discard consumed token
+    user.resetPassword = { token: null, expires: null };
+    await user.save();
+
+    return res.status(200).json({
+      status: "success",
+      message:
+        "Successfully reset your password!",
+    });
+
+  } catch (e) {
+    console.log(e);
+    res.status(400).send({
+      status: "error",
+      error: {
+        message: e.raw.message,
+      },
+    });
+  }
+}
 
 const checkAuthentication = async (req, res) => {
   const { email, customerID } = req.query;
@@ -272,6 +316,10 @@ const login = async (req, res) => {
 
   if (customer) {
     try {
+      // Ensure old users contain oauth field
+      if ('oauth' in customer === false || customer.oauth === undefined) {
+        customer = await UserService.setOauth(email, null);
+      }
       const user = await UserService.authenticate(
         email.toLowerCase(),
         password
@@ -401,7 +449,7 @@ const googleLogin = async(req, res) => {
           phoneNumber: null,
         };
         const user = await UserService.registerUser(newUser);
-        const customer = await UserService.setOauth(payload.email, googleOauth);
+        const customer = await UserService.setOauth(payload.email, googleOauth);  // save oauth
   
         if (customer?.status === "error") {
           return res.status(403).json({
@@ -431,11 +479,14 @@ const googleLogin = async(req, res) => {
         res.status(500).json({ status: "error", e });
       }
     }
-    // UserService._delete("674e9fbe6f08d24c04a88616");
-    // console.log("User deleted");
     // Skip password check and log them in
     console.log("user exists");
     try {
+      // Save oauth
+      if (customer.oauth === null || customer.oauth === undefined) {
+        customer = await UserService.setOauth(customer.email, googleOauth);
+        await customer.save();
+      }
       const user = await UserService.authenticate(
         payload.email.toLowerCase(),
         null,
@@ -447,7 +498,7 @@ const googleLogin = async(req, res) => {
 
       if (customer.role !== "warehouseOwner") {
         customerInfo = await Stripe.getCustomerByID(customer.billingID);
-        const existingSubscription = await Stripe.getSubsription(
+        const existingSubscription = await Stripe.getSubscription(
           customerInfo.id
         );
 
@@ -976,6 +1027,7 @@ const deleteUser = async (req, res) => {
 module.exports = {
   getAllUsers,
   forgotPassword,
+  resetPassword,
   checkAuthentication,
   register,
   login,

@@ -20,7 +20,8 @@ const processInfoplusSyncing = cron.schedule(
 				},
 				{
 				  $match: {
-					"shipmentPlans.status": "Added"  // Ensure only 'Added' plans are included
+					"shipmentPlans.status": "Added",  // Ensure only 'Added' plans are included
+					"shipmentPlans.payment.paid": true  // Filter for shipmentPlans with payment.paid as true
 				  }
 				},
 				{

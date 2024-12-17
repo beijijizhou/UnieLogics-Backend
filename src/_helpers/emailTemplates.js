@@ -77,7 +77,7 @@ const welcomeMailBody = (from_who, email) => {
   };
 };
 
-const forgotPasswordMailBody = (from_who, email, randomPassword) => {
+const forgotPasswordMailBody = (from_who, email, resetLink) => {
   return {
     from: `UnieLogics <${from_who}>`,
     to: email,
@@ -113,11 +113,8 @@ const forgotPasswordMailBody = (from_who, email, randomPassword) => {
                               <span
                                 style="display:inline-block; vertical-align:middle; margin:29px 0 26px; border-bottom:1px solid #cecece; width:100px;"></span>
                               <p style="color:#455056; font-size:15px;line-height:24px; margin:0;">
-                                We cannot simply send you your old password, but in order to help you out, a unique password has been generated for you.<br /> The new password is: <span style="color:red;"><b>${randomPassword}</b></span><br />
-                                To login, please click the below button and use the newly generated password.
+                                We cannot simply send you your old password, but in order to help you out, a reset link has been generated for you.<br /> The link is: <span style="color:red;"><b>${resetLink}</b></span><br />
                               </p>
-                              <a href="https://www.unielogics.com/login"
-                                style="background:#a78c36;text-decoration:none !important; font-weight:500; margin-top:35px; color:#fff;text-transform:uppercase; font-size:14px;padding:10px 24px;display:inline-block;border-radius:50px;">Go to Login</a>
                           </td>
                         </tr>
                         <tr>

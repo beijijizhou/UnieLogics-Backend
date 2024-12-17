@@ -14,6 +14,7 @@ function jwt() {
     "/users/googleLogin",
     "/users/register",
     "/users/forgotPassword",
+    "/users/resetPassword",
     "/users/checkout",
     "/keepa/getChartData",
     /^\/uploads\/.*/,

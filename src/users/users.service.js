@@ -62,6 +62,13 @@ const getUserByEmail = (User) => async (email) => {
 	return await User.findOne({ email });
 };
 
+const getUserByResetToken = (User) => async (token) => {
+	return await User.findOne({
+		'resetPassword.token': token,
+		'resetPassword.expires': { $gt: Date.now() },
+	});
+}
+
 const getUserByBillingID = (User) => async (billingID) => {
 	return await User.findOne({ billingID });
 };
@@ -94,11 +101,19 @@ const authenticate = (User) => async (email, password, oauthProvider = {}) => {
 	}
 	// Find oauth provider
 	let oauthFound = false;
-	// let provider = user.oauth;
-	// let oauthFound = (
-	// 	provider.providerName === oauthProvider.providerName && 
-	// 	provider.providerId === oauthProvider.providerId);
-	// console.log("oauthFound? ", oauthFound);
+	const provider = user.oauth;
+
+	if (provider !== null && 
+		provider !== undefined && 
+		Object.keys(oauthProvider).length !== 0
+	) {
+		console.log("provider? ", provider);
+    
+		oauthFound = (
+			provider.providerName === oauthProvider.providerName && 
+			provider.providerId === oauthProvider.providerId);
+		console.log("oauthFound? ", oauthFound);
+	}
 	if (oauthFound || bcrypt.compareSync(password, user.hash)) {
 		const token = jwt.sign({ sub: user.id }, process.env.JWT_SECRET, {
 			expiresIn: "7d",
@@ -131,6 +146,7 @@ module.exports = (User) => {
 		addUser: addUser(User),
 		getUsers: getUsers(User),
 		getUserByEmail: getUserByEmail(User),
+		getUserByResetToken: getUserByResetToken(User),
 		getUserByBillingID: getUserByBillingID(User),
 		registerUser: registerUser(User),
 		setOauth: setOauth(User),

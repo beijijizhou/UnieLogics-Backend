@@ -9,7 +9,8 @@ const googleLoginLimiter = rateLimit({
 });
 
 router.get("/getAll", userControllers.getAllUsers);
-router.get("/forgotPassword", userControllers.forgotPassword);
+router.post("/forgotPassword", userControllers.forgotPassword);
+router.post("/resetPassword", userControllers.resetPassword);
 router.get("/checkAuthentication", userControllers.checkAuthentication);
 router.post("/register", userControllers.register);
 router.post("/login", userControllers.login);

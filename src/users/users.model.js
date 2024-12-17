@@ -7,6 +7,10 @@ const userSchema = new Schema({
   firstName: { type: String, required: true },
   lastName: { type: String, required: false, default: "" },
   hash: { type: String, required: true },
+  resetPassword: {
+    token: { type: String, default: null },
+    expires: { type: Date, default: null },
+  },
   oauth: { type: oauthSchema, default: null},
   billingID: String,
   plan: {
