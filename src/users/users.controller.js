@@ -316,6 +316,10 @@ const login = async (req, res) => {
 
   if (customer) {
     try {
+      // Ensure old users contain oauth field
+      if ('oauth' in customer === false || customer.oauth === undefined) {
+        customer = await UserService.setOauth(email, null);
+      }
       const user = await UserService.authenticate(
         email.toLowerCase(),
         password
@@ -445,7 +449,7 @@ const googleLogin = async(req, res) => {
           phoneNumber: null,
         };
         const user = await UserService.registerUser(newUser);
-        const customer = await UserService.setOauth(payload.email, googleOauth);
+        const customer = await UserService.setOauth(payload.email, googleOauth);  // save oauth
   
         if (customer?.status === "error") {
           return res.status(403).json({
@@ -478,6 +482,11 @@ const googleLogin = async(req, res) => {
     // Skip password check and log them in
     console.log("user exists");
     try {
+      // Save oauth
+      if (customer.oauth === null || customer.oauth === undefined) {
+        customer = await UserService.setOauth(customer.email, googleOauth);
+        await customer.save();
+      }
       const user = await UserService.authenticate(
         payload.email.toLowerCase(),
         null,

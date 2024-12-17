@@ -102,7 +102,13 @@ const authenticate = (User) => async (email, password, oauthProvider = {}) => {
 	// Find oauth provider
 	let oauthFound = false;
 	const provider = user.oauth;
-	if (provider !== null) {
+
+	if (provider !== null && 
+		provider !== undefined && 
+		Object.keys(oauthProvider).length !== 0
+	) {
+		console.log("provider? ", provider);
+    
 		oauthFound = (
 			provider.providerName === oauthProvider.providerName && 
 			provider.providerId === oauthProvider.providerId);

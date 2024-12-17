@@ -82,7 +82,7 @@ const processInfoplusSyncing = cron.schedule(
 						
 					}
 
-					if (existingShipmentPlansResponse.shipmentPlans.products && Object.keys(existingShipmentPlansResponse.shipmentPlans.products[0].supplier).length > 0) {
+					if (existingShipmentPlansResponse.shipmentPlans.supplier && Object.keys(existingShipmentPlansResponse.shipmentPlans.supplier).length > 0) {
 
 						console.log('Supplier attached');
 
@@ -99,13 +99,13 @@ const processInfoplusSyncing = cron.schedule(
 							const vendorRecord = {
 								"vendorNo": existingShipmentPlansResponse.shipmentPlans.vendorNo,
 								"lobId": lobId,
-								"name": existingShipmentPlansResponse.shipmentPlans.products[0].supplier.supplierName,
-								"street": existingShipmentPlansResponse.shipmentPlans.products[0].supplier.supplierAddress.street,
-								"city": existingShipmentPlansResponse.shipmentPlans.products[0].supplier.supplierAddress.city,
-								"state": existingShipmentPlansResponse.shipmentPlans.products[0].supplier.supplierAddress.state,
-								"zipCode": existingShipmentPlansResponse.shipmentPlans.products[0].supplier.supplierAddress.zipCode,
-								"contact": existingShipmentPlansResponse.shipmentPlans.products[0].supplier.contactPerson.name,
-								"phone": existingShipmentPlansResponse.shipmentPlans.products[0].supplier.contactPerson.phoneNumber,
+								"name": existingShipmentPlansResponse.shipmentPlans.supplier.supplierName,
+								"street": existingShipmentPlansResponse.shipmentPlans.supplier.supplierAddress.street,
+								"city": existingShipmentPlansResponse.shipmentPlans.supplier.supplierAddress.city,
+								"state": existingShipmentPlansResponse.shipmentPlans.supplier.supplierAddress.state,
+								"zipCode": existingShipmentPlansResponse.shipmentPlans.supplier.supplierAddress.zipCode,
+								"contact": existingShipmentPlansResponse.shipmentPlans.supplier.contactPerson.name,
+								"phone": existingShipmentPlansResponse.shipmentPlans.supplier.contactPerson.phoneNumber,
 								"inactive": "No"
 							};
 							//Create vendor on infoplus API
